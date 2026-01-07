@@ -19,7 +19,7 @@
     "/generated/mods.json": {
       "get": {
         "summary": "Get all mods",
-        "description": "Returns an array of all mod manifests in the registry, sorted alphabetically by display name.",
+        "description": "Returns an array of all mod manifests in the registry, sorted alphabetically by display name. Note: this list omits previous_releases to save bandwidth.",
         "operationId": "getMods",
         "tags": [
           "Mods"
@@ -239,6 +239,52 @@
                     "version": {
                       "type": "string"
                     },
+                    "previous_releases": {
+                      "type": "array",
+                      "items": {
+                        "type": "object",
+                        "properties": {
+                          "version": {
+                            "type": "string"
+                          },
+                          "source": {
+                            "type": "object",
+                            "properties": {
+                              "type": {
+                                "enum": [
+                                  "github_archive",
+                                  "gitlab_archive",
+                                  "direct_url"
+                                ]
+                              },
+                              "url": {
+                                "type": "string",
+                                "format": "uri"
+                              },
+                              "commit_sha": {
+                                "type": "string",
+                                "pattern": "^[a-f0-9]{40}$"
+                              },
+                              "extract_path": {
+                                "type": "string"
+                              }
+                            },
+                            "required": [
+                              "type",
+                              "url"
+                            ]
+                          },
+                          "released_at": {
+                            "type": "string",
+                            "format": "date-time"
+                          }
+                        },
+                        "required": [
+                          "version",
+                          "source"
+                        ]
+                      }
+                    },
                     "dependencies": {
                       "type": "object",
                       "additionalProperties": {
@@ -388,6 +434,52 @@
           },
           "version": {
             "type": "string"
+          },
+          "previous_releases": {
+            "type": "array",
+            "items": {
+              "type": "object",
+              "properties": {
+                "version": {
+                  "type": "string"
+                },
+                "source": {
+                  "type": "object",
+                  "properties": {
+                    "type": {
+                      "enum": [
+                        "github_archive",
+                        "gitlab_archive",
+                        "direct_url"
+                      ]
+                    },
+                    "url": {
+                      "type": "string",
+                      "format": "uri"
+                    },
+                    "commit_sha": {
+                      "type": "string",
+                      "pattern": "^[a-f0-9]{40}$"
+                    },
+                    "extract_path": {
+                      "type": "string"
+                    }
+                  },
+                  "required": [
+                    "type",
+                    "url"
+                  ]
+                },
+                "released_at": {
+                  "type": "string",
+                  "format": "date-time"
+                }
+              },
+              "required": [
+                "version",
+                "source"
+              ]
+            }
           },
           "dependencies": {
             "type": "object",

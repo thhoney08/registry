@@ -10,7 +10,7 @@ import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
 import { canParse, compare as compareSemVer, tryParse } from "@std/semver"
 import { join } from "@std/path"
-import type { ModManifest } from "../schema/manifest.ts"
+import { type ModManifest, ModManifest as ModManifestSchema } from "../schema/manifest.ts"
 import { checkUrl } from "../utils/url_checker.ts"
 import { GitHubCommitResponse, GitHubTagsResponse } from "../schema/github_api.ts"
 import { extractRepoUrl as extractRepoUrlFromString, parseGitHubUrl } from "../utils/github.ts"
@@ -233,9 +233,23 @@ export const applyVersionUpdate = (
   manifest: ModManifest,
   newVersion: string,
 ): ModManifest => {
+  const previousRelease = {
+    version: manifest.version,
+    source: { ...manifest.source },
+    released_at: manifest.last_updated,
+  }
+
   const updated = { ...manifest }
   updated.version = newVersion
   updated.last_updated = new Date().toISOString()
+
+  // Track history (excluding current version) for per-mod details.
+  const existing = manifest.previous_releases ?? []
+  const byVersion = new Map(existing.map((r) => [r.version, r]))
+  if (!byVersion.has(previousRelease.version)) {
+    byVersion.set(previousRelease.version, previousRelease)
+  }
+  updated.previous_releases = Array.from(byVersion.values())
 
   if (manifest.autoupdate) {
     // Apply substitution keys
@@ -271,7 +285,7 @@ export const updateManifestFile = async (
 ): Promise<{ updated: boolean; newVersion?: string; error?: string }> => {
   try {
     const content = await Deno.readTextFile(filePath)
-    const manifest = YAML.parse(content) as ModManifest
+    const manifest = v.parse(ModManifestSchema, YAML.parse(content))
 
     if (!manifest.autoupdate) {
       return { updated: false }
@@ -353,7 +367,7 @@ export const updateAllManifests = async (
     // Check if this manifest should be ignored
     try {
       const content = await Deno.readTextFile(entry.path)
-      const manifest = YAML.parse(content) as ModManifest
+      const manifest = v.parse(ModManifestSchema, YAML.parse(content))
 
       if (shouldIgnoreManifest(manifest, ignored)) {
         console.log(`Skipping ${entry.name} (in .manifestignore)`)

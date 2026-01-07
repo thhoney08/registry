@@ -180,6 +180,20 @@ export const Version = v.pipe(
 )
 
 /**
+ * Historical release information for a manifest.
+ * Intended for per-mod details pages; large lists may omit it for bandwidth.
+ */
+export const ModRelease = v.object({
+  version: Version,
+  source: ModSource,
+  released_at: v.optional(v.pipe(
+    v.string("ISO 8601 timestamp for when this release was published"),
+    v.isoTimestamp("Invalid ISO 8601 timestamp format"),
+  )),
+})
+export type ModRelease = v.InferOutput<typeof ModRelease>
+
+/**
  * Field definitions used by both ModManifest and ModManifestWithDefaults.
  * Single source of truth - no duplication.
  */
@@ -199,6 +213,9 @@ const manifestFields = {
     v.url("Invalid URL format"),
   )),
   version: Version,
+  previous_releases: v.optional(
+    v.array(ModRelease, "Optional history of previous releases"),
+  ),
   dependencies: v.optional(Dependencies),
   conflicts: v.optional(Dependencies),
   source: ModSource,
@@ -232,6 +249,18 @@ type ModManifestBase = v.InferOutput<typeof ModManifestBase>
  */
 export const ModManifest = v.pipe(
   ModManifestBase,
+  // Semantic check: previous releases must not include current and must be unique
+  v.check(
+    (manifest: ModManifestBase) => {
+      const prev = manifest.previous_releases
+      if (!prev || prev.length === 0) return true
+
+      const versions = prev.map((r) => r.version)
+      if (versions.includes(manifest.version)) return false
+      return new Set(versions).size === versions.length
+    },
+    "previous_releases must not include the current version and must not contain duplicates",
+  ),
   // Semantic check: parent must be in dependencies
   v.check(
     (manifest: ModManifestBase) => {

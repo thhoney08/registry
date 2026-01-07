@@ -7,7 +7,8 @@
 import { Command } from "@cliffy/command"
 import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
-import type { ModManifest } from "../schema/manifest.ts"
+import * as v from "valibot"
+import { ModManifest as ModManifestSchema } from "../schema/manifest.ts"
 import { checkUrl, extractManifestUrls } from "../utils/url_checker.ts"
 
 interface CheckResult {
@@ -25,7 +26,7 @@ interface CheckResult {
  */
 const checkManifestFile = async (filePath: string): Promise<CheckResult> => {
   const content = await Deno.readTextFile(filePath)
-  const manifest = YAML.parse(content) as ModManifest
+  const manifest = v.parse(ModManifestSchema, YAML.parse(content))
 
   console.log(`Checking ${filePath}`)
 

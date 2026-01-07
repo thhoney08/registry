@@ -12,7 +12,11 @@ import { join } from "@std/path"
 import * as v from "valibot"
 import { parse as parseYAML } from "@std/yaml/parse"
 import { convertDependencies } from "../../schema/modinfo.ts"
-import { type ModManifest, Version } from "../../schema/manifest.ts"
+import {
+  type ModManifest,
+  ModManifest as ModManifestSchema,
+  Version,
+} from "../../schema/manifest.ts"
 import {
   buildArchiveUrl,
   buildGitHubPath,
@@ -33,7 +37,7 @@ import { stringifyManifest } from "../../utils/stringify.ts"
 const readExistingManifest = async (path: string): Promise<ModManifest | null> => {
   try {
     const content = await Deno.readTextFile(path)
-    return parseYAML(content) as ModManifest
+    return v.parse(ModManifestSchema, parseYAML(content))
   } catch {
     return null
   }

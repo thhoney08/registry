@@ -11,6 +11,7 @@ import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
 import { ModManifest } from "../schema/manifest.ts"
 import { toJsonSchema } from "@valibot/to-json-schema"
+import * as v from "valibot"
 
 const DEFAULT_ICON =
   "https://raw.githubusercontent.com/cataclysmbnteam/Cataclysm-BN/main/gfx/app_icon/app-icon.svg"
@@ -36,7 +37,7 @@ export const loadManifests = async (
 
     try {
       const content = await Deno.readTextFile(entry.path)
-      const manifest = YAML.parse(content) as ModManifest
+      const manifest = v.parse(ModManifest, YAML.parse(content))
       manifests.push(manifest)
     } catch (error) {
       console.error(`Error loading ${entry.path}: ${error}`)
@@ -51,7 +52,9 @@ export const loadManifests = async (
  */
 export const generateJsonIndex = (manifests: ModManifest[]): string => {
   const sorted = sortBy(manifests, (m) => m.display_name)
-  return JSON.stringify(sorted, null, 2)
+  // Keep the list payload small: omit previous release history here.
+  const withoutHistory = sorted.map(({ previous_releases: _prev, ...rest }) => rest)
+  return JSON.stringify(withoutHistory, null, 2)
 }
 
 /**
@@ -86,6 +89,19 @@ This is an automatically generated list of mods in the registry.
 export const generateOpenApiSpec = (): object => {
   const modSchema = toJsonSchema(ModManifest, { typeMode: "input", errorMode: "ignore" })
 
+  // The list endpoint omits revision history to save bandwidth.
+  const modIndexSchema = structuredClone(modSchema) as Record<string, unknown>
+  const properties = (modIndexSchema as { properties?: Record<string, unknown> }).properties
+  if (properties && "previous_releases" in properties) {
+    delete properties.previous_releases
+  }
+  const required = (modIndexSchema as { required?: string[] }).required
+  if (required) {
+    ;(modIndexSchema as { required: string[] }).required = required.filter((k) =>
+      k !== "previous_releases"
+    )
+  }
+
   return {
     openapi: "3.0.3",
     info: {
@@ -109,7 +125,7 @@ export const generateOpenApiSpec = (): object => {
         get: {
           summary: "Get all mods",
           description:
-            "Returns an array of all mod manifests in the registry, sorted alphabetically by display name.",
+            "Returns an array of all mod manifests in the registry, sorted alphabetically by display name. Note: this list omits previous_releases to save bandwidth.",
           operationId: "getMods",
           tags: ["Mods"],
           responses: {
@@ -119,7 +135,7 @@ export const generateOpenApiSpec = (): object => {
                 "application/json": {
                   schema: {
                     type: "array",
-                    items: modSchema,
+                    items: modIndexSchema,
                   },
                 },
               },

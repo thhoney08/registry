@@ -58,6 +58,59 @@ Deno.test("applyVersionUpdate - updates version field", () => {
   assertExists(updated.last_updated)
 })
 
+Deno.test("applyVersionUpdate - records previous release", () => {
+  const manifest: ModManifest = {
+    schema_version: "1.0",
+    id: "test_mod",
+    display_name: "Test Mod",
+    short_description: "A test mod",
+    author: ["Test Author"],
+    license: "MIT",
+    version: "1.0.0",
+    last_updated: "2025-01-01T00:00:00.000Z",
+    source: {
+      type: "github_archive",
+      url: "https://github.com/test/test-mod/archive/refs/tags/v1.0.0.zip",
+      commit_sha: "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+    },
+  }
+
+  const updated = applyVersionUpdate(manifest, "1.1.0")
+
+  assertEquals(updated.previous_releases?.length, 1)
+  assertEquals(updated.previous_releases?.[0].version, "1.0.0")
+  assertEquals(updated.previous_releases?.[0].released_at, "2025-01-01T00:00:00.000Z")
+  assertEquals(
+    updated.previous_releases?.[0].source.url,
+    "https://github.com/test/test-mod/archive/refs/tags/v1.0.0.zip",
+  )
+  assertEquals(
+    updated.previous_releases?.[0].source.commit_sha,
+    "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa",
+  )
+})
+
+Deno.test("applyVersionUpdate - accumulates release history across updates", () => {
+  const manifest: ModManifest = {
+    schema_version: "1.0",
+    id: "test_mod",
+    display_name: "Test Mod",
+    short_description: "A test mod",
+    author: ["Test Author"],
+    license: "MIT",
+    version: "1.0.0",
+    source: {
+      type: "github_archive",
+      url: "https://github.com/test/test-mod/archive/refs/tags/v1.0.0.zip",
+    },
+  }
+
+  const updated1 = applyVersionUpdate(manifest, "1.1.0")
+  const updated2 = applyVersionUpdate(updated1, "1.2.0")
+
+  assertEquals(updated2.previous_releases?.map((r) => r.version), ["1.0.0", "1.1.0"])
+})
+
 Deno.test("applyVersionUpdate - applies URL substitution", () => {
   const manifest: ModManifest = {
     schema_version: "1.0",
