@@ -1,7 +1,7 @@
 # Cataclysm: Bright Nights Mod Registry Agent Instruction
 
 - **Tick the checkbox** in AGENTS.md when you finish a task, and commit (follow conventional commit).
-  - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session**
+  - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session, then amend it**
 - Don't `sed`, just edit the file normally.
 
 if you're github copilot AND NOT claude code:

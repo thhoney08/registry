@@ -53,6 +53,7 @@ export default (
       const downloadLink = document.getElementById('download-link')
       const installLink = document.getElementById('install-link')
       const versionText = document.getElementById('mod-version')
+      const installVersionText = document.getElementById('install-version')
 
       if (!select || !downloadLink || !versionText) return
 
@@ -67,6 +68,7 @@ export default (
         }
         if (version) {
           versionText.textContent = version
+          if (installVersionText) installVersionText.textContent = version
         }
       }
 
@@ -174,7 +176,7 @@ export default (
             <span
               dangerouslySetInnerHTML={{ __html: colorCodesToHtml(manifest.display_name) }}
             />{" "}
-            v{manifest.version}
+            v<span id="install-version">{manifest.version}</span>
           </a>
         </p>
         {manifest.source.extract_path && (
