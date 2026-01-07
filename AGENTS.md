@@ -1,7 +1,7 @@
 # Cataclysm: Bright Nights Mod Registry Agent Instruction
 
 - **Tick the checkbox** in AGENTS.md when you finish a task, and commit (follow conventional commit).
-  - **if all subtasks are ticked, erase task checkbox section and update [coding standards](#coding-standards) accordingly**
+  - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session**
 - Don't `sed`, just edit the file normally.
 
 if you're github copilot AND NOT claude code:
@@ -13,7 +13,6 @@ if you're github copilot AND NOT claude code:
 
 ## Coding Standards
 
-- **IGNORE BACKWARDS COMPATABILITY, THIS IS A GREENFIELD PROJECT.**
 - **PARSE, DON'T VALIDATE.** DO NOT EVER CREATE `validate*` FUNCTIONS. JUST USE VALIBOT SCHEMA
 - make sure code is sharable between CLI and site.
 - use Deno+typescript.

@@ -16,6 +16,11 @@ import { GitHubCommitResponse, GitHubTagsResponse } from "../schema/github_api.t
 import { extractRepoUrl as extractRepoUrlFromString, parseGitHubUrl } from "../utils/github.ts"
 import * as v from "valibot"
 
+type TagInfo = {
+  name: string
+  sha: string
+}
+
 /**
  * Load .manifestignore file and return list of ignored mod patterns.
  * Format: {repo url}/{mod id} per line.
@@ -140,6 +145,94 @@ const getLatestTag = async (
     console.error(`Error fetching tags: ${error}`)
     return null
   }
+}
+
+const getAllTags = async (
+  owner: string,
+  repo: string,
+  regex?: string,
+): Promise<TagInfo[] | null> => {
+  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/tags?per_page=100`
+
+  try {
+    const response = await fetch(apiUrl, {
+      headers: {
+        Accept: "application/vnd.github.v3+json",
+        "User-Agent": "BN-Mod-Registry/1.0",
+      },
+    })
+
+    if (!response.ok) {
+      await response.body?.cancel()
+      console.error(`Failed to fetch tags: ${response.status}`)
+      return null
+    }
+
+    const rawData = await response.json()
+    const tags = v.parse(GitHubTagsResponse, rawData)
+
+    let filteredTags = tags
+    if (regex) {
+      const re = new RegExp(regex)
+      filteredTags = tags.filter((t) => re.test(t.name))
+    }
+
+    filteredTags.sort((a, b) => compareVersions(b.name, a.name))
+    return filteredTags.map((t) => ({ name: t.name, sha: t.commit.sha }))
+  } catch (error) {
+    console.error(`Error fetching tags: ${error}`)
+    return null
+  }
+}
+
+const buildTagArchiveUrl = (owner: string, repo: string, tag: string): string =>
+  `https://github.com/${owner}/${repo}/archive/refs/tags/${tag}.zip`
+
+const buildTagReleaseSource = (
+  manifest: ModManifest,
+  repo: { owner: string; repo: string },
+  tag: TagInfo,
+): ModManifest["source"] => {
+  const urlTemplate = (manifest.autoupdate as Record<string, unknown> | undefined)?.url
+  const url = typeof urlTemplate === "string"
+    ? urlTemplate.replace(/\$version/g, tag.name)
+    : buildTagArchiveUrl(repo.owner, repo.repo, tag.name)
+
+  return {
+    ...manifest.source,
+    url,
+    commit_sha: tag.sha,
+  }
+}
+
+export const updateManifestHistoryFromTags = async (
+  manifest: ModManifest,
+): Promise<ModManifest | null> => {
+  const autoupdate = manifest.autoupdate
+  if (!autoupdate || autoupdate.type !== "tag") return null
+
+  const updateUrl = autoupdate.update_url ?? manifest.homepage ?? extractRepoUrl(manifest)
+  if (!updateUrl) return null
+
+  const repoInfo = parseGitHubUrl(updateUrl)
+  if (!repoInfo) return null
+
+  const tags = await getAllTags(repoInfo.owner, repoInfo.repo, autoupdate.regex)
+  if (!tags || tags.length === 0) return null
+
+  const [latest, ...previous] = tags
+  const updated: ModManifest = {
+    ...manifest,
+    version: latest.name,
+    source: buildTagReleaseSource(manifest, repoInfo, latest),
+    last_updated: new Date().toISOString(),
+    previous_releases: previous.map((tag) => ({
+      version: tag.name,
+      source: buildTagReleaseSource(manifest, repoInfo, tag),
+    })),
+  }
+
+  return updated
 }
 
 const getLatestCommit = async (
@@ -399,26 +492,82 @@ if (import.meta.main) {
     .version("1.0.0")
     .description("Check for new versions and update mod manifests")
     .arguments("[target:string]")
-    .action(async (_options, target = "manifests") => {
+    .option(
+      "--history",
+      "For tag-based manifests: populate previous_releases from all tags and pin current version/source to the latest tag",
+    )
+    .action(async (options, target = "manifests") => {
       try {
         const stat = await Deno.stat(target)
 
         if (stat.isDirectory) {
-          console.log(`Updating manifests in ${target}/`)
-          const result = await updateAllManifests(target)
-          const skipMsg = result.skipped > 0 ? `, ${result.skipped} skipped` : ""
-          console.log(
-            `\nDone: ${result.updated}/${result.total} updated, ${result.errors} errors${skipMsg}`,
-          )
-        } else {
-          const result = await updateManifestFile(target)
-          if (result.updated) {
-            console.log(`Updated to ${result.newVersion}`)
-          } else if (result.error) {
-            console.error(`Error: ${result.error}`)
-            Deno.exit(1)
+          if (options.history) {
+            console.log(`Updating tag history in ${target}/`)
+            let total = 0
+            let updated = 0
+            let errors = 0
+            for await (
+              const entry of walk(target, {
+                exts: [".yaml", ".yml", ".json"],
+                includeDirs: false,
+                maxDepth: 1,
+              })
+            ) {
+              if (entry.name.startsWith("_") || entry.name.startsWith(".")) continue
+              total++
+
+              try {
+                const content = await Deno.readTextFile(entry.path)
+                const manifest = v.parse(ModManifestSchema, YAML.parse(content))
+                const updatedManifest = await updateManifestHistoryFromTags(manifest)
+                if (!updatedManifest) continue
+
+                await Deno.writeTextFile(
+                  entry.path,
+                  stringify(updatedManifest, { quoteStyle: '"' }),
+                )
+                updated++
+              } catch (error) {
+                errors++
+                console.error(`Error: ${entry.path}: ${error}`)
+              }
+            }
+
+            console.log(`\nDone: ${updated}/${total} updated, ${errors} errors`)
           } else {
-            console.log("No update needed")
+            console.log(`Updating manifests in ${target}/`)
+            const result = await updateAllManifests(target)
+            const skipMsg = result.skipped > 0 ? `, ${result.skipped} skipped` : ""
+            console.log(
+              `\nDone: ${result.updated}/${result.total} updated, ${result.errors} errors${skipMsg}`,
+            )
+          }
+        } else {
+          if (options.history) {
+            const content = await Deno.readTextFile(target)
+            const manifest = v.parse(ModManifestSchema, YAML.parse(content))
+            const updatedManifest = await updateManifestHistoryFromTags(manifest)
+            if (!updatedManifest) {
+              console.log("No tag history update available")
+              return
+            }
+
+            await Deno.writeTextFile(target, stringify(updatedManifest, { quoteStyle: '"' }))
+            console.log(
+              `Updated tag history: ${updatedManifest.version} (previous: ${
+                updatedManifest.previous_releases?.length ?? 0
+              })`,
+            )
+          } else {
+            const result = await updateManifestFile(target)
+            if (result.updated) {
+              console.log(`Updated to ${result.newVersion}`)
+            } else if (result.error) {
+              console.error(`Error: ${result.error}`)
+              Deno.exit(1)
+            } else {
+              console.log("No update needed")
+            }
           }
         }
       } catch (error) {

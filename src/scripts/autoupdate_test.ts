@@ -13,6 +13,7 @@ import {
   getLatestVersion,
   updateAllManifests,
   updateManifestFile,
+  updateManifestHistoryFromTags,
 } from "./autoupdate.ts"
 import type { ModManifest } from "../schema/manifest.ts"
 import { stringify } from "@std/yaml/unstable-stringify"
@@ -109,6 +110,65 @@ Deno.test("applyVersionUpdate - accumulates release history across updates", () 
   const updated2 = applyVersionUpdate(updated1, "1.2.0")
 
   assertEquals(updated2.previous_releases?.map((r) => r.version), ["1.0.0", "1.1.0"])
+})
+
+Deno.test("updateManifestHistoryFromTags - pins current and populates previous_releases", async () => {
+  const originalFetch = globalThis.fetch
+  try {
+    globalThis.fetch = () => {
+      const body = JSON.stringify([
+        {
+          name: "v0.0.3-alpha",
+          commit: { sha: "3333333333333333333333333333333333333333", url: "" },
+        },
+        {
+          name: "v0.0.2-alpha",
+          commit: { sha: "2222222222222222222222222222222222222222", url: "" },
+        },
+        {
+          name: "v0.0.1-alpha",
+          commit: { sha: "1111111111111111111111111111111111111111", url: "" },
+        },
+      ])
+
+      return Promise.resolve(
+        new Response(body, { status: 200, headers: { "content-type": "application/json" } }),
+      )
+    }
+
+    const manifest: ModManifest = {
+      schema_version: "1.0",
+      id: "cbn_sky_island",
+      display_name: "Sky Island",
+      short_description: "A test mod",
+      author: ["Test"],
+      license: "MIT",
+      homepage: "https://github.com/graysonchao/CBN-Sky-Island",
+      version: "v0.0.1-alpha",
+      source: {
+        type: "github_archive",
+        url: "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/heads/main.zip",
+      },
+      autoupdate: { type: "tag" },
+    }
+
+    const updated = await updateManifestHistoryFromTags(manifest)
+    assertExists(updated)
+
+    assertEquals(updated.version, "v0.0.3-alpha")
+    assertEquals(
+      updated.source.url,
+      "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/tags/v0.0.3-alpha.zip",
+    )
+    assertEquals(updated.source.commit_sha, "3333333333333333333333333333333333333333")
+    assertEquals(updated.previous_releases?.map((r) => r.version), ["v0.0.2-alpha", "v0.0.1-alpha"])
+    assertEquals(
+      updated.previous_releases?.[0].source.url,
+      "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/tags/v0.0.2-alpha.zip",
+    )
+  } finally {
+    globalThis.fetch = originalFetch
+  }
 })
 
 Deno.test("applyVersionUpdate - applies URL substitution", () => {

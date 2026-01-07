@@ -16,6 +16,12 @@ interface PageData {
   children?: Lume.Data["children"]
 }
 
+type UiRelease = {
+  label: string
+  version: string
+  url: string
+}
+
 /** Check if a mod ID exists in the registry */
 const findModInRegistry = (modId: string, allManifests?: ModManifest[]): ModManifest | undefined =>
   allManifests?.find((m) =>
@@ -30,148 +36,209 @@ const ModTitle = ({ title }: { title: string }) => (
 export default (
   { manifest, parentMod, submods = [], allManifests = [] }: PageData,
   _helpers: Lume.Helpers,
-) => (
-  <article class="mod-page">
-    <header>
-      <img
-        src={manifest?.icon_url ?? PLACEHOLDER_ICON}
-        alt={`${stripColorCodes(manifest.display_name)} icon`}
-        class="mod-icon"
-        width="160"
-        height="160"
-      />
-      {manifest.homepage
-        ? (
-          <a
-            href={manifest.homepage}
-            target="_blank"
-            rel="noopener noreferrer"
-            title="Visit Homepage"
-            class="mod-homepage-link"
-          >
-            <ModTitle title={manifest.display_name} />
-            <img
-              src={/http(s)?:\/\/(www\.)?github\.com\/.*/.test(manifest.homepage)
-                ? GITHUB_ICON
-                : HOME_ICON}
-              alt="(homepage)"
-              width="32"
-              height="32"
-              aria-hidden="true"
-            />
+) => {
+  const releases: UiRelease[] = [
+    { label: `${manifest.version} (current)`, version: manifest.version, url: manifest.source.url },
+  ]
+
+  for (const prev of manifest.previous_releases ?? []) {
+    releases.push({ label: prev.version, version: prev.version, url: prev.source.url })
+  }
+
+  const hasRevisions = releases.length > 1
+
+  const revisionScript = `
+    (() => {
+      const select = document.getElementById('revision-select')
+      const downloadLink = document.getElementById('download-link')
+      const installLink = document.getElementById('install-link')
+      const versionText = document.getElementById('mod-version')
+
+      if (!select || !downloadLink || !versionText) return
+
+      const apply = () => {
+        const option = select.selectedOptions && select.selectedOptions[0]
+        if (!option) return
+        const url = option.getAttribute('data-url')
+        const version = option.getAttribute('data-version')
+        if (url) {
+          downloadLink.setAttribute('href', url)
+          if (installLink) installLink.setAttribute('href', url)
+        }
+        if (version) {
+          versionText.textContent = version
+        }
+      }
+
+      select.addEventListener('change', apply)
+      apply()
+    })()
+  `
+
+  return (
+    <article class="mod-page">
+      <header>
+        <img
+          src={manifest?.icon_url ?? PLACEHOLDER_ICON}
+          alt={`${stripColorCodes(manifest.display_name)} icon`}
+          class="mod-icon"
+          width="160"
+          height="160"
+        />
+        {manifest.homepage
+          ? (
+            <a
+              href={manifest.homepage}
+              target="_blank"
+              rel="noopener noreferrer"
+              title="Visit Homepage"
+              class="mod-homepage-link"
+            >
+              <ModTitle title={manifest.display_name} />
+              <img
+                src={/http(s)?:\/\/(www\.)?github\.com\/.*/.test(manifest.homepage)
+                  ? GITHUB_ICON
+                  : HOME_ICON}
+                alt="(homepage)"
+                width="32"
+                height="32"
+                aria-hidden="true"
+              />
+            </a>
+          )
+          : <ModTitle title={manifest.display_name} />}
+      </header>
+
+      <aside>
+        <dl>
+          <dt>Version</dt>
+          <dd id="mod-version">{manifest.version}</dd>
+
+          {hasRevisions && (
+            <>
+              <dt>Revision</dt>
+              <dd>
+                <select id="revision-select" name="revision" aria-label="Select revision">
+                  {releases.map((release) => (
+                    <option
+                      key={release.version}
+                      value={release.version}
+                      data-version={release.version}
+                      data-url={release.url}
+                    >
+                      {release.label}
+                    </option>
+                  ))}
+                </select>
+              </dd>
+            </>
+          )}
+
+          <dt>Author</dt>
+          <dd>{manifest.author.join(", ")}</dd>
+
+          <dt>License</dt>
+          <dd>{manifest.license}</dd>
+
+          {manifest.categories && manifest.categories.length > 0 && (
+            <>
+              <dt>Categories</dt>
+              <dd class="mod-categories">
+                {manifest.categories.map((category) => (
+                  <span class="badge" key={category}>{category}</span>
+                ))}
+              </dd>
+            </>
+          )}
+        </dl>
+
+        <button type="button">
+          <a href={manifest.source.url} id="download-link">
+            Download
           </a>
-        )
-        : <ModTitle title={manifest.display_name} />}
-    </header>
+        </button>
+      </aside>
 
-    <aside>
-      <dl>
-        <dt>Version</dt>
-        <dd>{manifest.version}</dd>
+      <section class="mod-content">
+        <h2>Description</h2>
+        <div
+          dangerouslySetInnerHTML={{
+            __html: colorCodesToHtml(manifest.description || manifest.short_description),
+          }}
+        />
 
-        <dt>Author</dt>
-        <dd>{manifest.author.join(", ")}</dd>
+        <h2>Installation</h2>
+        <p>
+          Download:{" "}
+          <a href={manifest.source.url} id="install-link">
+            <span
+              dangerouslySetInnerHTML={{ __html: colorCodesToHtml(manifest.display_name) }}
+            />{" "}
+            v{manifest.version}
+          </a>
+        </p>
+        {manifest.source.extract_path && (
+          <p>
+            <strong>Note:</strong> Extract the <code>{manifest.source.extract_path}</code>{" "}
+            folder from the archive.
+          </p>
+        )}
 
-        <dt>License</dt>
-        <dd>{manifest.license}</dd>
+        <h2>Compatibility</h2>
+        <ul>
+          <li>
+            <strong>Dependencies:</strong>{" "}
+            <DepList deps={manifest.dependencies} allManifests={allManifests} />
+          </li>
+          <li>
+            <strong>Conflicts:</strong>{" "}
+            <DepList deps={manifest.conflicts} allManifests={allManifests} />
+          </li>
+        </ul>
 
-        {manifest.categories && manifest.categories.length > 0 && (
+        {manifest.tags && manifest.tags.length > 0 && (
           <>
-            <dt>Categories</dt>
-            <dd class="mod-categories">
-              {manifest.categories.map((category) => (
-                <span class="badge" key={category}>{category}</span>
-              ))}
-            </dd>
+            <h2>Tags</h2>
+            <div class="mod-categories">
+              {manifest.tags.map((tag) => <span class="badge" key={tag}>{tag}</span>)}
+            </div>
           </>
         )}
-      </dl>
 
-      <button type="button">
-        <a href={manifest.source.url}>
-          Download
-        </a>
-      </button>
-    </aside>
-
-    <section class="mod-content">
-      <h2>Description</h2>
-      <div
-        dangerouslySetInnerHTML={{
-          __html: colorCodesToHtml(manifest.description || manifest.short_description),
-        }}
-      />
-
-      <h2>Installation</h2>
-      <p>
-        Download:{" "}
-        <a href={manifest.source.url}>
-          <span
-            dangerouslySetInnerHTML={{ __html: colorCodesToHtml(manifest.display_name) }}
-          />{" "}
-          v{manifest.version}
-        </a>
-      </p>
-      {manifest.source.extract_path && (
-        <p>
-          <strong>Note:</strong> Extract the <code>{manifest.source.extract_path}</code>{" "}
-          folder from the archive.
-        </p>
-      )}
-
-      <h2>Compatibility</h2>
-      <ul>
-        <li>
-          <strong>Dependencies:</strong>{" "}
-          <DepList deps={manifest.dependencies} allManifests={allManifests} />
-        </li>
-        <li>
-          <strong>Conflicts:</strong>{" "}
-          <DepList deps={manifest.conflicts} allManifests={allManifests} />
-        </li>
-      </ul>
-
-      {manifest.tags && manifest.tags.length > 0 && (
-        <>
-          <h2>Tags</h2>
-          <div class="mod-categories">
-            {manifest.tags.map((tag) => <span class="badge" key={tag}>{tag}</span>)}
-          </div>
-        </>
-      )}
-
-      {parentMod && (
-        <>
-          <h2>Parent Mod</h2>
-          <div class="mod-grid related-mods">
-            <ModCard
-              key={parentMod.id}
-              url={`/mods/${parentMod.id}/`}
-              title={parentMod.display_name}
-              manifest={parentMod}
-            />
-          </div>
-        </>
-      )}
-
-      {submods.length > 0 && (
-        <>
-          <h2>Submods</h2>
-          <div class="mod-grid related-mods">
-            {submods.map((submod) => (
+        {parentMod && (
+          <>
+            <h2>Parent Mod</h2>
+            <div class="mod-grid related-mods">
               <ModCard
-                key={submod.id}
-                url={`/mods/${submod.id}/`}
-                title={submod.display_name}
-                manifest={submod}
+                key={parentMod.id}
+                url={`/mods/${parentMod.id}/`}
+                title={parentMod.display_name}
+                manifest={parentMod}
               />
-            ))}
-          </div>
-        </>
-      )}
-    </section>
-  </article>
-)
+            </div>
+          </>
+        )}
+
+        {submods.length > 0 && (
+          <>
+            <h2>Submods</h2>
+            <div class="mod-grid related-mods">
+              {submods.map((submod) => (
+                <ModCard
+                  key={submod.id}
+                  url={`/mods/${submod.id}/`}
+                  title={submod.display_name}
+                  manifest={submod}
+                />
+              ))}
+            </div>
+          </>
+        )}
+      </section>
+      {hasRevisions && <script dangerouslySetInnerHTML={{ __html: revisionScript }} />}
+    </article>
+  )
+}
 
 /** Render dependencies/conflicts as clickable links when they exist in registry */
 const DepList = (

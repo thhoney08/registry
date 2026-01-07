@@ -6,7 +6,8 @@
 import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
 import { dirname, fromFileUrl, join } from "@std/path"
-import type { ModManifest } from "../../src/schema/manifest.ts"
+import * as v from "valibot"
+import { type ModManifest, ModManifest as ModManifestSchema } from "../../src/schema/manifest.ts"
 import { MetaData } from "lume/plugins/metas.ts"
 
 export const layout = "mod.tsx"
@@ -32,7 +33,7 @@ const loadManifests = async (): Promise<ModManifest[]> => {
 
     try {
       const content = await Deno.readTextFile(entry.path)
-      const manifest = YAML.parse(content) as ModManifest
+      const manifest = v.parse(ModManifestSchema, YAML.parse(content))
       manifests.push(manifest)
     } catch (error) {
       console.error(`Error loading ${entry.path}: ${error}`)
