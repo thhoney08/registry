@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write --allow-net
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-net --allow-env
 /**
  * Autoupdate script for mod manifests.
  * Checks for new versions and updates manifests accordingly.
@@ -14,7 +14,22 @@ import { type ModManifest, ModManifest as ModManifestSchema } from "../schema/ma
 import { checkUrl } from "../utils/url_checker.ts"
 import { GitHubCommitResponse, GitHubTagsResponse } from "../schema/github_api.ts"
 import { extractRepoUrl as extractRepoUrlFromString, parseGitHubUrl } from "../utils/github.ts"
+import { fetchGitHubJson, getGitHubToken } from "../utils/github_api_fetch.ts"
 import * as v from "valibot"
+
+const GITHUB_USER_AGENT = "BN-Mod-Registry/1.0"
+const githubToken = await getGitHubToken()
+const githubApiCache = new Map<string, unknown>()
+let warnedMissingToken = false
+
+const warnIfMissingToken = () => {
+  if (warnedMissingToken) return
+  if (githubToken) return
+  warnedMissingToken = true
+  console.warn(
+    "GitHub token not found (set GITHUB_TOKEN or GH_TOKEN). Requests may be rate-limited.",
+  )
+}
 
 type TagInfo = {
   name: string
@@ -109,42 +124,8 @@ const getLatestTag = async (
   repo: string,
   regex?: string,
 ): Promise<string | null> => {
-  const apiUrl = `https://api.github.com/repos/${owner}/${repo}/tags?per_page=100`
-
-  try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "BN-Mod-Registry/1.0",
-      },
-    })
-
-    if (!response.ok) {
-      // Always consume the response body to prevent leaks
-      await response.body?.cancel()
-      console.error(`Failed to fetch tags: ${response.status}`)
-      return null
-    }
-
-    const rawData = await response.json()
-    const tags = v.parse(GitHubTagsResponse, rawData)
-
-    let filteredTags = tags
-    if (regex) {
-      const re = new RegExp(regex)
-      filteredTags = tags.filter((t) => re.test(t.name))
-    }
-
-    if (filteredTags.length === 0) return null
-
-    // Sort by version comparison using @std/semver when possible
-    filteredTags.sort((a, b) => compareVersions(b.name, a.name))
-
-    return filteredTags[0].name
-  } catch (error) {
-    console.error(`Error fetching tags: ${error}`)
-    return null
-  }
+  const tags = await getAllTags(owner, repo, regex)
+  return tags?.[0]?.name ?? null
 }
 
 const getAllTags = async (
@@ -155,21 +136,12 @@ const getAllTags = async (
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/tags?per_page=100`
 
   try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "BN-Mod-Registry/1.0",
-      },
+    warnIfMissingToken()
+    const tags = await fetchGitHubJson(apiUrl, GitHubTagsResponse, {
+      token: githubToken,
+      userAgent: GITHUB_USER_AGENT,
+      cache: githubApiCache,
     })
-
-    if (!response.ok) {
-      await response.body?.cancel()
-      console.error(`Failed to fetch tags: ${response.status}`)
-      return null
-    }
-
-    const rawData = await response.json()
-    const tags = v.parse(GitHubTagsResponse, rawData)
 
     let filteredTags = tags
     if (regex) {
@@ -243,22 +215,12 @@ const getLatestCommit = async (
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`
 
   try {
-    const response = await fetch(apiUrl, {
-      headers: {
-        Accept: "application/vnd.github.v3+json",
-        "User-Agent": "BN-Mod-Registry/1.0",
-      },
+    warnIfMissingToken()
+    const commit = await fetchGitHubJson(apiUrl, GitHubCommitResponse, {
+      token: githubToken,
+      userAgent: GITHUB_USER_AGENT,
+      cache: githubApiCache,
     })
-
-    if (!response.ok) {
-      // Always consume the response body to prevent leaks
-      await response.body?.cancel()
-      console.error(`Failed to fetch commit: ${response.status}`)
-      return null
-    }
-
-    const rawData = await response.json()
-    const commit = v.parse(GitHubCommitResponse, rawData)
 
     // Return short SHA for CalVer-style versioning
     const date = new Date()
