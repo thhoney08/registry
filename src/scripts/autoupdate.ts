@@ -36,6 +36,32 @@ type TagInfo = {
   sha: string
 }
 
+type LatestVersionInfo = {
+  version: string
+  substitutionVersion: string
+  commitSha?: string
+}
+
+const normalizeToSemVer = (raw: string): string | null => {
+  const stripped = raw.replace(/^[vV]/, "")
+
+  const match = stripped.match(/^([^+-]+)([-+].*)?$/)
+  if (!match) return null
+
+  const main = match[1]
+  const suffix = match[2] ?? ""
+
+  const parts = main.split(".")
+  if (parts.length !== 3) return null
+  if (!parts.every((p) => /^\d+$/.test(p))) return null
+
+  const normalizedMain = parts
+    .map((p) => (p.length > 1 && p.startsWith("0")) ? String(Number(p)) : p)
+    .join(".")
+
+  return `${normalizedMain}${suffix}`
+}
+
 /**
  * Load .manifestignore file and return list of ignored mod patterns.
  * Format: {repo url}/{mod id} per line.
@@ -89,27 +115,7 @@ const shouldIgnoreManifest = (manifest: ModManifest, ignored: Set<string>): bool
 export const getLatestVersion = (
   manifest: ModManifest,
 ): Promise<string | null> => {
-  const autoupdate = manifest.autoupdate
-  if (!autoupdate) return Promise.resolve(null)
-
-  const updateUrl = autoupdate.update_url ?? manifest.homepage ??
-    extractRepoUrl(manifest)
-  if (!updateUrl) return Promise.resolve(null)
-
-  const repoInfo = parseGitHubUrl(updateUrl)
-  if (!repoInfo) return Promise.resolve(null)
-
-  if (autoupdate.type === "tag") {
-    return getLatestTag(repoInfo.owner, repoInfo.repo, autoupdate.regex)
-  } else if (autoupdate.type === "commit") {
-    return getLatestCommit(
-      repoInfo.owner,
-      repoInfo.repo,
-      autoupdate.branch ?? "main",
-    )
-  }
-
-  return Promise.resolve(null)
+  return getLatestVersionInfo(manifest).then((info) => info?.version ?? null)
 }
 
 /**
@@ -119,13 +125,64 @@ export const getLatestVersion = (
 const extractRepoUrl = (manifest: ModManifest): string | null =>
   extractRepoUrlFromString(manifest.source.url)
 
-const getLatestTag = async (
+const getLatestVersionInfo = async (
+  manifest: ModManifest,
+): Promise<LatestVersionInfo | null> => {
+  const autoupdate = manifest.autoupdate
+  if (!autoupdate) return null
+
+  const updateUrl = autoupdate.update_url ?? manifest.homepage ?? extractRepoUrl(manifest)
+  if (!updateUrl) return null
+
+  const repoInfo = parseGitHubUrl(updateUrl)
+  if (!repoInfo) return null
+
+  if (autoupdate.type === "tag") {
+    return await getLatestTagInfo(repoInfo.owner, repoInfo.repo, autoupdate.regex)
+  }
+
+  if (autoupdate.type === "commit") {
+    return await getLatestCommitInfo(
+      repoInfo.owner,
+      repoInfo.repo,
+      autoupdate.branch ?? "main",
+    )
+  }
+
+  return null
+}
+
+const getLatestTagInfo = async (
   owner: string,
   repo: string,
   regex?: string,
-): Promise<string | null> => {
+): Promise<LatestVersionInfo | null> => {
   const tags = await getAllTags(owner, repo, regex)
-  return tags?.[0]?.name ?? null
+  if (!tags || tags.length === 0) return null
+
+  const candidates = tags
+    .map((t) => ({
+      tag: t,
+      version: normalizeToSemVer(t.name),
+    }))
+    .filter((t): t is { tag: TagInfo; version: string } => typeof t.version === "string")
+    .filter((t) => canParse(t.version))
+
+  if (candidates.length === 0) return null
+
+  candidates.sort((a, b) => {
+    const va = tryParse(a.version)
+    const vb = tryParse(b.version)
+    if (va && vb) return compareSemVer(vb, va)
+    return a.version.localeCompare(b.version)
+  })
+
+  const latest = candidates[0]
+  return {
+    version: latest.version,
+    substitutionVersion: latest.tag.name,
+    commitSha: latest.tag.sha,
+  }
 }
 
 const getAllTags = async (
@@ -192,26 +249,43 @@ export const updateManifestHistoryFromTags = async (
   const tags = await getAllTags(repoInfo.owner, repoInfo.repo, autoupdate.regex)
   if (!tags || tags.length === 0) return null
 
-  const [latest, ...previous] = tags
+  const normalizedTags = tags
+    .map((t) => ({
+      tag: t,
+      version: normalizeToSemVer(t.name),
+    }))
+    .filter((t): t is { tag: TagInfo; version: string } => typeof t.version === "string")
+    .filter((t) => canParse(t.version))
+
+  if (normalizedTags.length === 0) return null
+
+  normalizedTags.sort((a, b) => {
+    const va = tryParse(a.version)
+    const vb = tryParse(b.version)
+    if (va && vb) return compareSemVer(vb, va)
+    return a.version.localeCompare(b.version)
+  })
+
+  const [latest, ...previous] = normalizedTags
   const updated: ModManifest = {
     ...manifest,
-    version: latest.name,
-    source: buildTagReleaseSource(manifest, repoInfo, latest),
+    version: latest.version,
+    source: buildTagReleaseSource(manifest, repoInfo, latest.tag),
     last_updated: new Date().toISOString(),
     previous_releases: previous.map((tag) => ({
-      version: tag.name,
-      source: buildTagReleaseSource(manifest, repoInfo, tag),
+      version: tag.version,
+      source: buildTagReleaseSource(manifest, repoInfo, tag.tag),
     })),
   }
 
   return updated
 }
 
-const getLatestCommit = async (
+const getLatestCommitInfo = async (
   owner: string,
   repo: string,
   branch: string,
-): Promise<string | null> => {
+): Promise<LatestVersionInfo | null> => {
   const apiUrl = `https://api.github.com/repos/${owner}/${repo}/commits/${branch}`
 
   try {
@@ -222,12 +296,14 @@ const getLatestCommit = async (
       cache: githubApiCache,
     })
 
-    // Return short SHA for CalVer-style versioning
+    // SemVer-compatible CalVer: MAJOR.MINOR.PATCH[-PRERELEASE]
+    // Avoid leading zeros in numeric identifiers (SemVer rejects 01, 09, etc.)
     const date = new Date()
-    const calver = `${date.getFullYear()}.${String(date.getMonth() + 1).padStart(2, "0")}.${
-      String(date.getDate()).padStart(2, "0")
-    }`
-    return `${calver}-${commit.sha.substring(0, 7)}`
+    const year = date.getFullYear()
+    const month = date.getMonth() + 1
+    const day = date.getDate()
+    const version = `${year}.${month}.${day}-${commit.sha.substring(0, 7)}`
+    return { version, substitutionVersion: version, commitSha: commit.sha }
   } catch (error) {
     console.error(`Error fetching commit: ${error}`)
     return null
@@ -287,6 +363,7 @@ const compareVersions = (a: string, b: string): number => {
 export const applyVersionUpdate = (
   manifest: ModManifest,
   newVersion: string,
+  substitutionVersion = newVersion,
 ): ModManifest => {
   const previousRelease = {
     version: manifest.version,
@@ -316,7 +393,7 @@ export const applyVersionUpdate = (
         continue
       }
 
-      const substituted = value.replace(/\$version/g, newVersion)
+      const substituted = value.replace(/\$version/g, substitutionVersion)
 
       // Handle nested keys like source.url
       if (key === "url" && updated.source) {
@@ -348,23 +425,40 @@ export const updateManifestFile = async (
 
     console.log(`Checking ${filePath}...`)
 
-    const latestVersion = await getLatestVersion(manifest)
-    if (!latestVersion) {
+    const latest = await getLatestVersionInfo(manifest)
+    if (!latest) {
       return { updated: false, error: "Could not determine latest version" }
     }
 
-    if (!canParse(latestVersion)) {
-      return { updated: false, error: `Latest version is not valid semver: ${latestVersion}` }
+    if (!canParse(latest.version)) {
+      return { updated: false, error: `Latest version is not valid semver: ${latest.version}` }
     }
 
-    if (latestVersion === manifest.version) {
+    if (latest.version === manifest.version) {
       console.log(`  Already up to date: ${manifest.version}`)
       return { updated: false }
     }
 
-    console.log(`  New version: ${manifest.version} -> ${latestVersion}`)
+    console.log(`  New version: ${manifest.version} -> ${latest.version}`)
 
-    const updated = applyVersionUpdate(manifest, latestVersion)
+    const updated = applyVersionUpdate(manifest, latest.version, latest.substitutionVersion)
+
+    if (latest.commitSha) {
+      updated.source = { ...updated.source, commit_sha: latest.commitSha }
+    }
+
+    if (manifest.autoupdate?.type === "tag") {
+      const updateUrl = manifest.autoupdate.update_url ?? manifest.homepage ??
+        extractRepoUrl(manifest)
+      const repoInfo = updateUrl ? parseGitHubUrl(updateUrl) : null
+      if (repoInfo) {
+        updated.source = buildTagReleaseSource(
+          { ...manifest, source: updated.source },
+          repoInfo,
+          { name: latest.substitutionVersion, sha: latest.commitSha ?? "" },
+        )
+      }
+    }
 
     // Verify URLs are valid before saving
     const urlsToCheck = [updated.source.url]
@@ -380,7 +474,7 @@ export const updateManifestFile = async (
     // Write updated manifest
     await Deno.writeTextFile(filePath, stringify(updated, { quoteStyle: '"' }))
 
-    return { updated: true, newVersion: latestVersion }
+    return { updated: true, newVersion: latest.version }
   } catch (error) {
     return { updated: false, error: String(error) }
   }

@@ -144,7 +144,7 @@ Deno.test("updateManifestHistoryFromTags - pins current and populates previous_r
       author: ["Test"],
       license: "MIT",
       homepage: "https://github.com/graysonchao/CBN-Sky-Island",
-      version: "v0.0.1-alpha",
+      version: "0.0.1-alpha",
       source: {
         type: "github_archive",
         url: "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/heads/main.zip",
@@ -155,13 +155,13 @@ Deno.test("updateManifestHistoryFromTags - pins current and populates previous_r
     const updated = await updateManifestHistoryFromTags(manifest)
     assertExists(updated)
 
-    assertEquals(updated.version, "v0.0.3-alpha")
+    assertEquals(updated.version, "0.0.3-alpha")
     assertEquals(
       updated.source.url,
       "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/tags/v0.0.3-alpha.zip",
     )
     assertEquals(updated.source.commit_sha, "3333333333333333333333333333333333333333")
-    assertEquals(updated.previous_releases?.map((r) => r.version), ["v0.0.2-alpha", "v0.0.1-alpha"])
+    assertEquals(updated.previous_releases?.map((r) => r.version), ["0.0.2-alpha", "0.0.1-alpha"])
     assertEquals(
       updated.previous_releases?.[0].source.url,
       "https://github.com/graysonchao/CBN-Sky-Island/archive/refs/tags/v0.0.2-alpha.zip",
@@ -190,9 +190,9 @@ Deno.test("applyVersionUpdate - applies URL substitution", () => {
     },
   }
 
-  const updated = applyVersionUpdate(manifest, "v2.0.0")
+  const updated = applyVersionUpdate(manifest, "2.0.0", "v2.0.0")
 
-  assertEquals(updated.version, "v2.0.0")
+  assertEquals(updated.version, "2.0.0")
   assertEquals(
     updated.source.url,
     "https://github.com/test/test-mod/archive/refs/tags/v2.0.0.zip",
@@ -220,9 +220,9 @@ Deno.test("applyVersionUpdate - applies icon_url substitution", () => {
     },
   }
 
-  const updated = applyVersionUpdate(manifest, "v2.0.0")
+  const updated = applyVersionUpdate(manifest, "2.0.0", "v2.0.0")
 
-  assertEquals(updated.version, "v2.0.0")
+  assertEquals(updated.version, "2.0.0")
   assertEquals(
     updated.icon_url,
     "https://raw.githubusercontent.com/test/test-mod/v2.0.0/icon.png",
@@ -362,10 +362,10 @@ Deno.test({
       return
     }
 
-    // CalVer format: YYYY.MM.DD-xxxxxxx (short SHA)
+    // CalVer format: YYYY.M.D-xxxxxxx (short SHA), SemVer-compatible (no leading zeros)
     assertMatch(
       version,
-      /^\d{4}\.\d{2}\.\d{2}-[a-f0-9]{7}$/,
+      /^\d{4}\.\d{1,2}\.\d{1,2}-[a-f0-9]{7}$/,
       "Should be CalVer format with short SHA",
     )
   },
@@ -588,7 +588,7 @@ Deno.test("RFC compliance - $version substitution in url", () => {
     short_description: "Testing RFC compliance",
     author: ["Test"],
     license: "MIT",
-    version: "v1.1",
+    version: "1.1.0",
     source: {
       type: "github_archive",
       url: "https://github.com/HelpfulContributor/ES-Plugin/archive/v1.1.zip",
@@ -599,9 +599,9 @@ Deno.test("RFC compliance - $version substitution in url", () => {
     },
   }
 
-  const updated = applyVersionUpdate(manifest, "v2.0")
+  const updated = applyVersionUpdate(manifest, "2.0.0", "v2.0")
 
-  assertEquals(updated.version, "v2.0")
+  assertEquals(updated.version, "2.0.0")
   assertEquals(
     updated.source.url,
     "https://github.com/HelpfulContributor/ES-Plugin/archive/v2.0.zip",
@@ -617,7 +617,7 @@ Deno.test("RFC compliance - $version substitution in iconUrl", () => {
     short_description: "Testing RFC compliance",
     author: ["Test"],
     license: "MIT",
-    version: "v1.1",
+    version: "1.1.0",
     icon_url: "https://raw.githubusercontent.com/HelpfulContributor/ES-Plugin/v1.1/icon.png",
     source: {
       type: "github_archive",
@@ -630,7 +630,7 @@ Deno.test("RFC compliance - $version substitution in iconUrl", () => {
     },
   }
 
-  const updated = applyVersionUpdate(manifest, "v2.0")
+  const updated = applyVersionUpdate(manifest, "2.0.0", "v2.0")
 
   assertEquals(
     updated.icon_url,
@@ -708,8 +708,8 @@ Deno.test({
       return
     }
 
-    // CalVer format: YYYY.MM.DD-xxxxxxx
-    assertMatch(version, /^\d{4}\.\d{2}\.\d{2}-[a-f0-9]{7}$/)
+    // CalVer format: YYYY.M.D-xxxxxxx (no leading zeros)
+    assertMatch(version, /^\d{4}\.\d{1,2}\.\d{1,2}-[a-f0-9]{7}$/)
   },
 })
 

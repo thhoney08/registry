@@ -75,7 +75,7 @@
     },
     "autoupdate": {
       "description": "Check for and apply manifest updates, then regenerate",
-      "command": "deno run -RW --allow-net --allow-env src/scripts/autoupdate.ts manifests && deno task generate"
+      "command": "deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts manifests && deno task generate"
     },
     "generate": {
       "description": "Generate index files from manifests",
