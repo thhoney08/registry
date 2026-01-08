@@ -452,7 +452,6 @@ main {
 .mod-page aside {
   padding: 1.5rem;
   border-radius: var(--border-radius);
-  position: sticky;
   top: 5rem;
   height: fit-content;
   border: 1px solid var(--color-line);
