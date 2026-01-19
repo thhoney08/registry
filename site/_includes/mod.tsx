@@ -33,6 +33,9 @@ const ModTitle = ({ title }: { title: string }) => (
   <h1 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
 )
 
+const stripVersionPrefix = (version: string): string =>
+  version.startsWith("v") || version.startsWith("V") ? version.slice(1) : version
+
 export default (
   { manifest, parentMod, submods = [], allManifests = [] }: PageData,
   _helpers: Lume.Helpers,
@@ -48,34 +51,36 @@ export default (
   const hasRevisions = releases.length > 1
 
   const revisionScript = `
-    (() => {
-      const select = document.getElementById('revision-select')
-      const downloadLink = document.getElementById('download-link')
-      const installLink = document.getElementById('install-link')
-      const versionText = document.getElementById('mod-version')
-      const installVersionText = document.getElementById('install-version')
+     (() => {
+       const select = document.getElementById('revision-select')
+       const downloadLink = document.getElementById('download-link')
+       const installLink = document.getElementById('install-link')
+       const versionText = document.getElementById('mod-version')
+       const installVersionText = document.getElementById('install-version')
 
-      if (!select || !downloadLink || !versionText) return
+       if (!select || !downloadLink || !versionText) return
 
-      const apply = () => {
-        const option = select.selectedOptions && select.selectedOptions[0]
-        if (!option) return
-        const url = option.getAttribute('data-url')
-        const version = option.getAttribute('data-version')
-        if (url) {
-          downloadLink.setAttribute('href', url)
-          if (installLink) installLink.setAttribute('href', url)
-        }
-        if (version) {
-          versionText.textContent = version
-          if (installVersionText) installVersionText.textContent = version
-        }
-      }
+       const stripVer = (ver) => (ver.startsWith('v') || ver.startsWith('V')) ? ver.slice(1) : ver
+       const apply = () => {
+         const option = select.selectedOptions && select.selectedOptions[0]
+         if (!option) return
+         const url = option.getAttribute('data-url')
+         const version = option.getAttribute('data-version')
+         if (url) {
+           downloadLink.setAttribute('href', url)
+           if (installLink) installLink.setAttribute('href', url)
+         }
+         if (version) {
+           const stripped = stripVer(version)
+           versionText.textContent = stripped
+           if (installVersionText) installVersionText.textContent = stripped
+         }
+       }
 
-      select.addEventListener('change', apply)
-      apply()
-    })()
-  `
+       select.addEventListener('change', apply)
+       apply()
+     })()
+   `
 
   return (
     <article class="mod-page">
@@ -114,7 +119,7 @@ export default (
       <aside>
         <dl>
           <dt>Version</dt>
-          <dd id="mod-version">{manifest.version}</dd>
+          <dd id="mod-version">{stripVersionPrefix(manifest.version)}</dd>
 
           {hasRevisions && (
             <>
@@ -176,7 +181,7 @@ export default (
             <span
               dangerouslySetInnerHTML={{ __html: colorCodesToHtml(manifest.display_name) }}
             />{" "}
-            v<span id="install-version">{manifest.version}</span>
+            <span id="install-version">{stripVersionPrefix(manifest.version)}</span>
           </a>
         </p>
         {manifest.source.extract_path && (
