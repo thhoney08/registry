@@ -94,7 +94,7 @@ export const validateCommand = new Command()
   .arguments("[target:string]")
   .option("-q, --quiet", "Only show summary, not individual file results")
   .option("-w, --write", "Reformat valid manifests with sorted keys")
-  .action(async ({ quiet = true, write = false }, target = "manifests") => {
+  .action(async ({ quiet = true, write = false }, target = "registry-index/manifests") => {
     try {
       const stat = await Deno.stat(target)
 

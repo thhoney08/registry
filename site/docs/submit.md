@@ -15,7 +15,7 @@ Adding your mod to the registry is easy! Follow these steps:
 ## Step 1: Fork the Registry
 
 1. Go to
-   [github.com/cataclysmbnteam/registry](https://github.com/cataclysmbnteam/registry)
+   [github.com/cataclysmbn/registry](https://github.com/cataclysmbn/registry)
 2. Click "Fork" to create your own copy
 
 ## Step 2: Create a Manifest File
@@ -46,19 +46,19 @@ deno task fetch yourname/your-mod
 The CLI will:
 
 1. Scan the repository for `modinfo.json` files
-2. Let you select which mods to generate manifests for
-3. Create/update YAML manifest files in the `manifests/` folder
+2. Let you select which mods to generate registry-index/manifests for
+3. Create/update YAML manifest files in the `registry-index/manifests/` folder
 4. Automatically detect parent mods for patchmods
 
 **Fetch Options:**
 
-| Option                | Description                             |
-| --------------------- | --------------------------------------- |
-| `-o, --output <dir>`  | Output directory (default: `manifests`) |
-| `-a, --all`           | Generate all mods without prompting     |
-| `--filter <pattern>`  | Filter mods by path (regex)             |
-| `--exclude <pattern>` | Exclude mods by path (regex)            |
-| `--dry-run`           | Preview without writing files           |
+| Option                | Description                                            |
+| --------------------- | ------------------------------------------------------ |
+| `-o, --output <dir>`  | Output directory (default: `registry-index/manifests`) |
+| `-a, --all`           | Generate all mods without prompting                    |
+| `--filter <pattern>`  | Filter mods by path (regex)                            |
+| `--exclude <pattern>` | Exclude mods by path (regex)                           |
+| `--dry-run`           | Preview without writing files                          |
 
 **Example: Fetch all mods from a repository:**
 
@@ -74,10 +74,10 @@ deno task fetch --filter "arcana" https://github.com/Chaosvolt/Cataclysm-BN-Modu
 
 ### Option C: Manual Creation
 
-Create a new YAML file in the `manifests/` folder named after your mod ID:
+Create a new YAML file in the `registry-index/manifests/` folder named after your mod ID:
 
 ```yaml
-# manifests/your_mod_id.yaml
+# registry-index/manifests/your_mod_id.yaml
 schema_version: "1.0"
 
 id: your_mod_id
@@ -106,8 +106,8 @@ source:
 Run the validation tool to check your manifest:
 
 ```bash
-deno task validate manifests/your_mod_id.yaml
-deno task check-urls manifests/your_mod_id.yaml
+deno task validate registry-index/manifests/your_mod_id.yaml
+deno task check-urls registry-index/manifests/your_mod_id.yaml
 ```
 
 ## Step 4: Submit a Pull Request

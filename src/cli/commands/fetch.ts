@@ -164,7 +164,9 @@ const generateManifest = (
 export const fetchCommand = new Command()
   .description("Fetch modinfo.json files from a GitHub repository and generate manifests")
   .arguments("<url:string>")
-  .option("-o, --output <dir:string>", "Output directory for manifests", { default: "manifests" })
+  .option("-o, --output <dir:string>", "Output directory for manifests", {
+    default: "registry-index/manifests",
+  })
   .option("-a, --all", "Generate manifests for all mods without prompting")
   .option("--filter <pattern:string>", "Filter mods by path pattern (regex)")
   .option("--exclude <pattern:string>", "Exclude mods by path pattern (regex)")

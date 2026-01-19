@@ -16,20 +16,30 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
+        with:
+          submodules: true
 
       - uses: denoland/setup-deno@v2
         with:
           deno-version: v2.x
 
-      - name: Run autoupdate
-        run: deno task autoupdate
+      - name: Update registry-index submodule
+        run: git submodule update --remote --merge registry-index
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Run tag-only autoupdate
+        run: deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts registry-index/manifests --tag-only
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: Regenerate index files
+        run: deno task generate
 
       - name: Check for changes
         id: check
         run: |
-          if git diff --quiet manifests/; then
+          if git diff --quiet registry-index; then
             echo "changed=false" >> $GITHUB_OUTPUT
           else
             echo "changed=true" >> $GITHUB_OUTPUT

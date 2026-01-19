@@ -95,7 +95,7 @@ if (import.meta.main) {
     .version("1.0.0")
     .description("Check that manifest URLs (download and icon) are reachable")
     .arguments("[target:string]")
-    .action(async (_options, target = "manifests") => {
+    .action(async (_options, target = "registry-index/manifests") => {
       try {
         const stat = await Deno.stat(target)
 

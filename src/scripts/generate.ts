@@ -14,7 +14,7 @@ import { toJsonSchema } from "@valibot/to-json-schema"
 import * as v from "valibot"
 
 const DEFAULT_ICON =
-  "https://raw.githubusercontent.com/cataclysmbnteam/Cataclysm-BN/main/gfx/app_icon/app-icon.svg"
+  "https://raw.githubusercontent.com/cataclysmbn/Cataclysm-BN/main/gfx/app_icon/app-icon.svg"
 
 /**
  * Load all manifests from a directory.
@@ -116,7 +116,7 @@ export const generateOpenApiSpec = (): object => {
     },
     servers: [
       {
-        url: "https://cataclysmbnteam.github.io/registry",
+        url: "https://cataclysmbn.github.io/registry",
         description: "Production",
       },
     ],
@@ -236,14 +236,20 @@ if (import.meta.main) {
     .version("1.0.0")
     .description("Generate index files from manifests (JSON and Markdown)")
     .arguments("[manifest-dir:string] [output-dir:string]")
-    .action(async (_options, manifestDir = "manifests", outputDir = "generated") => {
-      try {
-        await generateAll(manifestDir, outputDir)
-        console.log("\nDone!")
-      } catch (error) {
-        console.error(`Error: ${error}`)
-        Deno.exit(1)
-      }
-    })
+    .action(
+      async (
+        _options,
+        manifestDir = "registry-index/manifests",
+        outputDir = "registry-index/generated",
+      ) => {
+        try {
+          await generateAll(manifestDir, outputDir)
+          console.log("\nDone!")
+        } catch (error) {
+          console.error(`Error: ${error}`)
+          Deno.exit(1)
+        }
+      },
+    )
     .parse(Deno.args)
 }

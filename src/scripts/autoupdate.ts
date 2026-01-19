@@ -486,6 +486,7 @@ export const updateManifestFile = async (
  */
 export const updateAllManifests = async (
   manifestDir: string,
+  options: { tagOnly?: boolean } = {},
 ): Promise<{ total: number; updated: number; errors: number; skipped: number }> => {
   let total = 0
   let updated = 0
@@ -523,6 +524,10 @@ export const updateAllManifests = async (
         skipped++
         continue
       }
+      if (options.tagOnly && manifest.autoupdate?.type !== "tag") {
+        skipped++
+        continue
+      }
     } catch {
       // Continue with normal processing if we can't read the manifest
     }
@@ -552,7 +557,11 @@ if (import.meta.main) {
       "--history",
       "For tag-based manifests: populate previous_releases from all tags and pin current version/source to the latest tag",
     )
-    .action(async (options, target = "manifests") => {
+    .option(
+      "--tag-only",
+      "Only update manifests that use tag-based autoupdate",
+    )
+    .action(async (options, target = "registry-index/manifests") => {
       try {
         const stat = await Deno.stat(target)
 
@@ -592,7 +601,7 @@ if (import.meta.main) {
             console.log(`\nDone: ${updated}/${total} updated, ${errors} errors`)
           } else {
             console.log(`Updating manifests in ${target}/`)
-            const result = await updateAllManifests(target)
+            const result = await updateAllManifests(target, { tagOnly: options.tagOnly })
             const skipMsg = result.skipped > 0 ? `, ${result.skipped} skipped` : ""
             console.log(
               `\nDone: ${result.updated}/${result.total} updated, ${result.errors} errors${skipMsg}`,

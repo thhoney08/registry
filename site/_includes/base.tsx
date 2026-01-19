@@ -166,9 +166,9 @@ export default (
 
           <footer data-pagefind-ignore>
             <p>
-              <a href="https://github.com/cataclysmbnteam/registry">BN Mod Registry</a>
+              <a href="https://github.com/cataclysmbn/registry">BN Mod Registry</a>
               {" · "}
-              <a href="https://github.com/cataclysmbnteam/Cataclysm-BN">
+              <a href="https://github.com/cataclysmbn/Cataclysm-BN">
                 Play Cataclysm: Bright Nights
               </a>
               {" · "}

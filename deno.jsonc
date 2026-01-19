@@ -66,21 +66,21 @@
       "command": "deno task lume -s"
     },
     "validate": {
-      "description": "Validate all manifests",
-      "command": "deno task cli validate manifests"
+      "description": "Validate all registry-index/manifests",
+      "command": "deno task cli validate registry-index/manifests"
     },
     "check-urls": {
       "description": "Check all manifest URLs",
-      "command": "deno run -R --allow-net src/scripts/check_urls.ts manifests"
+      "command": "deno run -R --allow-net src/scripts/check_urls.ts registry-index/manifests"
     },
     "autoupdate": {
       "description": "Check for and apply manifest updates, then regenerate",
-      "command": "deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts manifests && deno task generate"
+      "command": "deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts registry-index/manifests && deno task generate"
     },
     "generate": {
-      "description": "Generate index files from manifests",
+      "description": "Generate index files from registry-index/manifests",
       "dependencies": ["validate"],
-      "command": "deno run -RW src/scripts/generate.ts manifests generated"
+      "command": "deno run -RW src/scripts/generate.ts registry-index/manifests registry-index/generated"
     },
     "test": {
       "description": "Run tests",

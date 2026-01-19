@@ -9,9 +9,9 @@ _cache/
 .env
 
 # Generated files (can be regenerated)
-generated/mods.json
-generated/mods.md
-generated/mods/
+registry-index/generated/mods.json
+registry-index/generated/mods.md
+registry-index/generated/mods/
 
 # Playwright MCP screenshots
 .playwright-mcp/

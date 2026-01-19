@@ -17,6 +17,6 @@ title: Documentation
 
 ## Resources
 
-- [GitHub Repository](https://github.com/cataclysmbnteam/registry)
-- [Cataclysm: Bright Nights](https://github.com/cataclysmbnteam/Cataclysm-BN)
-- [BN Wiki](https://github.com/cataclysmbnteam/Cataclysm-BN/wiki)
+- [GitHub Repository](https://github.com/cataclysmbn/registry)
+- [Cataclysm: Bright Nights](https://github.com/cataclysmbn/Cataclysm-BN)
+- [BN Wiki](https://github.com/cataclysmbn/Cataclysm-BN/wiki)

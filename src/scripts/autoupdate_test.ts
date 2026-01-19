@@ -505,6 +505,58 @@ Deno.test("updateAllManifests - processes directory", async () => {
   }
 })
 
+Deno.test("updateAllManifests - tag-only skips commit manifests", async () => {
+  const tempDir = await createTempDir()
+
+  try {
+    const commitManifest: ModManifest = {
+      schema_version: "1.0",
+      id: "commit_mod",
+      display_name: "Commit Mod",
+      short_description: "Commit-based mod",
+      author: ["Test"],
+      license: "MIT",
+      version: "1.0.0",
+      homepage: "https://github.com/test/commit-repo",
+      source: {
+        type: "github_archive",
+        url: "https://github.com/test/commit-repo/archive/refs/heads/main.zip",
+      },
+      autoupdate: {
+        type: "commit",
+        branch: "main",
+      },
+    }
+    const tagManifest: ModManifest = {
+      schema_version: "1.0",
+      id: "tag_mod",
+      display_name: "Tag Mod",
+      short_description: "Tag-based mod",
+      author: ["Test"],
+      license: "MIT",
+      version: "1.0.0",
+      homepage: "https://github.com/test/tag-repo",
+      source: {
+        type: "github_archive",
+        url: "https://github.com/test/tag-repo/archive/refs/heads/main.zip",
+      },
+      autoupdate: {
+        type: "tag",
+      },
+    }
+
+    await writeManifest(tempDir, "commit.yaml", commitManifest)
+    await writeManifest(tempDir, "tag.yaml", tagManifest)
+
+    const result = await updateAllManifests(tempDir, { tagOnly: true })
+
+    assertEquals(result.total, 2)
+    assertEquals(result.skipped, 1)
+  } finally {
+    await Deno.remove(tempDir, { recursive: true })
+  }
+})
+
 Deno.test("updateAllManifests - skips example files", async () => {
   const tempDir = await createTempDir()
 

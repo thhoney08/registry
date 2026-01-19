@@ -13,13 +13,13 @@ import { MetaData } from "lume/plugins/metas.ts"
 export const layout = "mod.tsx"
 
 /**
- * Load all manifests from the manifests directory.
+ * Load all manifests from the registry-index/manifests directory.
  */
 const loadManifests = async (): Promise<ModManifest[]> => {
   const manifests: ModManifest[] = []
   // Get the project root (2 levels up from site/mods/)
   const projectRoot = join(dirname(fromFileUrl(import.meta.url)), "../..")
-  const manifestDir = join(projectRoot, "manifests")
+  const manifestDir = join(projectRoot, "registry-index/manifests")
 
   for await (
     const entry of walk(manifestDir, {

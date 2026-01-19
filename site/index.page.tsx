@@ -70,10 +70,10 @@ export default ({ search }: Lume.Data) => {
               to create your manifest file
             </li>
             <li>
-              Fork the <a href="https://github.com/cataclysmbnteam/registry">registry repository</a>
+              Fork the <a href="https://github.com/cataclysmbn/registry">registry repository</a>
             </li>
             <li>
-              Add your manifest file to <code>manifests/your_mod_id.yaml</code>
+              Add your manifest file to <code>registry-index/manifests/your_mod_id.yaml</code>
             </li>
             <li>
               Run <code>deno task validate</code> to check your manifest
@@ -95,10 +95,10 @@ export default ({ search }: Lume.Data) => {
               <a href="https://cataclysmbn.org/">Cataclysm: Bright Nights</a>
             </li>
             <li>
-              <a href="https://github.com/cataclysmbnteam/registry">Registry on GitHub</a>
+              <a href="https://github.com/cataclysmbn/registry">Registry on GitHub</a>
             </li>
             <li>
-              <a href="https://github.com/cataclysmbnteam/registry/issues">Report an Issue</a>
+              <a href="https://github.com/cataclysmbn/registry/issues">Report an Issue</a>
             </li>
           </ul>
         </section>

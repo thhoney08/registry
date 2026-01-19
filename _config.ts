@@ -113,6 +113,6 @@ site.data(
   "siteDescription",
   "Community mod registry for Cataclysm: Bright Nights",
 )
-site.data("siteUrl", "https://cataclysmbnteam.github.io/registry")
+site.data("siteUrl", "https://cataclysmbn.github.io/registry")
 
 export default site

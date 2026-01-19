@@ -1,6 +1,6 @@
 # AGENTS.md
 
-Mod Registry for https://github.com/cataclysmbnteam/Cataclysm-BN
+Mod Registry for https://github.com/cataclysmbn/Cataclysm-BN
 
 ALWAYS RE-READ `AGENTS.md` before doing next step as this is the only way user
 can asynchronously communicate with ongoing agent session.
