@@ -19,6 +19,11 @@ jobs:
         with:
           submodules: true
 
+      - name: Update registry-index submodule
+        run: |
+          git -C registry-index fetch origin main
+          git -C registry-index checkout -B main origin/main
+
       - name: Setup Deno environment
         uses: denoland/setup-deno@v2
         with: { cache: true }

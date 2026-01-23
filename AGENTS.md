@@ -1,5 +1,10 @@
 # Cataclysm: Bright Nights Mod Registry Agent Instruction
 
+## Tasks
+
+- [x] Update workflows and docs for registry-index syncing
+- [ ] TASK: improve and refactor code according to coding standards
+
 - **Tick the checkbox** in AGENTS.md when you finish a task, and commit (follow conventional commit).
   - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session, then amend it**
 - Don't `sed`, just edit the file normally.

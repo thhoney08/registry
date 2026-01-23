@@ -27,6 +27,13 @@ tracked here as a submodule. When cloning this repository locally, use:
 git clone --recurse-submodules https://github.com/cataclysmbn/registry.git
 ```
 
+To update the submodule locally and keep it on the latest commit:
+
+```bash
+git -C registry-index fetch origin main
+git -C registry-index checkout -B main origin/main
+```
+
 ## Credits
 
 Structure inspired by
