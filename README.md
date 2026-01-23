@@ -27,7 +27,16 @@ tracked here as a submodule. When cloning this repository locally, use:
 git clone --recurse-submodules https://github.com/cataclysmbn/registry.git
 ```
 
-To update the submodule locally and keep it on the latest commit:
+To modify registry-index locally, work inside the submodule and push to its repo:
+
+```bash
+cd registry-index
+git add -A
+git commit -m "chore: update registry-index"
+git push
+```
+
+To keep the submodule on the latest commit:
 
 ```bash
 git -C registry-index fetch origin main
