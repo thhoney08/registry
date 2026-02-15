@@ -28,6 +28,9 @@ export const ModCard = (
   const plainTitle = stripColorCodes(title)
   const plainDesc = stripColorCodes(manifest.short_description)
   const categories = manifest.categories?.join(",") ?? ""
+  const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
+    ? manifest.version
+    : `v${manifest.version}`
 
   return (
     <article
@@ -54,7 +57,7 @@ export const ModCard = (
         <div class="mod-card-content">
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
           <p class="mod-meta">
-            v{manifest.version} · {manifest.author}
+            {displayVersion} · {manifest.author}
             {submodCount > 0 && <span class="badge submod-badge">+{submodCount} submods</span>}
           </p>
           {showCategories && manifest.categories && manifest.categories.length > 0 && (
