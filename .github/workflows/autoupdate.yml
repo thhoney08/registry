@@ -35,6 +35,9 @@ jobs:
       - name: Regenerate index files
         run: deno task generate
 
+      - name: Format registry-index files
+        run: deno fmt registry-index
+
       - name: Check for changes
         id: check
         run: |
