@@ -1,4 +1,4 @@
-#!/usr/bin/env -S deno run --allow-read --allow-write
+#!/usr/bin/env -S deno run --allow-read --allow-write --allow-run=git
 /**
  * Generate plugin index files from manifests.
  * Creates JSON and Markdown outputs for API and documentation.
@@ -9,12 +9,47 @@ import { Command } from "@cliffy/command"
 import { sortBy } from "@std/collections"
 import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
+import { dirname, relative } from "@std/path"
 import { ModManifest } from "../schema/manifest.ts"
 import { toJsonSchema } from "@valibot/to-json-schema"
 import * as v from "valibot"
 
 const DEFAULT_ICON =
   "https://raw.githubusercontent.com/cataclysmbn/Cataclysm-BN/main/gfx/app_icon/app-icon.svg"
+
+const textDecoder = new TextDecoder()
+
+const getManifestGitTimestamp = async (
+  registryIndexDir: string,
+  manifestPath: string,
+): Promise<string | undefined> => {
+  try {
+    const output = await new Deno.Command("git", {
+      args: ["-C", registryIndexDir, "log", "-1", "--format=%cI", "--", manifestPath],
+      stdout: "piped",
+      stderr: "null",
+    }).output()
+
+    if (!output.success) return undefined
+
+    const timestamp = textDecoder.decode(output.stdout).trim()
+    return timestamp || undefined
+  } catch {
+    return undefined
+  }
+}
+
+export const applyLastUpdatedFallback = (
+  manifest: ModManifest,
+  fallbackTimestamp: string | undefined,
+  now: () => string = () => new Date().toISOString(),
+): ModManifest => {
+  if (manifest.last_updated) return manifest
+  return {
+    ...manifest,
+    last_updated: fallbackTimestamp ?? now(),
+  }
+}
 
 /**
  * Load all manifests from a directory.
@@ -24,6 +59,7 @@ export const loadManifests = async (
   manifestDir: string,
 ): Promise<ModManifest[]> => {
   const manifests: ModManifest[] = []
+  const registryIndexDir = dirname(manifestDir)
 
   for await (
     const entry of walk(manifestDir, {
@@ -38,7 +74,9 @@ export const loadManifests = async (
     try {
       const content = await Deno.readTextFile(entry.path)
       const manifest = v.parse(ModManifest, YAML.parse(content))
-      manifests.push(manifest)
+      const manifestPath = relative(registryIndexDir, entry.path)
+      const gitTimestamp = await getManifestGitTimestamp(registryIndexDir, manifestPath)
+      manifests.push(applyLastUpdatedFallback(manifest, gitTimestamp))
     } catch (error) {
       console.error(`Error loading ${entry.path}: ${error}`)
     }

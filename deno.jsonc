@@ -80,7 +80,7 @@
     "generate": {
       "description": "Generate index files from registry-index/manifests",
       "dependencies": ["validate"],
-      "command": "deno run -RW src/scripts/generate.ts registry-index/manifests registry-index/generated"
+      "command": "deno run -RW --allow-run=git src/scripts/generate.ts registry-index/manifests registry-index/generated"
     },
     "test": {
       "description": "Run tests",
