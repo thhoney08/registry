@@ -2,3 +2,4 @@
 	path = registry-index
 	url = https://github.com/cataclysmbn/registry-index.git
 	branch = main
+    ignore = all
