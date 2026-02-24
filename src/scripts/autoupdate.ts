@@ -435,7 +435,7 @@ export const updateManifestFile = async (
     }
 
     const currentNormalized = normalizeToSemVer(manifest.version)
-    if (currentNormalized && latest.version === currentNormalized) {
+    if (currentNormalized && normalizeToSemVer(latest.version) === currentNormalized) {
       console.log(`  Already up to date: ${manifest.version}`)
       return { updated: false }
     }
