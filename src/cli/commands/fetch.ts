@@ -69,6 +69,14 @@ const manifestsEqualIgnoringLastUpdated = (
   return equal(aWithoutTimestamp, bWithoutTimestamp)
 }
 
+export const shouldSkipManifestWrite = (
+  existing: ModManifest | null,
+  generated: ModManifest,
+): existing is ModManifest =>
+  Boolean(
+    existing && existing.last_updated && manifestsEqualIgnoringLastUpdated(existing, generated),
+  )
+
 /** Get GitHub auth token from gh CLI */
 const getGhAuthToken = async (): Promise<string> => {
   try {
@@ -301,7 +309,7 @@ export const fetchCommand = new Command()
 
       // Skip if generated manifest has no meaningful changes from existing
       // (compare generated vs existing, not merged vs existing, since merge favors existing)
-      if (existing && manifestsEqualIgnoringLastUpdated(existing, generated)) {
+      if (shouldSkipManifestWrite(existing, generated)) {
         skippedCount++
         continue
       }
