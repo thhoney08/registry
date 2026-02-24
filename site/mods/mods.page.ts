@@ -8,6 +8,7 @@ import { walk } from "@std/fs"
 import { dirname, fromFileUrl, join } from "@std/path"
 import * as v from "valibot"
 import { type ModManifest, ModManifest as ModManifestSchema } from "../../src/schema/manifest.ts"
+import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
 import { MetaData } from "lume/plugins/metas.ts"
 
 export const layout = "mod.tsx"
@@ -65,38 +66,41 @@ const findSubmods = (
 export default async function* () {
   const manifests = await loadManifests()
 
-  yield* manifests.map((manifest) => ({
-    url: `/mods/${manifest.id}/`,
-    title: manifest.display_name,
-    metas: {
+  yield* manifests.map((manifest) => {
+    const iconUrl = resolveManifestIconUrl(manifest)
+    return {
+      url: `/mods/${manifest.id}/`,
       title: manifest.display_name,
-      description: manifest.short_description,
-      image: manifest.icon_url,
-      type: "article",
-      lang: "en",
-      site: "=siteName",
-      keywords: ["Cataclysm: Bright Nights", "BN", "mod"].concat(manifest.tags ?? []),
-    } satisfies MetaData,
-    jsonLd: {
-      "@type": "SoftwareApplication",
-      name: manifest.display_name,
-      description: manifest.short_description,
-      version: manifest.version,
-      author: manifest.author.map((name) => ({
-        "@type": "Person",
-        name,
-      })),
-      applicationCategory: "Game Modification",
-      operatingSystem: "Cross-platform",
-      downloadUrl: manifest.source.url,
-      ...(manifest.homepage && { url: manifest.homepage }),
-      ...(manifest.license && { license: manifest.license }),
-      ...(manifest.icon_url && { image: manifest.icon_url }),
-    },
-    tags: ["mod"],
-    manifest,
-    parentMod: findParentMod(manifest, manifests),
-    submods: findSubmods(manifest, manifests),
-    allManifests: manifests, // Pass all manifests for dependency resolution
-  }))
+      metas: {
+        title: manifest.display_name,
+        description: manifest.short_description,
+        image: iconUrl,
+        type: "article",
+        lang: "en",
+        site: "=siteName",
+        keywords: ["Cataclysm: Bright Nights", "BN", "mod"].concat(manifest.tags ?? []),
+      } satisfies MetaData,
+      jsonLd: {
+        "@type": "SoftwareApplication",
+        name: manifest.display_name,
+        description: manifest.short_description,
+        version: manifest.version,
+        author: manifest.author.map((name) => ({
+          "@type": "Person",
+          name,
+        })),
+        applicationCategory: "Game Modification",
+        operatingSystem: "Cross-platform",
+        downloadUrl: manifest.source.url,
+        ...(manifest.homepage && { url: manifest.homepage }),
+        ...(manifest.license && { license: manifest.license }),
+        ...(iconUrl && { image: iconUrl }),
+      },
+      tags: ["mod"],
+      manifest,
+      parentMod: findParentMod(manifest, manifests),
+      submods: findSubmods(manifest, manifests),
+      allManifests: manifests, // Pass all manifests for dependency resolution
+    }
+  })
 }

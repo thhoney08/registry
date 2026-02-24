@@ -4,6 +4,7 @@
 
 import type { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
+import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
 
 export const PLACEHOLDER_ICON = "/assets/mod-placeholder.svg"
 
@@ -27,6 +28,7 @@ export const ModCard = (
 ) => {
   const plainTitle = stripColorCodes(title)
   const plainDesc = stripColorCodes(manifest.short_description)
+  const iconUrl = resolveManifestIconUrl(manifest) ?? PLACEHOLDER_ICON
   const categories = manifest.categories?.join(",") ?? ""
   const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
     ? manifest.version
@@ -47,7 +49,7 @@ export const ModCard = (
       )}
       <a href={url} class="mod-card-link">
         <img
-          src={manifest.icon_url || PLACEHOLDER_ICON}
+          src={iconUrl}
           alt={`${plainTitle} icon`}
           class="mod-card-icon"
           width="80"

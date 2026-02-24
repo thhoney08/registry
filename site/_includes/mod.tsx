@@ -1,5 +1,6 @@
 import { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
+import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
 import { ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
 
 export const layout = "base.tsx"
@@ -40,6 +41,7 @@ export default (
   { manifest, parentMod, submods = [], allManifests = [] }: PageData,
   _helpers: Lume.Helpers,
 ) => {
+  const iconUrl = resolveManifestIconUrl(manifest) ?? PLACEHOLDER_ICON
   const releases: UiRelease[] = [
     { label: `${manifest.version} (current)`, version: manifest.version, url: manifest.source.url },
   ]
@@ -86,7 +88,7 @@ export default (
     <article class="mod-page">
       <header>
         <img
-          src={manifest?.icon_url ?? PLACEHOLDER_ICON}
+          src={iconUrl}
           alt={`${stripColorCodes(manifest.display_name)} icon`}
           class="mod-icon"
           width="160"
