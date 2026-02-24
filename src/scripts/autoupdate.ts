@@ -473,7 +473,7 @@ export const updateManifestFile = async (
     }
 
     // Write updated manifest
-    await Deno.writeTextFile(filePath, stringify(updated, { quoteStyle: '"' }))
+    await Deno.writeTextFile(filePath, stringify(updated, { quoteStyle: '"' }) + "\n")
 
     return { updated: true, newVersion: latest.version }
   } catch (error) {

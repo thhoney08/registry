@@ -54,7 +54,7 @@ export const generateJsonIndex = (manifests: ModManifest[]): string => {
   const sorted = sortBy(manifests, (m) => m.display_name)
   // Keep the list payload small: omit previous release history here.
   const withoutHistory = sorted.map(({ previous_releases: _prev, ...rest }) => rest)
-  return JSON.stringify(withoutHistory, null, 2)
+  return JSON.stringify(withoutHistory, null, 2) + "\n"
 }
 
 /**
@@ -206,7 +206,7 @@ export const generateAll = async (
     manifests.map((mod) =>
       Deno.writeTextFile(
         `${outputDir}/mods/${mod.id}.json`,
-        JSON.stringify(mod, null, 2),
+        JSON.stringify(mod, null, 2) + "\n",
       )
     ),
   )
@@ -220,11 +220,11 @@ export const generateAll = async (
         toJsonSchema(ModManifest, { typeMode: "input", errorMode: "ignore" }),
         null,
         2,
-      ),
+      ) + "\n",
     ),
     Deno.writeTextFile(
       `${outputDir}/openapi.json`,
-      JSON.stringify(generateOpenApiSpec(), null, 2),
+      JSON.stringify(generateOpenApiSpec(), null, 2) + "\n",
     ),
   ])
 }
