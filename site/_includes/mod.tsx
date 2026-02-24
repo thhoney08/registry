@@ -1,7 +1,7 @@
 import { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
-import { ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
+import { ICON_FALLBACK_ONERROR, ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
 
 export const layout = "base.tsx"
 
@@ -93,6 +93,7 @@ export default (
           class="mod-icon"
           width="160"
           height="160"
+          onerror={ICON_FALLBACK_ONERROR}
         />
         {manifest.homepage
           ? (

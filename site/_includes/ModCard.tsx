@@ -7,6 +7,7 @@ import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
 
 export const PLACEHOLDER_ICON = "/assets/mod-placeholder.svg"
+export const ICON_FALLBACK_ONERROR = `this.onerror=null;this.src='${PLACEHOLDER_ICON}'`
 
 export interface ModCardProps {
   url: string
@@ -55,6 +56,7 @@ export const ModCard = (
           width="80"
           height="80"
           loading="lazy"
+          onerror={ICON_FALLBACK_ONERROR}
         />
         <div class="mod-card-content">
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
