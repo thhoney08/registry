@@ -434,7 +434,8 @@ export const updateManifestFile = async (
       return { updated: false, error: `Latest version is not valid semver: ${latest.version}` }
     }
 
-    if (latest.version === manifest.version) {
+    const currentNormalized = normalizeToSemVer(manifest.version)
+    if (currentNormalized && latest.version === currentNormalized) {
       console.log(`  Already up to date: ${manifest.version}`)
       return { updated: false }
     }
