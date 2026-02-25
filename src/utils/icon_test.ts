@@ -29,6 +29,23 @@ Deno.test("resolveManifestIconUrl - falls back using commit and extract path", (
   )
 })
 
+Deno.test("resolveManifestIconUrl - strips archive root directory in extract path", () => {
+  const iconUrl = resolveManifestIconUrl({
+    source: {
+      type: "github_archive",
+      url:
+        "https://github.com/cataclysmroguelikegallery/Cata-Rogall-Modpack/archive/refs/heads/main.zip",
+      commit_sha: "508d3ebb020e656edc7b01de29118e51061e181b",
+      extract_path: "Cata-Rogall-Modpack-main/BN/ER_cosplay",
+    },
+  })
+
+  assertEquals(
+    iconUrl,
+    "https://raw.githubusercontent.com/cataclysmroguelikegallery/Cata-Rogall-Modpack/508d3ebb020e656edc7b01de29118e51061e181b/BN/ER_cosplay/icon.png",
+  )
+})
+
 Deno.test("resolveManifestIconUrl - falls back at repository root", () => {
   const iconUrl = resolveManifestIconUrl({
     source: {

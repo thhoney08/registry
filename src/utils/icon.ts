@@ -7,6 +7,17 @@ const normalizeExtractPath = (extractPath?: string): string => {
   return extractPath.replace(/^\/+|\/+$/g, "")
 }
 
+const normalizeRawContentPath = (extractPath: string, repo: string): string => {
+  if (!extractPath) return ""
+
+  const [firstSegment, ...rest] = extractPath.split("/")
+  if (firstSegment.toLowerCase().startsWith(`${repo.toLowerCase()}-`) && rest.length > 0) {
+    return rest.join("/")
+  }
+
+  return extractPath
+}
+
 const parseGitHubArchiveUrl = (
   archiveUrl: string,
 ): { owner: string; repo: string; ref: string } | null => {
@@ -30,7 +41,8 @@ export const resolveManifestIconUrl = (manifest: IconResolutionFields): string |
   if (!parsed) return undefined
 
   const extractPath = normalizeExtractPath(manifest.source.extract_path)
-  const pathPrefix = extractPath ? `${extractPath}/` : ""
+  const rawPath = normalizeRawContentPath(extractPath, parsed.repo)
+  const pathPrefix = rawPath ? `${rawPath}/` : ""
   const ref = manifest.source.commit_sha ?? parsed.ref
 
   return `https://raw.githubusercontent.com/${parsed.owner}/${parsed.repo}/${ref}/${pathPrefix}icon.png`
