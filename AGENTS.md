@@ -5,9 +5,14 @@
 - [x] Update workflows and docs for registry-index syncing
 - [ ] TASK: improve and refactor code according to coding standards
 
+## Skills
+
+- Add registry manifest skill: `.agents/skills/add-registry/SKILL.md`
+
 - **Tick the checkbox** in AGENTS.md when you finish a task, and commit (follow conventional commit).
   - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session, then amend it**
 - Don't `sed`, just edit the file normally.
+- Do not commit `registry-index` submodule pointer changes from local testing. CI syncs generated registry data separately.
 
 if you're github copilot AND NOT claude code:
 
