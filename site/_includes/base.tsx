@@ -9,8 +9,6 @@ export default (
   const isDoc = url?.startsWith("/docs/")
   // Only index mod and doc pages, not index/list pages
   const shouldIndex = isMod || isDoc
-  // Determine search container ID based on section
-  const searchId = isDoc ? "docs-search" : "search"
 
   // Theme initialization script (runs immediately to prevent flash)
   const themeScript = `
@@ -75,7 +73,7 @@ export default (
           {/* Theme script - must run before body to prevent flash */}
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
           {/* Our styles (imports @lumeland/ds) */}
-          <link rel="stylesheet" href="/assets/styles.css" />
+          <link rel="stylesheet" href="/assets/styles.css?v=20260225c" />
           <link
             id="highlight-theme-light"
             rel="stylesheet"
@@ -106,6 +104,9 @@ export default (
                   <li>
                     <a href="/api/">API</a>
                   </li>
+                  <li>
+                    <a href="/docs/generator/">Add Mod</a>
+                  </li>
                 </ul>
               </li>
               <div
@@ -116,7 +117,7 @@ export default (
                   alignItems: "center",
                 }}
               >
-                <li class="nav-search" id={searchId}></li>
+                <li class="nav-search" id="search"></li>
                 <li class="btn-add-wrapper">
                   <a href="/docs/generator/" class="btn-add">Add Mod</a>
                 </li>
@@ -134,6 +135,7 @@ export default (
                       height="20"
                       fill="currentColor"
                     >
+                      <title>Theme</title>
                       <path d="M14.53 10.53a7 7 0 0 1-9.058-9.058A7.003 7.003 0 0 0 8 15a7.002 7.002 0 0 0 6.53-4.47Z" />
                     </svg>
                   </button>
@@ -152,6 +154,7 @@ export default (
                       height="24"
                       fill="currentColor"
                     >
+                      <title>Menu</title>
                       <path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z" />
                     </svg>
                   </button>
@@ -193,6 +196,7 @@ export default (
               height="24"
               fill="currentColor"
             >
+              <title>Back to top</title>
               <path d="M3.47 7.78a.75.75 0 0 1 0-1.06l4.25-4.25a.75.75 0 0 1 1.06 0l4.25 4.25a.751.751 0 0 1-.018 1.042.751.751 0 0 1-1.042.018L9 4.81v7.44a.75.75 0 0 1-1.5 0V4.81L4.53 7.78a.75.75 0 0 1-1.06 0Z" />
             </svg>
           </button>

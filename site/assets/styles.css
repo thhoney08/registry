@@ -56,7 +56,13 @@ body > nav .btn-add,
 header nav .btn-add {
   background: var(--color-primary);
   color: var(--color-background);
-  padding: 0.5rem 1rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  line-height: 1;
+  padding: 0 1rem;
   border-radius: var(--border-radius);
 }
 
@@ -144,6 +150,8 @@ header nav .nav-search {
 
 /* Pagefind UI styles in navbar */
 .nav-search {
+  position: relative;
+  align-items: center;
   --pagefind-ui-scale: 0.8;
   --pagefind-ui-primary: var(--color-primary);
   --pagefind-ui-text: var(--color-text);
@@ -157,19 +165,45 @@ header nav .nav-search {
   --pagefind-ui-font: var(--font-body);
 }
 
+.nav-search .pagefind-ui {
+  display: flex;
+  align-items: center;
+  height: 100%;
+  width: 100%;
+}
+
 .nav-search .pagefind-ui__form {
+  display: flex;
+  align-items: center;
+  height: 100%;
   margin: 0;
+  min-height: 2.25rem;
+}
+
+.nav-search .pagefind-ui__form::before {
+  top: 50%;
+  left: 0.7rem;
+  width: 0.9rem;
+  height: 0.9rem;
+  transform: translateY(-50%);
 }
 
 .nav-search .pagefind-ui__search-input {
-  padding: 0.4rem 0.6rem;
+  width: 100%;
+  height: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 2rem;
   font-size: 0.875rem;
-  height: auto;
+  line-height: 1.25;
   background-color: var(--color-background);
   color: var(--color-text);
   border: 1px solid var(--color-line);
   border-radius: var(--border-radius);
   font-weight: normal;
+}
+
+.nav-search .pagefind-ui__search-input::placeholder {
+  color: var(--color-dim);
 }
 
 .nav-search .pagefind-ui__search-input:focus {
@@ -179,18 +213,48 @@ header nav .nav-search {
 }
 
 .nav-search .pagefind-ui__search-clear {
+  top: 50%;
+  right: 0.45rem;
+  left: auto;
+  width: 1.5rem;
+  height: 1.5rem;
+  transform: translateY(-50%);
+  display: flex;
+  align-items: center;
+  justify-content: center;
   background-color: transparent;
-  color: var(--color-dim);
+  color: transparent;
   padding: 0;
+  border: 0;
+  font-size: 0;
+  line-height: 0;
+  white-space: nowrap;
+  overflow: hidden;
+}
+
+.nav-search .pagefind-ui__search-clear::before {
+  content: "x";
+  color: var(--color-dim);
+  font-size: 1rem;
+  line-height: 1;
+  font-weight: 700;
+}
+
+.nav-search .pagefind-ui__search-clear:hover::before {
+  color: var(--color-primary);
 }
 
 .nav-search .pagefind-ui__drawer {
   position: absolute;
+  display: flex;
+  flex-direction: column;
+  flex-wrap: nowrap;
+  gap: 0.35rem;
   top: 100%;
   right: 0;
   left: auto;
-  width: 400px;
-  max-width: 90vw;
+  width: min(28rem, calc(100vw - 2rem));
+  max-width: calc(100vw - 2rem);
   background: var(--color-highlight);
   box-shadow: 0 4px 12px rgba(0, 0, 0, 0.15);
   z-index: 200;
@@ -201,9 +265,19 @@ header nav .nav-search {
   overflow-y: auto;
 }
 
-.nav-search .pagefind-ui__result {
+.nav-search .pagefind-ui__drawer .pagefind-ui__filter-panel {
+  display: none;
+}
+
+.nav-search .pagefind-ui .pagefind-ui__results-area {
+  width: 100%;
+  margin: 0;
+  padding: 0 0.8rem 0.8rem;
+}
+
+.nav-search .pagefind-ui .pagefind-ui__results .pagefind-ui__result {
   border-bottom: 1px solid var(--color-line);
-  padding: 0.8rem;
+  padding: 0.8rem 0;
 }
 
 .nav-search .pagefind-ui__result:last-child {
@@ -226,8 +300,8 @@ header nav .nav-search {
   margin-top: 0.3rem;
 }
 
-.nav-search .pagefind-ui__message {
-  padding: 0.8rem;
+.nav-search .pagefind-ui .pagefind-ui__message {
+  padding: 0.5rem 0;
   color: var(--color-dim);
   font-style: italic;
 }
@@ -296,6 +370,7 @@ header nav .nav-search {
 
   body > nav .btn-add,
   header nav .btn-add {
+    min-height: 2.25rem;
     padding: 0.4rem 0.8rem;
     font-size: 0.875rem;
   }
@@ -304,6 +379,18 @@ header nav .nav-search {
   header nav .nav-search {
     flex: 1;
     max-width: none;
+    min-width: 8.5rem;
+  }
+
+  .nav-search .pagefind-ui__drawer {
+    position: fixed;
+    top: 3rem;
+    right: 0.5rem;
+    left: 0.5rem;
+    width: auto;
+    max-width: none;
+    max-height: calc(100vh - 3.5rem);
+    margin-top: 0;
   }
 
   /* Keep logo visible and grow to push hamburger right */
@@ -316,6 +403,18 @@ header nav .nav-search {
   body > nav .theme-toggle,
   header nav .theme-toggle {
     order: 0;
+  }
+}
+
+@media (max-width: 420px) {
+  body > nav .btn-add-wrapper,
+  header nav .btn-add-wrapper {
+    display: none;
+  }
+
+  body > nav .nav-search,
+  header nav .nav-search {
+    min-width: 7rem;
   }
 }
 
@@ -336,6 +435,12 @@ main {
   grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 1.5rem;
   margin: 2rem 0;
+}
+
+@media (max-width: 360px) {
+  .mod-grid {
+    grid-template-columns: 1fr;
+  }
 }
 
 .mod-card {

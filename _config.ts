@@ -20,8 +20,6 @@ site.use(esbuild({ denoConfig: "site/app/deno.json", options: { sourcemap: "both
 site.use(relativeUrls())
 site.use(date())
 
-// Pagefind search - use two container IDs for different sections
-// The 'search' container shows mods only, 'docs-search' shows docs only
 site.use(pagefind({
   ui: {
     containerId: "search",
@@ -31,65 +29,38 @@ site.use(pagefind({
   },
 }))
 
-// Process HTML to add a second search instance for docs
+const getPagefindInitScript = (section: "docs" | "mod"): string => `
+window.addEventListener("DOMContentLoaded", () => {
+  const search = new PagefindUI({
+    element: "#search",
+    showImages: false,
+    showEmptyFilters: false,
+    resetStyles: true,
+    bundlePath: "/pagefind/",
+    baseUrl: "/",
+  });
+  search.triggerFilters({ section: ["${section}"] });
+});
+`
+
 site.process([".html"], (pages) => {
   for (const page of pages) {
     const { document } = page
     if (!document) continue
 
-    // Find docs-search container and initialize it with docs filter
-    const docsSearch = document.getElementById("docs-search")
-    if (docsSearch) {
-      // Add CSS
-      const styles = document.createElement("link")
-      styles.setAttribute("rel", "stylesheet")
-      styles.setAttribute("href", "/pagefind/pagefind-ui.css")
-      const firstStyle = document.head.querySelector("link[rel=stylesheet],style")
-      if (firstStyle) {
-        document.head.insertBefore(styles, firstStyle)
-      } else {
-        document.head.append(styles)
-      }
+    const searchContainer = document.getElementById("search")
+    if (!searchContainer) continue
 
-      // Add script
-      const script = document.createElement("script")
-      script.setAttribute("type", "text/javascript")
-      script.setAttribute("src", "/pagefind/pagefind-ui.js")
-      document.head.append(script)
+    const isDocsPage = Boolean(
+      document.querySelector("meta[data-pagefind-filter='section:docs']"),
+    )
+    const section = isDocsPage ? "docs" : "mod"
 
-      // Initialize with docs filter
-      const init = document.createElement("script")
-      init.setAttribute("type", "text/javascript")
-      init.innerHTML = `
-        window.addEventListener('DOMContentLoaded', () => {
-          new PagefindUI({
-            element: "#docs-search",
-            showImages: false,
-            showEmptyFilters: false,
-            resetStyles: true,
-            bundlePath: "/pagefind/",
-            baseUrl: "/",
-            filters: { section: "docs" }
-          });
-        });
-      `
-      document.head.append(init)
-    }
-
-    // For the main search, add filter for mods only
-    const mainSearch = document.getElementById("search")
-    if (mainSearch) {
-      // Find existing PagefindUI initialization and modify it
-      const scripts = document.querySelectorAll("script")
-      for (const s of scripts) {
-        if (s.innerHTML?.includes("new PagefindUI")) {
-          // Replace to add mods filter
-          s.innerHTML = s.innerHTML.replace(
-            /new PagefindUI\(\{/,
-            'new PagefindUI({ filters: { section: "mod" },',
-          )
-        }
-      }
+    const scripts = document.querySelectorAll("script")
+    for (const script of scripts) {
+      if (!script.innerHTML?.includes("new PagefindUI")) continue
+      script.innerHTML = getPagefindInitScript(section)
+      break
     }
   }
 })
