@@ -226,7 +226,9 @@ const manifestFields = {
     ),
   ),
   tags: v.optional(v.array(v.string(), "Freeform tags for search")),
-  icon_url: v.optional(v.pipe(v.string("URL to icon image (PNG, max 160x160)"))),
+  icon_url: v.optional(
+    v.pipe(v.string("URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, max 160x160)")),
+  ),
   autoupdate: v.optional(AutoupdateConfig),
   parent: v.optional(ModId),
   last_updated: v.optional(v.pipe(

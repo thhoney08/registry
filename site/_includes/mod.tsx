@@ -1,7 +1,7 @@
 import { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
-import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
-import { ICON_FALLBACK_ONERROR, ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
+import { resolveManifestIconCandidates } from "../../src/utils/icon.ts"
+import { buildIconFallbackOnError, ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
 
 export const layout = "base.tsx"
 
@@ -41,7 +41,9 @@ export default (
   { manifest, parentMod, submods = [], allManifests = [] }: PageData,
   _helpers: Lume.Helpers,
 ) => {
-  const iconUrl = resolveManifestIconUrl(manifest) ?? PLACEHOLDER_ICON
+  const iconCandidates = resolveManifestIconCandidates(manifest)
+  const iconUrl = iconCandidates.at(0) ?? PLACEHOLDER_ICON
+  const iconFallbackOnError = buildIconFallbackOnError(iconCandidates.slice(1))
   const releases: UiRelease[] = [
     { label: `${manifest.version} (current)`, version: manifest.version, url: manifest.source.url },
   ]
@@ -93,7 +95,8 @@ export default (
           class="mod-icon"
           width="160"
           height="160"
-          onerror={ICON_FALLBACK_ONERROR}
+          onerror={iconFallbackOnError}
+          data-icon-fallback-index="0"
         />
         {manifest.homepage
           ? (

@@ -134,17 +134,17 @@ deno task check-urls registry-index/manifests/your_mod_id.yaml
 
 ### Optional Fields
 
-| Field                 | Description                      |
-| --------------------- | -------------------------------- |
-| `description`         | Full mod description             |
-| `homepage`            | Link to repo or documentation    |
-| `dependencies`        | List of required mod IDs         |
-| `conflicts`           | List of incompatible mod IDs     |
-| `categories`          | Organization categories          |
-| `tags`                | Search tags                      |
-| `icon_url`            | 160x160 PNG icon                 |
-| `source.extract_path` | Path inside archive for modpacks |
-| `source.commit_sha`   | Git commit SHA for verification  |
+| Field                 | Description                                                       |
+| --------------------- | ----------------------------------------------------------------- |
+| `description`         | Full mod description                                              |
+| `homepage`            | Link to repo or documentation                                     |
+| `dependencies`        | List of required mod IDs                                          |
+| `conflicts`           | List of incompatible mod IDs                                      |
+| `categories`          | Organization categories                                           |
+| `tags`                | Search tags                                                       |
+| `icon_url`            | Icon URL (`.png`, `.svg`, `.webp`, `.avif`, `.jpg/.jpeg`, `.gif`) |
+| `source.extract_path` | Path inside archive for modpacks                                  |
+| `source.commit_sha`   | Git commit SHA for verification                                   |
 
 ## Modpack Extraction
 

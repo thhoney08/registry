@@ -10,11 +10,12 @@ export const AttributionSection = () => (
   <section class="form-section">
     <h3>Attribution</h3>
     <div class="form-group">
-      <label>Author(s) *</label>
+      <label htmlFor="author-0">Author(s) *</label>
       <div class="dependencies-list">
         {store.author.map((author, index) => (
           <div class="dependency-row" key={index}>
             <input
+              id={`author-${index}`}
               type="text"
               placeholder={`Author ${index + 1}`}
               value={author}
@@ -39,8 +40,9 @@ export const AttributionSection = () => (
       </button>
     </div>
     <div class="form-group">
-      <label>License *</label>
+      <label htmlFor="license">License *</label>
       <select
+        id="license"
         value={store.license}
         onChange={(e) => (store.license = e.currentTarget.value)}
       >
@@ -52,8 +54,9 @@ export const AttributionSection = () => (
       </select>
     </div>
     <div class="form-group">
-      <label>Homepage</label>
+      <label htmlFor="homepage">Homepage</label>
       <input
+        id="homepage"
         type="url"
         placeholder="https://github.com/owner/repo"
         value={store.homepage}
@@ -61,14 +64,15 @@ export const AttributionSection = () => (
       />
     </div>
     <div class="form-group">
-      <label>Icon URL</label>
+      <label htmlFor="icon-url">Icon URL</label>
       <input
+        id="icon-url"
         type="url"
-        placeholder="https://example.com/icon.png"
+        placeholder="https://example.com/icon.svg"
         value={store.iconUrl}
         onInput={(e) => (store.iconUrl = e.currentTarget.value)}
       />
-      <small>URL to icon image (PNG, recommended 160x160)</small>
+      <small>URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)</small>
     </div>
   </section>
 )

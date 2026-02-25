@@ -1,5 +1,9 @@
 import { assertEquals } from "@std/assert"
-import { resolveManifestIconUrl } from "./icon.ts"
+import {
+  resolveManifestIconCandidates,
+  resolveManifestIconUrl,
+  WELL_KNOWN_ICON_EXTENSIONS,
+} from "./icon.ts"
 
 Deno.test("resolveManifestIconUrl - preserves explicit icon_url", () => {
   const iconUrl = resolveManifestIconUrl({
@@ -89,4 +93,32 @@ Deno.test("resolveManifestIconUrl - returns undefined for unsupported archive UR
   })
 
   assertEquals(iconUrl, undefined)
+})
+
+Deno.test("resolveManifestIconCandidates - returns all well-known extensions", () => {
+  const iconUrls = resolveManifestIconCandidates({
+    source: {
+      type: "github_archive",
+      url: "https://github.com/owner/repo/archive/refs/heads/main.zip",
+    },
+  })
+
+  assertEquals(
+    iconUrls,
+    WELL_KNOWN_ICON_EXTENSIONS.map((ext) =>
+      `https://raw.githubusercontent.com/owner/repo/main/icon.${ext}`
+    ),
+  )
+})
+
+Deno.test("resolveManifestIconCandidates - keeps explicit icon_url only", () => {
+  const iconUrls = resolveManifestIconCandidates({
+    icon_url: "https://example.com/custom-icon.webp",
+    source: {
+      type: "github_archive",
+      url: "https://github.com/owner/repo/archive/refs/heads/main.zip",
+    },
+  })
+
+  assertEquals(iconUrls, ["https://example.com/custom-icon.webp"])
 })

@@ -4,10 +4,16 @@
 
 import type { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
-import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
+import { resolveManifestIconCandidates } from "../../src/utils/icon.ts"
 
 export const PLACEHOLDER_ICON = "/assets/mod-placeholder.svg"
-export const ICON_FALLBACK_ONERROR = `this.onerror=null;this.src='${PLACEHOLDER_ICON}'`
+
+export const buildIconFallbackOnError = (fallbackUrls: string[]): string => {
+  const urls = [...fallbackUrls, PLACEHOLDER_ICON]
+  return `const urls=${
+    JSON.stringify(urls)
+  };const i=Number(this.dataset.iconFallbackIndex||"0");if(i>=urls.length){this.onerror=null;return;}this.dataset.iconFallbackIndex=String(i+1);this.src=urls[i];`
+}
 
 export interface ModCardProps {
   url: string
@@ -29,7 +35,9 @@ export const ModCard = (
 ) => {
   const plainTitle = stripColorCodes(title)
   const plainDesc = stripColorCodes(manifest.short_description)
-  const iconUrl = resolveManifestIconUrl(manifest) ?? PLACEHOLDER_ICON
+  const iconCandidates = resolveManifestIconCandidates(manifest)
+  const iconUrl = iconCandidates.at(0) ?? PLACEHOLDER_ICON
+  const iconFallbackOnError = buildIconFallbackOnError(iconCandidates.slice(1))
   const categories = manifest.categories?.join(",") ?? ""
   const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
     ? manifest.version
@@ -56,7 +64,8 @@ export const ModCard = (
           width="80"
           height="80"
           loading="lazy"
-          onerror={ICON_FALLBACK_ONERROR}
+          onerror={iconFallbackOnError}
+          data-icon-fallback-index="0"
         />
         <div class="mod-card-content">
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
