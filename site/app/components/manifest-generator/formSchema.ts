@@ -89,7 +89,7 @@ export const defaultFormValues: ManifestFormData = {
   displayName: "",
   shortDescription: "",
   description: "",
-  author: [],
+  author: "you",
   license: "ALL-RIGHTS-RESERVED",
   homepage: "",
   version: "0.0.0",
@@ -100,7 +100,7 @@ export const defaultFormValues: ManifestFormData = {
   extractPath: "",
   categories: [],
   tags: "",
-  enableAutoupdate: true,
-  autoupdateType: "commit",
+  enableAutoupdate: false,
+  autoupdateType: "tag",
   autoupdateBranch: "main",
 }

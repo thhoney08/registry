@@ -64,10 +64,10 @@ export const store = deepSignal<StoreState>({
   categories: [],
   tags: [],
   iconUrl: "",
-  autoupdateType: "commit",
+  autoupdateType: "tag",
   autoupdateBranch: "main",
   autoupdateRegex: "",
-  enableAutoupdate: true,
+  enableAutoupdate: false,
 
   // UI state defaults
   githubUrl: "",
