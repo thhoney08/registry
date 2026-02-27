@@ -1,6 +1,9 @@
 ---
 layout: base.tsx
 title: Documentation
+id: docs-index
+lang: en
+url: /docs/
 ---
 
 # Documentation

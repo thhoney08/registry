@@ -5,6 +5,7 @@
 
 import { MOD_CATEGORIES } from "./types.ts"
 import { store } from "./store.ts"
+import { t } from "@lingui/core/macro"
 
 /** Toggle a category in the store */
 const toggleCategory = (cat: string) => {
@@ -17,9 +18,9 @@ const toggleCategory = (cat: string) => {
 
 export const CategoriesSection = () => (
   <section class="form-section">
-    <h3>Categories and Tags</h3>
+    <h3>{t`Categories and Tags`}</h3>
     <div class="form-group">
-      <label>Categories</label>
+      <p>{t`Categories`}</p>
       <div class="category-filters">
         {MOD_CATEGORIES.map((cat) => (
           <label class="category-checkbox" key={cat}>
@@ -34,7 +35,7 @@ export const CategoriesSection = () => (
       </div>
     </div>
     <div class="form-group">
-      <label>Tags</label>
+      <p>{t`Tags`}</p>
       <div class="badge-group">
         {store.tags.map((tag, index) => (
           tag
@@ -55,7 +56,7 @@ export const CategoriesSection = () => (
                 <input
                   type="text"
                   class="tag-input"
-                  placeholder="Enter tag"
+                  placeholder={t`Enter tag`}
                   value={tag}
                   onInput={(e) => store.tags[index] = e.currentTarget.value}
                   onKeyDown={(e) => {
@@ -79,7 +80,7 @@ export const CategoriesSection = () => (
           class="badge badge-add"
           onClick={() => store.tags.push("")}
         >
-          + Add Tag
+          {t`+ Add Tag`}
         </button>
       </div>
     </div>

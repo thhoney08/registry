@@ -4,6 +4,7 @@
  */
 
 import { store } from "./store.ts"
+import { t } from "@lingui/core/macro"
 
 export const StatusMessages = () => (
   <>
@@ -11,7 +12,7 @@ export const StatusMessages = () => (
     {store.success && <div class="status-success">{store.success}</div>}
     {store.isLoading && (
       <div class="status-loading">
-        ⏳ {store.loadingMessage}
+        {store.loadingMessage}
         {store.progress.total > 0 && (
           <>
             <div class="progress-bar">
@@ -23,7 +24,7 @@ export const StatusMessages = () => (
               />
             </div>
             <div class="progress-text">
-              {store.progress.current}/{store.progress.total} files • {store.progress.step}
+              {t`${store.progress.current}/${store.progress.total} files • ${store.progress.step}`}
             </div>
           </>
         )}

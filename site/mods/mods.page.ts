@@ -12,6 +12,7 @@ import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
 import { MetaData } from "lume/plugins/metas.ts"
 
 export const layout = "mod.tsx"
+export const lang = ["en", "ko", "ja"]
 
 /**
  * Load all manifests from the registry-index/manifests directory.
@@ -63,20 +64,21 @@ const findSubmods = (
   return allManifests.filter((m) => m.parent?.toLowerCase() === modId)
 }
 
-export default async function* () {
+export default async function* ({ lang }: Lume.Data) {
   const manifests = await loadManifests()
 
   yield* manifests.map((manifest) => {
     const iconUrl = resolveManifestIconUrl(manifest)
     return {
       url: `/mods/${manifest.id}/`,
+      id: manifest.id,
       title: manifest.display_name,
       metas: {
         title: manifest.display_name,
         description: manifest.short_description,
         image: iconUrl,
         type: "article",
-        lang: "en",
+        lang,
         site: "=siteName",
         keywords: ["Cataclysm: Bright Nights", "BN", "mod"].concat(manifest.tags ?? []),
       } satisfies MetaData,

@@ -8,9 +8,84 @@ export const layout = "base.tsx"
 const HOME_ICON = "/assets/home-icon.svg"
 const GITHUB_ICON = "/assets/github-icon.svg"
 
+type Locale = "en" | "ko" | "ja"
+
+const ui = {
+  en: {
+    version: "Version",
+    revision: "Revision",
+    selectRevision: "Select revision",
+    author: "Author",
+    license: "License",
+    categories: "Categories",
+    download: "Download",
+    description: "Description",
+    installation: "Installation",
+    installNoteLabel: "Note:",
+    installNote: "Extract the",
+    installNoteSuffix: "folder from the archive.",
+    compatibility: "Compatibility",
+    dependencies: "Dependencies:",
+    conflicts: "Conflicts:",
+    tags: "Tags",
+    parentMod: "Parent Mod",
+    submods: "Submods",
+    none: "None",
+    current: "current",
+  },
+  ko: {
+    version: "버전",
+    revision: "리비전",
+    selectRevision: "리비전 선택",
+    author: "작성자",
+    license: "라이선스",
+    categories: "카테고리",
+    download: "다운로드",
+    description: "설명",
+    installation: "설치",
+    installNoteLabel: "참고:",
+    installNote: "압축 파일에서",
+    installNoteSuffix: "폴더를 추출하세요.",
+    compatibility: "호환성",
+    dependencies: "의존성:",
+    conflicts: "충돌 모드:",
+    tags: "태그",
+    parentMod: "부모 모드",
+    submods: "서브모드",
+    none: "없음",
+    current: "현재",
+  },
+  ja: {
+    version: "バージョン",
+    revision: "リビジョン",
+    selectRevision: "リビジョンを選択",
+    author: "作者",
+    license: "ライセンス",
+    categories: "カテゴリ",
+    download: "ダウンロード",
+    description: "説明",
+    installation: "導入方法",
+    installNoteLabel: "注:",
+    installNote: "アーカイブから",
+    installNoteSuffix: "フォルダを展開してください。",
+    compatibility: "互換性",
+    dependencies: "依存関係:",
+    conflicts: "競合:",
+    tags: "タグ",
+    parentMod: "親Mod",
+    submods: "サブMod",
+    none: "なし",
+    current: "現在",
+  },
+} as const
+
+const withLangPrefix = (lang: Locale, path: string): string =>
+  lang === "en" ? path : `/${lang}${path === "/" ? "" : path}`
+
 interface PageData {
   title: string
   manifest: ModManifest
+  lang?: string
   parentMod?: ModManifest
   submods?: ModManifest[]
   allManifests?: ModManifest[]
@@ -38,14 +113,20 @@ const stripVersionPrefix = (version: string): string =>
   version.startsWith("v") || version.startsWith("V") ? version.slice(1) : version
 
 export default (
-  { manifest, parentMod, submods = [], allManifests = [] }: PageData,
+  { manifest, parentMod, submods = [], allManifests = [], lang = "en" }: PageData,
   _helpers: Lume.Helpers,
 ) => {
+  const locale = (lang as Locale) in ui ? lang as Locale : "en"
+  const text = ui[locale]
   const iconCandidates = resolveManifestIconCandidates(manifest)
   const iconUrl = iconCandidates.at(0) ?? PLACEHOLDER_ICON
   const iconFallbackOnError = buildIconFallbackOnError(iconCandidates.slice(1))
   const releases: UiRelease[] = [
-    { label: `${manifest.version} (current)`, version: manifest.version, url: manifest.source.url },
+    {
+      label: `${manifest.version} (${text.current})`,
+      version: manifest.version,
+      url: manifest.source.url,
+    },
   ]
 
   for (const prev of manifest.previous_releases ?? []) {
@@ -124,14 +205,14 @@ export default (
 
       <aside>
         <dl>
-          <dt>Version</dt>
+          <dt>{text.version}</dt>
           <dd id="mod-version">{stripVersionPrefix(manifest.version)}</dd>
 
           {hasRevisions && (
             <>
-              <dt>Revision</dt>
+              <dt>{text.revision}</dt>
               <dd>
-                <select id="revision-select" name="revision" aria-label="Select revision">
+                <select id="revision-select" name="revision" aria-label={text.selectRevision}>
                   {releases.map((release) => (
                     <option
                       key={release.version}
@@ -147,15 +228,15 @@ export default (
             </>
           )}
 
-          <dt>Author</dt>
+          <dt>{text.author}</dt>
           <dd>{manifest.author.join(", ")}</dd>
 
-          <dt>License</dt>
+          <dt>{text.license}</dt>
           <dd>{manifest.license}</dd>
 
           {manifest.categories && manifest.categories.length > 0 && (
             <>
-              <dt>Categories</dt>
+              <dt>{text.categories}</dt>
               <dd class="mod-categories">
                 {manifest.categories.map((category) => (
                   <span class="badge" key={category}>{category}</span>
@@ -167,20 +248,20 @@ export default (
 
         <button type="button">
           <a href={manifest.source.url} id="download-link">
-            Download
+            {text.download}
           </a>
         </button>
       </aside>
 
       <section class="mod-content">
-        <h2>Description</h2>
+        <h2>{text.description}</h2>
         <div
           dangerouslySetInnerHTML={{
             __html: colorCodesToHtml(manifest.description || manifest.short_description),
           }}
         />
 
-        <h2>Installation</h2>
+        <h2>{text.installation}</h2>
         <p>
           Download:{" "}
           <a href={manifest.source.url} id="install-link">
@@ -192,26 +273,26 @@ export default (
         </p>
         {manifest.source.extract_path && (
           <p>
-            <strong>Note:</strong> Extract the <code>{manifest.source.extract_path}</code>{" "}
-            folder from the archive.
+            <strong>{text.installNoteLabel}</strong> {text.installNote}{" "}
+            <code>{manifest.source.extract_path}</code> {text.installNoteSuffix}
           </p>
         )}
 
-        <h2>Compatibility</h2>
+        <h2>{text.compatibility}</h2>
         <ul>
           <li>
-            <strong>Dependencies:</strong>{" "}
-            <DepList deps={manifest.dependencies} allManifests={allManifests} />
+            <strong>{text.dependencies}</strong>{" "}
+            <DepList deps={manifest.dependencies} allManifests={allManifests} lang={locale} />
           </li>
           <li>
-            <strong>Conflicts:</strong>{" "}
-            <DepList deps={manifest.conflicts} allManifests={allManifests} />
+            <strong>{text.conflicts}</strong>{" "}
+            <DepList deps={manifest.conflicts} allManifests={allManifests} lang={locale} />
           </li>
         </ul>
 
         {manifest.tags && manifest.tags.length > 0 && (
           <>
-            <h2>Tags</h2>
+            <h2>{text.tags}</h2>
             <div class="mod-categories">
               {manifest.tags.map((tag) => <span class="badge" key={tag}>{tag}</span>)}
             </div>
@@ -220,13 +301,14 @@ export default (
 
         {parentMod && (
           <>
-            <h2>Parent Mod</h2>
+            <h2>{text.parentMod}</h2>
             <div class="mod-grid related-mods">
               <ModCard
                 key={parentMod.id}
-                url={`/mods/${parentMod.id}/`}
+                url={withLangPrefix(locale, `/mods/${parentMod.id}/`)}
                 title={parentMod.display_name}
                 manifest={parentMod}
+                lang={locale}
               />
             </div>
           </>
@@ -234,14 +316,15 @@ export default (
 
         {submods.length > 0 && (
           <>
-            <h2>Submods</h2>
+            <h2>{text.submods}</h2>
             <div class="mod-grid related-mods">
               {submods.map((submod) => (
                 <ModCard
                   key={submod.id}
-                  url={`/mods/${submod.id}/`}
+                  url={withLangPrefix(locale, `/mods/${submod.id}/`)}
                   title={submod.display_name}
                   manifest={submod}
+                  lang={locale}
                 />
               ))}
             </div>
@@ -255,10 +338,14 @@ export default (
 
 /** Render dependencies/conflicts as clickable links when they exist in registry */
 const DepList = (
-  { deps, allManifests }: { deps?: Record<string, string>; allManifests: ModManifest[] },
+  {
+    deps,
+    allManifests,
+    lang,
+  }: { deps?: Record<string, string>; allManifests: ModManifest[]; lang: Locale },
 ) => {
   const entries = Object.entries(deps ?? {})
-  if (entries.length === 0) return <span>None</span>
+  if (entries.length === 0) return <span>{ui[lang].none}</span>
 
   return (
     <>
@@ -268,7 +355,7 @@ const DepList = (
           <span key={modId}>
             {foundMod
               ? (
-                <a href={`/mods/${foundMod.id}/`} class="dep-link">
+                <a href={withLangPrefix(lang, `/mods/${foundMod.id}/`)} class="dep-link">
                   {modId}
                 </a>
               )

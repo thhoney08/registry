@@ -6,6 +6,14 @@ import type { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { resolveManifestIconCandidates } from "../../src/utils/icon.ts"
 
+type Locale = "en" | "ko" | "ja"
+
+const ui = {
+  en: { submods: "submods" },
+  ko: { submods: "서브모드" },
+  ja: { submods: "サブMod" },
+} as const
+
 export const PLACEHOLDER_ICON = "/assets/mod-placeholder.svg"
 
 export const buildIconFallbackOnError = (fallbackUrls: string[]): string => {
@@ -31,8 +39,12 @@ export interface ModCardProps {
  * Reusable mod card component for displaying mod information in a grid.
  */
 export const ModCard = (
-  { url, title, manifest, showCategories = false, submodCount = 0 }: ModCardProps,
+  { url, title, manifest, showCategories = false, submodCount = 0, lang = "en" }:
+    & ModCardProps
+    & { lang?: string },
 ) => {
+  const locale = (lang as Locale) in ui ? lang as Locale : "en"
+  const text = ui[locale]
   const plainTitle = stripColorCodes(title)
   const plainDesc = stripColorCodes(manifest.short_description)
   const iconCandidates = resolveManifestIconCandidates(manifest)
@@ -71,7 +83,9 @@ export const ModCard = (
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
           <p class="mod-meta">
             {displayVersion} · {manifest.author}
-            {submodCount > 0 && <span class="badge submod-badge">+{submodCount} submods</span>}
+            {submodCount > 0 && (
+              <span class="badge submod-badge">+{submodCount} {text.submods}</span>
+            )}
           </p>
           {showCategories && manifest.categories && manifest.categories.length > 0 && (
             <div class="mod-categories">

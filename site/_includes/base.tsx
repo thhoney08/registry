@@ -1,9 +1,119 @@
 export const layout = undefined
 
+type Locale = "en" | "ko" | "ja"
+
+const languageNames: Record<Locale, string> = {
+  en: "English",
+  ko: "한국어",
+  ja: "日本語",
+}
+
+const locales: Locale[] = ["en", "ko", "ja"]
+
+type Alternate = { lang?: string; url?: string }
+
+const getAlternateUrl = (
+  alternates: unknown,
+  targetLang: Locale,
+  fallback: string,
+): string => {
+  if (Array.isArray(alternates)) {
+    const match = alternates.find((entry) => {
+      const alt = entry as Partial<Alternate>
+      return alt.lang === targetLang
+    }) as Partial<Alternate> | undefined
+    if (typeof match?.url === "string" && match.url.length > 0) return match.url
+  }
+
+  if (alternates && typeof alternates === "object") {
+    const map = alternates as Record<string, Partial<Alternate>>
+    const mapped = map[targetLang]
+    if (typeof mapped?.url === "string" && mapped.url.length > 0) return mapped.url
+  }
+
+  return fallback
+}
+
+const stripLocalePrefix = (path: string, lang: Locale): string => {
+  if (lang === "en") return path
+  const prefix = `/${lang}`
+  if (path === prefix) return "/"
+  if (path.startsWith(`${prefix}/`)) return path.slice(prefix.length)
+  return path
+}
+
+const ui = {
+  en: {
+    skipToContent: "Skip to content",
+    nav: { home: "Home", mods: "Mods", docs: "Docs", api: "API", addMod: "Add Mod" },
+    aria: {
+      toggleTheme: "Toggle dark/light theme",
+      toggleMenu: "Toggle menu",
+      backToTop: "Back to top",
+      languageMenu: "Language selector",
+    },
+    footer: {
+      play: "Play Cataclysm: Bright Nights",
+      copyright: "2025 © Cataclysm: Bright Nights Contributors",
+    },
+  },
+  ko: {
+    skipToContent: "본문으로 건너뛰기",
+    nav: { home: "홈", mods: "모드", docs: "문서", api: "API", addMod: "모드 추가" },
+    aria: {
+      toggleTheme: "다크/라이트 테마 전환",
+      toggleMenu: "메뉴 열기 또는 닫기",
+      backToTop: "맨 위로 이동",
+      languageMenu: "언어 선택",
+    },
+    footer: {
+      play: "카타클리즘: 밝은 밤 플레이",
+      copyright: "2025 © Cataclysm: Bright Nights 기여자",
+    },
+  },
+  ja: {
+    skipToContent: "本文へスキップ",
+    nav: { home: "ホーム", mods: "Mod", docs: "ドキュメント", api: "API", addMod: "Mod追加" },
+    aria: {
+      toggleTheme: "ダーク/ライトテーマを切り替え",
+      toggleMenu: "メニューを開閉",
+      backToTop: "ページ先頭へ戻る",
+      languageMenu: "言語選択",
+    },
+    footer: {
+      play: "Cataclysm: Bright Nights をプレイ",
+      copyright: "2025 © Cataclysm: Bright Nights コントリビューター",
+    },
+  },
+} as const
+
+const withLangPrefix = (lang: Locale, path: string): string =>
+  lang === "en" ? path : `/${lang}${path === "/" ? "" : path}`
+
 export default (
-  { title, description, siteName, siteDescription, children, url }: Lume.Data,
+  { title, description, siteName, siteDescription, children, url, lang = "en", alternates = [] }:
+    Lume.Data,
   _helpers: Lume.Helpers,
 ) => {
+  const locale = (lang as Locale) in ui ? (lang as Locale) : "en"
+  const text = ui[locale]
+  const homeUrl = withLangPrefix(locale, "/")
+  const modsUrl = withLangPrefix(locale, "/mods/")
+  const docsUrl = withLangPrefix(locale, "/docs/")
+  const apiUrl = withLangPrefix(locale, "/api/")
+  const addModUrl = withLangPrefix(locale, "/docs/generator/")
+
+  const safeUrl = typeof url === "string" && url.length > 0 ? url : "/"
+  const path = stripLocalePrefix(safeUrl, locale)
+  const languageOptions = locales.map((localeOption) => ({
+    locale: localeOption,
+    url: getAlternateUrl(
+      alternates,
+      localeOption,
+      withLangPrefix(localeOption, path),
+    ),
+  }))
+
   // Determine page type for search indexing
   const isMod = url?.startsWith("/mods/") && url !== "/mods/"
   const isDoc = url?.startsWith("/docs/")
@@ -49,7 +159,7 @@ export default (
   return (
     <>
       {{ __html: "<!DOCTYPE html>" }}
-      <html lang="en">
+      <html lang={locale}>
         <head>
           <meta charset="UTF-8" />
           <meta name="viewport" content="width=device-width, initial-scale=1.0" />
@@ -87,25 +197,25 @@ export default (
         </head>
         <body data-instant-intensity="viewport-all">
           {/* Skip to main content link for accessibility */}
-          <a href="#main-content" class="skip-link">Skip to content</a>
+          <a href="#main-content" class="skip-link">{text.skipToContent}</a>
           <nav data-pagefind-ignore>
             <ul>
               <li class="logo">
-                <a href="/">Home</a>
+                <a href={homeUrl}>{text.nav.home}</a>
               </li>
               <li class="nav-menu-wrapper">
                 <ul class="nav-menu" id="nav-menu">
                   <li>
-                    <a href="/mods/">Mods</a>
+                    <a href={modsUrl}>{text.nav.mods}</a>
                   </li>
                   <li>
-                    <a href="/docs/">Docs</a>
+                    <a href={docsUrl}>{text.nav.docs}</a>
                   </li>
                   <li>
-                    <a href="/api/">API</a>
+                    <a href={apiUrl}>{text.nav.api}</a>
                   </li>
                   <li>
-                    <a href="/docs/generator/">Add Mod</a>
+                    <a href={addModUrl}>{text.nav.addMod}</a>
                   </li>
                 </ul>
               </li>
@@ -119,12 +229,42 @@ export default (
               >
                 <li class="nav-search" id="search"></li>
                 <li class="btn-add-wrapper">
-                  <a href="/docs/generator/" class="btn-add">Add Mod</a>
+                  <a href={addModUrl} class="btn-add">{text.nav.addMod}</a>
                 </li>
+                {languageOptions.length > 0 && (
+                  <li>
+                    <label aria-label={text.aria.languageMenu} class="language-menu">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        width="20"
+                        height="20"
+                        fill="currentColor"
+                        class="language-icon"
+                        aria-hidden="true"
+                      >
+                        <title>{text.aria.languageMenu}</title>
+                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z" />
+                      </svg>
+                      <select
+                        class="language-select"
+                        onchange="const target = this.options[this.selectedIndex]?.dataset.url; if (target) window.location.href = target"
+                        value={locale}
+                        aria-label={text.aria.languageMenu}
+                      >
+                        {languageOptions.map((option) => (
+                          <option value={option.locale} key={option.locale} data-url={option.url}>
+                            {languageNames[option.locale]}
+                          </option>
+                        ))}
+                      </select>
+                    </label>
+                  </li>
+                )}
                 <li class="theme-toggle">
                   <button
                     type="button"
-                    aria-label="Toggle dark/light theme"
+                    aria-label={text.aria.toggleTheme}
                     class="btn-theme"
                     onclick="changeTheme()"
                   >
@@ -143,7 +283,7 @@ export default (
                 <li class="hamburger-wrapper">
                   <button
                     type="button"
-                    aria-label="Toggle menu"
+                    aria-label={text.aria.toggleMenu}
                     class="hamburger"
                     onclick="toggleMenu()"
                   >
@@ -172,13 +312,13 @@ export default (
               <a href="https://github.com/cataclysmbn/registry">BN Mod Registry</a>
               {" · "}
               <a href="https://github.com/cataclysmbn/Cataclysm-BN">
-                Play Cataclysm: Bright Nights
+                {text.footer.play}
               </a>
               {" · "}
               <a href="https://discord.gg/XW7XhXuZ89">Discord</a>
             </p>
             <p>
-              2025 © Cataclysm: Bright Nights Contributors
+              {text.footer.copyright}
             </p>
           </footer>
 
@@ -187,7 +327,7 @@ export default (
             id="back-to-top"
             class="back-to-top"
             type="button"
-            aria-label="Back to top"
+            aria-label={text.aria.backToTop}
           >
             <svg
               xmlns="http://www.w3.org/2000/svg"

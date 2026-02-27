@@ -4,10 +4,11 @@
  */
 
 import { store } from "./store.ts"
+import { t } from "@lingui/core/macro"
 
 export const AutoupdateSection = () => (
   <section class="form-section">
-    <h3>Autoupdate</h3>
+    <h3>{t`Autoupdate`}</h3>
     <div class="form-group">
       <div class="toggle-switch">
         <button
@@ -17,18 +18,17 @@ export const AutoupdateSection = () => (
           onClick={() => (store.enableAutoupdate = !store.enableAutoupdate)}
         />
         <span class="toggle-label">
-          Enable automatic updates from source repository
+          {t`Enable automatic updates from source repository`}
         </span>
       </div>
       <small>
-        When enabled, the registry will periodically check for new commits/releases and update the
-        mod.
+        {t`When enabled, the registry will periodically check for new commits/releases and update the mod.`}
       </small>
     </div>
     {store.enableAutoupdate && (
       <>
         <div class="form-group">
-          <label>Update Strategy</label>
+          <p>{t`Update Strategy`}</p>
           <div class="radio-group">
             <label class="radio-option">
               <input
@@ -39,8 +39,8 @@ export const AutoupdateSection = () => (
                 onChange={() => (store.autoupdateType = "commit")}
               />
               <span class="radio-content">
-                <strong>Track Branch</strong>
-                <small>Follow latest commits on a branch</small>
+                <strong>{t`Track Branch`}</strong>
+                <small>{t`Follow latest commits on a branch`}</small>
               </span>
             </label>
             <label class="radio-option">
@@ -52,18 +52,19 @@ export const AutoupdateSection = () => (
                 onChange={() => (store.autoupdateType = "tag")}
               />
               <span class="radio-content">
-                <strong>Track Releases</strong>
-                <small>Follow tagged releases only</small>
+                <strong>{t`Track Releases`}</strong>
+                <small>{t`Follow tagged releases only`}</small>
               </span>
             </label>
           </div>
         </div>
         {store.autoupdateType === "commit" && (
           <div class="form-group">
-            <label>Branch</label>
+            <label htmlFor="autoupdate-branch">{t`Branch`}</label>
             <input
+              id="autoupdate-branch"
               type="text"
-              placeholder="main"
+              placeholder={t`main`}
               value={store.autoupdateBranch}
               onInput={(e) => (store.autoupdateBranch = e.currentTarget.value)}
             />
@@ -71,15 +72,16 @@ export const AutoupdateSection = () => (
         )}
         {store.autoupdateType === "tag" && (
           <div class="form-group">
-            <label>Tag Regex (optional)</label>
+            <label htmlFor="autoupdate-tag-regex">{t`Tag Regex (optional)`}</label>
             <input
+              id="autoupdate-tag-regex"
               type="text"
-              placeholder="^v[0-9]+\.[0-9]+\.[0-9]+$"
+              placeholder={t`^v[0-9]+\.[0-9]+\.[0-9]+$`}
               value={store.autoupdateRegex}
               onInput={(e) => (store.autoupdateRegex = e.currentTarget.value)}
             />
             <small>
-              PCRE2 regex to filter tags. Only matching tags are considered for updates.
+              {t`PCRE2 regex to filter tags. Only matching tags are considered for updates.`}
             </small>
           </div>
         )}

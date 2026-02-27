@@ -4,34 +4,36 @@
  */
 
 import { store } from "./store.ts"
+import { t } from "@lingui/core/macro"
 
 export const VersionSection = () => (
   <section class="form-section">
-    <h3>Version</h3>
+    <h3>{t`Version`}</h3>
     <div class="form-group">
-      <label>Version *</label>
+      <label htmlFor="manifest-version">{t`Version *`}</label>
       <input
+        id="manifest-version"
         type="text"
-        placeholder="1.0.0"
+        placeholder={t`1.0.0`}
         value={store.version}
         onInput={(e) => (store.version = e.currentTarget.value)}
       />
     </div>
     <div class="form-group">
-      <label>Dependencies</label>
+      <p>{t`Dependencies`}</p>
       <div class="dependencies-list">
         {store.dependencies.map(([modId, version], index) => (
           <div class="dependency-row" key={index}>
             <input
               type="text"
-              placeholder="mod_id"
+              placeholder={t`mod_id`}
               value={modId}
               onInput={(e) =>
                 store.dependencies[index][0] = e.currentTarget.value}
             />
             <input
               type="text"
-              placeholder="version constraint"
+              placeholder={t`version constraint`}
               value={version}
               onInput={(e) =>
                 store.dependencies[index][1] = e.currentTarget.value}
@@ -51,7 +53,7 @@ export const VersionSection = () => (
         class="btn-add"
         onClick={() => store.dependencies.push(["", ""])}
       >
-        + Add Dependency
+        {t`+ Add Dependency`}
       </button>
     </div>
   </section>

@@ -5,6 +5,46 @@ import type { ModPageData } from "../_includes/types.ts"
 
 export const layout = "base.tsx"
 export const title = "All Mods"
+export const id = "mods-index"
+export const lang = ["en", "ko", "ja"]
+
+type Locale = "en" | "ko" | "ja"
+
+const text = {
+  en: {
+    heading: "All Mods",
+    browse: "Browse all",
+    modsSuffix: "mods in the registry.",
+    searchPlaceholder: "Search mods...",
+    searchLabel: "Search mods by name or description",
+    categories: "Categories",
+    noMods: "No mods found.",
+    submitFirst: "Submit the first one!",
+  },
+  ko: {
+    heading: "전체 모드",
+    browse: "저장소에 등록된",
+    modsSuffix: "개 모드를 둘러보세요.",
+    searchPlaceholder: "모드 검색...",
+    searchLabel: "이름 또는 설명으로 모드 검색",
+    categories: "카테고리",
+    noMods: "모드를 찾을 수 없습니다.",
+    submitFirst: "첫 번째 모드를 등록해보세요!",
+  },
+  ja: {
+    heading: "すべてのMod",
+    browse: "レジストリ内の",
+    modsSuffix: "件のModを表示します。",
+    searchPlaceholder: "Modを検索...",
+    searchLabel: "名前または説明でModを検索",
+    categories: "カテゴリ",
+    noMods: "Modが見つかりません。",
+    submitFirst: "最初のModを投稿しましょう!",
+  },
+} as const
+
+const withLangPrefix = (lang: Locale, path: string): string =>
+  lang === "en" ? path : `/${lang}${path === "/" ? "" : path}`
 
 /** Group mods by parent, with the parent mod and its submods */
 interface ModGroup {
@@ -44,31 +84,31 @@ const filterScript = `
     const searchTerm = searchInput?.value?.toLowerCase() ?? '';
     const checkedCategories = Array.from(document.querySelectorAll('.category-filter:checked'))
       .map(cb => cb.value);
-    
+
     const cards = document.querySelectorAll('.mod-card');
     let visibleCount = 0;
-    
+
     cards.forEach(card => {
       const title = card.dataset.title?.toLowerCase() ?? '';
       const description = card.dataset.description?.toLowerCase() ?? '';
       const categories = (card.dataset.categories ?? '').split(',').filter(Boolean);
-      
-      const matchesSearch = !searchTerm || 
-        title.includes(searchTerm) || 
+
+      const matchesSearch = !searchTerm ||
+        title.includes(searchTerm) ||
         description.includes(searchTerm);
-      
-      const matchesCategory = checkedCategories.length === 0 || 
+
+      const matchesCategory = checkedCategories.length === 0 ||
         checkedCategories.some(cat => categories.includes(cat));
-      
+
       const visible = matchesSearch && matchesCategory;
       card.style.display = visible ? '' : 'none';
       if (visible) visibleCount++;
     });
-    
+
     const countEl = document.getElementById('visible-count');
     if (countEl) countEl.textContent = visibleCount;
   };
-  
+
   document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('mod-search')?.addEventListener('input', filterMods);
     document.querySelectorAll('.category-filter').forEach(cb => {
@@ -77,17 +117,21 @@ const filterScript = `
   });
 `
 
-export default ({ search }: Lume.Data) => {
-  const mods = search.pages("mod") as ModPageData[]
+export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
+  const lang = (currentLang as Locale) in text ? currentLang as Locale : "en"
+  const t = text[lang]
+  const submitUrl = withLangPrefix(lang, "/docs/submit/")
+
+  const mods = search.pages(`mod lang=${lang}`) as ModPageData[]
   const groups = groupModsByParent(mods)
   const totalMods = mods.length
   const categories = collectCategories(mods)
 
   return (
     <>
-      <h1>All Mods</h1>
+      <h1>{t.heading}</h1>
       <p>
-        Browse all <span id="visible-count">{totalMods}</span> of {totalMods} mods in the registry.
+        {t.browse} <span id="visible-count">{totalMods}</span> / {totalMods} {t.modsSuffix}
       </p>
 
       <div class="mods-layout">
@@ -97,15 +141,15 @@ export default ({ search }: Lume.Data) => {
             <input
               type="text"
               id="mod-search"
-              placeholder="Search mods..."
+              placeholder={t.searchPlaceholder}
               class="search-input"
-              aria-label="Search mods by name or description"
+              aria-label={t.searchLabel}
             />
           </div>
 
           {categories.length > 0 && (
             <div class="category-filters">
-              <h3>Categories</h3>
+              <h3>{t.categories}</h3>
               {categories.map((category) => (
                 <label class="category-checkbox" key={category}>
                   <input
@@ -125,7 +169,7 @@ export default ({ search }: Lume.Data) => {
           {groups.length === 0
             ? (
               <p>
-                No mods found. <a href="/docs/submit/">Submit the first one!</a>
+                {t.noMods} <a href={submitUrl}>{t.submitFirst}</a>
               </p>
             )
             : (
@@ -136,6 +180,7 @@ export default ({ search }: Lume.Data) => {
                     url={group.main.url}
                     title={group.main.title}
                     manifest={group.main.manifest}
+                    lang={lang}
                     showCategories
                     submodCount={group.submods.length}
                   />

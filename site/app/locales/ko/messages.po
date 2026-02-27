@@ -1,0 +1,444 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-02-27 21:10+0900\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: ko\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: site/index.page.tsx
+msgid "(JavaScript required for category filtering)"
+msgstr "(카테고리 필터링에는 JavaScript가 필요합니다)"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "(root)"
+msgstr "(루트)"
+
+#. placeholder {0}: store.progress.current
+#. placeholder {1}: store.progress.total
+#. placeholder {2}: store.progress.step
+#: site/app/components/manifest-generator/StatusMessages.tsx
+msgid "{0}/{1} files • {2}"
+msgstr "{0}/{1} 파일 • {2}"
+
+#. placeholder {0}: store.shortDescription.length
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "{0}/200 characters"
+msgstr "{0}/200자"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "^v[0-9]+.[0-9]+.[0-9]+$"
+msgstr "^v[0-9]+\\.[0-9]+\\.[0-9]+$"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "+ Add Author"
+msgstr "+ 작성자 추가"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "+ Add Dependency"
+msgstr "+ 의존성 추가"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "+ Add Tag"
+msgstr "+ 태그 추가"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "✓ Copied!"
+msgstr "✓ 복사됨!"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "1.0.0"
+msgstr "1.0.0"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "A brief description of your mod"
+msgstr "모드의 짧은 설명"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "abc123..."
+msgstr "abc123..."
+
+#: site/index.page.tsx
+msgid "Add your manifest file to"
+msgstr "매니페스트 파일을 다음에 추가하세요"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Attribution"
+msgstr "저작 정보"
+
+#. placeholder {0}: index + 1
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Author {0}"
+msgstr "작성자 {0}"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Author(s) *"
+msgstr "작성자 *"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Autoupdate"
+msgstr "자동 업데이트"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Branch"
+msgstr "브랜치"
+
+#: site/index.page.tsx
+msgid "Cataclysm: Bright Nights"
+msgstr "Cataclysm: Bright Nights"
+
+#: site/index.page.tsx
+msgid "Cataclysm: Bright Nights Mod Registry"
+msgstr "Cataclysm: Bright Nights 모드 레지스트리"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Categories"
+msgstr "카테고리"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Categories and Tags"
+msgstr "카테고리와 태그"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Commit SHA"
+msgstr "커밋 SHA"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "Copy"
+msgstr "복사"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Dependencies"
+msgstr "의존성"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Detailed description..."
+msgstr "자세한 설명..."
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Direct URL"
+msgstr "직접 URL"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Display Name *"
+msgstr "표시 이름 *"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Enable automatic updates from source repository"
+msgstr "원본 저장소에서 자동 업데이트 활성화"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Enter tag"
+msgstr "태그 입력"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Extract Path (for modpacks)"
+msgstr "추출 경로(모드팩)"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to copy to clipboard"
+msgstr "클립보드 복사에 실패했습니다"
+
+#. placeholder {0}: String(err)
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to fetch from GitHub: {0}"
+msgstr "GitHub 조회 실패: {0}"
+
+#. placeholder {0}: String(err)
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to parse modinfo.json: {0}"
+msgstr "modinfo.json 파싱 실패: {0}"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Fetch"
+msgstr "가져오기"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Fetching repository info..."
+msgstr "저장소 정보를 가져오는 중..."
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Follow latest commits on a branch"
+msgstr "브랜치 최신 커밋을 추적"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Follow tagged releases only"
+msgstr "태그된 릴리스만 추적"
+
+#: site/index.page.tsx
+msgid "For Mod Authors"
+msgstr "모드 작성자용"
+
+#: site/index.page.tsx
+msgid "Fork the registry repository"
+msgstr "레지스트리 저장소를 포크하기"
+
+#. placeholder {0}: mods.length
+#: site/app/components/ManifestGenerator.tsx
+msgid "Found {0} mods. Select one to generate manifest."
+msgstr "{0}개의 모드를 찾았습니다. 생성할 모드를 선택하세요."
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Full Description"
+msgstr "상세 설명"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "Generated Manifest"
+msgstr "생성된 명세서"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Getting repository info..."
+msgstr "저장소 정보를 가져오는 중..."
+
+#. placeholder {0}: store.rateLimit.remaining
+#. placeholder {1}: store.rateLimit.reset.toLocaleTimeString()
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "GitHub API: {0} requests remaining (resets {1})"
+msgstr "GitHub API: 남은 요청 {0}회 (리셋 {1})"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "GitHub Archive"
+msgstr "GitHub 아카이브"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "GitHub Repository URL"
+msgstr "GitHub 저장소 URL"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "GitLab Archive"
+msgstr "GitLab 아카이브"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Homepage"
+msgstr "홈페이지"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "https://github.com/owner/repo"
+msgstr "https://github.com/owner/repo"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "https://github.com/owner/repo/archive/refs/heads/main.zip"
+msgstr "https://github.com/owner/repo/archive/refs/heads/main.zip"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Icon URL"
+msgstr "아이콘 URL"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "ID *"
+msgstr "ID *"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Identity"
+msgstr "기본 정보"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Import from GitHub"
+msgstr "GitHub에서 가져오기"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Invalid GitHub URL. Expected format: https://github.com/owner/repo"
+msgstr "잘못된 GitHub URL입니다. 형식: https://github.com/owner/repo"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "License *"
+msgstr "라이선스 *"
+
+#: site/index.page.tsx
+msgid "Links"
+msgstr "링크"
+
+#. placeholder {0}: modinfo.name
+#: site/app/components/ManifestGenerator.tsx
+msgid "Loaded \"{0}\""
+msgstr "\"{0}\" 불러옴"
+
+#. placeholder {0}: modinfo.name
+#: site/app/components/ManifestGenerator.tsx
+msgid "Loaded modinfo for \"{0}\""
+msgstr "\"{0}\" modinfo를 불러왔습니다"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Loading..."
+msgstr "불러오는 중..."
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Lowercase alphanumeric with underscores"
+msgstr "소문자 영문자/숫자와 밑줄 사용"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "main"
+msgstr "main"
+
+#: site/index.page.tsx
+msgid "Manifest Generator"
+msgstr "매니페스트 생성기"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "mod_id"
+msgstr "mod_id"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "My Mod"
+msgstr "내 모드"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "my_mod"
+msgstr "my_mod"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "No valid MOD_INFO found in file"
+msgstr "유효한 MOD_INFO를 찾지 못했습니다"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "No valid mods found in repository"
+msgstr "저장소에서 유효한 모드를 찾지 못했습니다"
+
+#: site/index.page.tsx
+msgid "Open Manifest Generator"
+msgstr "매니페스트 생성기 열기"
+
+#: site/app/components/manifest-generator/FileUpload.tsx
+msgid "Or Upload modinfo.json"
+msgstr "또는 modinfo.json 업로드"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Path inside the archive where the mod is located"
+msgstr "압축 파일 내부에서 모드가 있는 경로"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "PCRE2 regex to filter tags. Only matching tags are considered for updates."
+msgstr "태그 필터링용 PCRE2 정규식입니다. 일치한 태그만 업데이트에 사용됩니다."
+
+#: site/index.page.tsx
+msgid "Quick Start"
+msgstr "빠른 시작"
+
+#: site/index.page.tsx
+msgid "Recently Updated Mods"
+msgstr "최근 업데이트된 모드"
+
+#: site/index.page.tsx
+msgid "registry"
+msgstr "레지스트리"
+
+#: site/index.page.tsx
+msgid "Registry on GitHub"
+msgstr "GitHub의 레지스트리"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "repo-main/path/to/mod"
+msgstr "repo-main/path/to/mod"
+
+#: site/index.page.tsx
+msgid "Report an Issue"
+msgstr "이슈 신고"
+
+#: site/index.page.tsx
+msgid "Run"
+msgstr "실행"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Scanning repository..."
+msgstr "저장소를 스캔하는 중..."
+
+#. placeholder {0}: store.foundMods.length
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Select a mod ({0} found):"
+msgstr "모드 선택 ({0}개 발견):"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Short Description *"
+msgstr "짧은 설명 *"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source"
+msgstr "소스"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source Type"
+msgstr "소스 유형"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source URL *"
+msgstr "소스 URL *"
+
+#: site/index.page.tsx
+msgid "submission guide"
+msgstr "제출 가이드"
+
+#: site/index.page.tsx
+msgid "Submit a pull request"
+msgstr "풀 리퀘스트 제출"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Tag Regex (optional)"
+msgstr "태그 정규식(선택)"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Tags"
+msgstr "태그"
+
+#: site/index.page.tsx
+msgid "to check your manifest"
+msgstr "매니페스트를 확인하려면"
+
+#: site/index.page.tsx
+msgid "to create your manifest file"
+msgstr "매니페스트 파일을 만들려면"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Track Branch"
+msgstr "브랜치 추적"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Track Releases"
+msgstr "릴리스 추적"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Update Strategy"
+msgstr "업데이트 전략"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)"
+msgstr "아이콘 이미지 URL (PNG/SVG/WebP/AVIF/JPG/GIF, 권장 160x160)"
+
+#: site/index.page.tsx
+msgid "Use the"
+msgstr "다음으로"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Version"
+msgstr "버전"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Version *"
+msgstr "버전 *"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "version constraint"
+msgstr "버전 제약조건"
+
+#. placeholder {0}: mods.length
+#: site/index.page.tsx
+msgid "View all {0} mods"
+msgstr "모든 {0} 모드 보기"
+
+#: site/index.page.tsx
+msgid "View All Mods"
+msgstr "모든 모드 보기"
+
+#: site/index.page.tsx
+msgid "Want to add your mod to the registry? Check out our"
+msgstr "모드를 레지스트리에 추가하려면 저희의"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "When enabled, the registry will periodically check for new commits/releases and update the mod."
+msgstr "활성화하면 저장소가 새 커밋/릴리스를 주기적으로 확인해 모드를 업데이트합니다."

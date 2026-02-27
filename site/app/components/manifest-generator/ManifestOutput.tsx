@@ -1,18 +1,15 @@
 /// <reference lib="dom" />
 
 import { computed } from "@preact/signals"
-import hljs from "npm:highlight.js/lib/core"
-import lang_yaml from "npm:highlight.js/lib/languages/yaml"
 import { manifestYaml } from "../ManifestGenerator.tsx"
-
-hljs.registerLanguage("yaml", lang_yaml)
+import { t } from "@lingui/core/macro"
 
 interface ManifestOutputProps {
   copied: boolean
   onCopy: () => void
 }
 
-const codeBlock = computed(() => hljs.highlight(manifestYaml.value, { language: "yaml" }).value)
+const codeBlock = computed(() => manifestYaml.value)
 
 /**
  * Output section showing the generated YAML manifest.
@@ -23,13 +20,13 @@ export const ManifestOutput = (
   return (
     <aside class="manifest-output">
       <div class="output-header">
-        <h3>Generated Manifest</h3>
+        <h3>{t`Generated Manifest`}</h3>
         <button type="button" class="button is-secondary" onClick={onCopy}>
-          {copied ? "✓ Copied!" : "Copy"}
+          {copied ? t`✓ Copied!` : t`Copy`}
         </button>
       </div>
       <pre>
-        <code class="language-yaml" dangerouslySetInnerHTML={{__html:codeBlock.value}}></code>
+        <code>{codeBlock.value}</code>
       </pre>
     </aside>
   )

@@ -1,0 +1,444 @@
+msgid ""
+msgstr ""
+"POT-Creation-Date: 2026-02-27 21:10+0900\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"X-Generator: @lingui/cli\n"
+"Language: en\n"
+"Project-Id-Version: \n"
+"Report-Msgid-Bugs-To: \n"
+"PO-Revision-Date: \n"
+"Last-Translator: \n"
+"Language-Team: \n"
+"Plural-Forms: \n"
+
+#: site/index.page.tsx
+msgid "(JavaScript required for category filtering)"
+msgstr "(JavaScript required for category filtering)"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "(root)"
+msgstr "(root)"
+
+#. placeholder {0}: store.progress.current
+#. placeholder {1}: store.progress.total
+#. placeholder {2}: store.progress.step
+#: site/app/components/manifest-generator/StatusMessages.tsx
+msgid "{0}/{1} files • {2}"
+msgstr "{0}/{1} files • {2}"
+
+#. placeholder {0}: store.shortDescription.length
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "{0}/200 characters"
+msgstr "{0}/200 characters"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "^v[0-9]+.[0-9]+.[0-9]+$"
+msgstr "^v[0-9]+.[0-9]+.[0-9]+$"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "+ Add Author"
+msgstr "+ Add Author"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "+ Add Dependency"
+msgstr "+ Add Dependency"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "+ Add Tag"
+msgstr "+ Add Tag"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "✓ Copied!"
+msgstr "✓ Copied!"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "1.0.0"
+msgstr "1.0.0"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "A brief description of your mod"
+msgstr "A brief description of your mod"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "abc123..."
+msgstr "abc123..."
+
+#: site/index.page.tsx
+msgid "Add your manifest file to"
+msgstr "Add your manifest file to"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Attribution"
+msgstr "Attribution"
+
+#. placeholder {0}: index + 1
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Author {0}"
+msgstr "Author {0}"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Author(s) *"
+msgstr "Author(s) *"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Autoupdate"
+msgstr "Autoupdate"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Branch"
+msgstr "Branch"
+
+#: site/index.page.tsx
+msgid "Cataclysm: Bright Nights"
+msgstr "Cataclysm: Bright Nights"
+
+#: site/index.page.tsx
+msgid "Cataclysm: Bright Nights Mod Registry"
+msgstr "Cataclysm: Bright Nights Mod Registry"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Categories"
+msgstr "Categories"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Categories and Tags"
+msgstr "Categories and Tags"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Commit SHA"
+msgstr "Commit SHA"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "Copy"
+msgstr "Copy"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Dependencies"
+msgstr "Dependencies"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Detailed description..."
+msgstr "Detailed description..."
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Direct URL"
+msgstr "Direct URL"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Display Name *"
+msgstr "Display Name *"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Enable automatic updates from source repository"
+msgstr "Enable automatic updates from source repository"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Enter tag"
+msgstr "Enter tag"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Extract Path (for modpacks)"
+msgstr "Extract Path (for modpacks)"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to copy to clipboard"
+msgstr "Failed to copy to clipboard"
+
+#. placeholder {0}: String(err)
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to fetch from GitHub: {0}"
+msgstr "Failed to fetch from GitHub: {0}"
+
+#. placeholder {0}: String(err)
+#: site/app/components/ManifestGenerator.tsx
+msgid "Failed to parse modinfo.json: {0}"
+msgstr "Failed to parse modinfo.json: {0}"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Fetch"
+msgstr "Fetch"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Fetching repository info..."
+msgstr "Fetching repository info..."
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Follow latest commits on a branch"
+msgstr "Follow latest commits on a branch"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Follow tagged releases only"
+msgstr "Follow tagged releases only"
+
+#: site/index.page.tsx
+msgid "For Mod Authors"
+msgstr "For Mod Authors"
+
+#: site/index.page.tsx
+msgid "Fork the registry repository"
+msgstr "Fork the registry repository"
+
+#. placeholder {0}: mods.length
+#: site/app/components/ManifestGenerator.tsx
+msgid "Found {0} mods. Select one to generate manifest."
+msgstr "Found {0} mods. Select one to generate manifest."
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Full Description"
+msgstr "Full Description"
+
+#: site/app/components/manifest-generator/ManifestOutput.tsx
+msgid "Generated Manifest"
+msgstr "Generated Manifest"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Getting repository info..."
+msgstr "Getting repository info..."
+
+#. placeholder {0}: store.rateLimit.remaining
+#. placeholder {1}: store.rateLimit.reset.toLocaleTimeString()
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "GitHub API: {0} requests remaining (resets {1})"
+msgstr "GitHub API: {0} requests remaining (resets {1})"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "GitHub Archive"
+msgstr "GitHub Archive"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "GitHub Repository URL"
+msgstr "GitHub Repository URL"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "GitLab Archive"
+msgstr "GitLab Archive"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Homepage"
+msgstr "Homepage"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "https://github.com/owner/repo"
+msgstr "https://github.com/owner/repo"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "https://github.com/owner/repo/archive/refs/heads/main.zip"
+msgstr "https://github.com/owner/repo/archive/refs/heads/main.zip"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "Icon URL"
+msgstr "Icon URL"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "ID *"
+msgstr "ID *"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Identity"
+msgstr "Identity"
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Import from GitHub"
+msgstr "Import from GitHub"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Invalid GitHub URL. Expected format: https://github.com/owner/repo"
+msgstr "Invalid GitHub URL. Expected format: https://github.com/owner/repo"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "License *"
+msgstr "License *"
+
+#: site/index.page.tsx
+msgid "Links"
+msgstr "Links"
+
+#. placeholder {0}: modinfo.name
+#: site/app/components/ManifestGenerator.tsx
+msgid "Loaded \"{0}\""
+msgstr "Loaded \"{0}\""
+
+#. placeholder {0}: modinfo.name
+#: site/app/components/ManifestGenerator.tsx
+msgid "Loaded modinfo for \"{0}\""
+msgstr "Loaded modinfo for \"{0}\""
+
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Loading..."
+msgstr "Loading..."
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Lowercase alphanumeric with underscores"
+msgstr "Lowercase alphanumeric with underscores"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "main"
+msgstr "main"
+
+#: site/index.page.tsx
+msgid "Manifest Generator"
+msgstr "Manifest Generator"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "mod_id"
+msgstr "mod_id"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "My Mod"
+msgstr "My Mod"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "my_mod"
+msgstr "my_mod"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "No valid MOD_INFO found in file"
+msgstr "No valid MOD_INFO found in file"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "No valid mods found in repository"
+msgstr "No valid mods found in repository"
+
+#: site/index.page.tsx
+msgid "Open Manifest Generator"
+msgstr "Open Manifest Generator"
+
+#: site/app/components/manifest-generator/FileUpload.tsx
+msgid "Or Upload modinfo.json"
+msgstr "Or Upload modinfo.json"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Path inside the archive where the mod is located"
+msgstr "Path inside the archive where the mod is located"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "PCRE2 regex to filter tags. Only matching tags are considered for updates."
+msgstr "PCRE2 regex to filter tags. Only matching tags are considered for updates."
+
+#: site/index.page.tsx
+msgid "Quick Start"
+msgstr "Quick Start"
+
+#: site/index.page.tsx
+msgid "Recently Updated Mods"
+msgstr "Recently Updated Mods"
+
+#: site/index.page.tsx
+msgid "registry"
+msgstr "registry"
+
+#: site/index.page.tsx
+msgid "Registry on GitHub"
+msgstr "Registry on GitHub"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "repo-main/path/to/mod"
+msgstr "repo-main/path/to/mod"
+
+#: site/index.page.tsx
+msgid "Report an Issue"
+msgstr "Report an Issue"
+
+#: site/index.page.tsx
+msgid "Run"
+msgstr "Run"
+
+#: site/app/components/ManifestGenerator.tsx
+msgid "Scanning repository..."
+msgstr "Scanning repository..."
+
+#. placeholder {0}: store.foundMods.length
+#: site/app/components/manifest-generator/GitHubImport.tsx
+msgid "Select a mod ({0} found):"
+msgstr "Select a mod ({0} found):"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Short Description *"
+msgstr "Short Description *"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source"
+msgstr "Source"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source Type"
+msgstr "Source Type"
+
+#: site/app/components/manifest-generator/SourceSection.tsx
+msgid "Source URL *"
+msgstr "Source URL *"
+
+#: site/index.page.tsx
+msgid "submission guide"
+msgstr "submission guide"
+
+#: site/index.page.tsx
+msgid "Submit a pull request"
+msgstr "Submit a pull request"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Tag Regex (optional)"
+msgstr "Tag Regex (optional)"
+
+#: site/app/components/manifest-generator/CategoriesSection.tsx
+msgid "Tags"
+msgstr "Tags"
+
+#: site/index.page.tsx
+msgid "to check your manifest"
+msgstr "to check your manifest"
+
+#: site/index.page.tsx
+msgid "to create your manifest file"
+msgstr "to create your manifest file"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Track Branch"
+msgstr "Track Branch"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Track Releases"
+msgstr "Track Releases"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "Update Strategy"
+msgstr "Update Strategy"
+
+#: site/app/components/manifest-generator/AttributionSection.tsx
+msgid "URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)"
+msgstr "URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)"
+
+#: site/index.page.tsx
+msgid "Use the"
+msgstr "Use the"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Version"
+msgstr "Version"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "Version *"
+msgstr "Version *"
+
+#: site/app/components/manifest-generator/VersionSection.tsx
+msgid "version constraint"
+msgstr "version constraint"
+
+#. placeholder {0}: mods.length
+#: site/index.page.tsx
+msgid "View all {0} mods"
+msgstr "View all {0} mods"
+
+#: site/index.page.tsx
+msgid "View All Mods"
+msgstr "View All Mods"
+
+#: site/index.page.tsx
+msgid "Want to add your mod to the registry? Check out our"
+msgstr "Want to add your mod to the registry? Check out our"
+
+#: site/app/components/manifest-generator/AutoupdateSection.tsx
+msgid "When enabled, the registry will periodically check for new commits/releases and update the mod."
+msgstr "When enabled, the registry will periodically check for new commits/releases and update the mod."

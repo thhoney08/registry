@@ -22,3 +22,6 @@ Thumbs.db
 
 # Test coverage
 coverage/
+
+# Compiled i18n files
+site/app/locales/*/messages.ts

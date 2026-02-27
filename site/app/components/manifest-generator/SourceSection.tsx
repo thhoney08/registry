@@ -4,48 +4,53 @@
  */
 
 import { store } from "./store.ts"
+import { t } from "@lingui/core/macro"
 
 export const SourceSection = () => (
   <section class="form-section">
-    <h3>Source</h3>
+    <h3>{t`Source`}</h3>
     <div class="form-group">
-      <label>Source Type</label>
+      <label htmlFor="source-type">{t`Source Type`}</label>
       <select
+        id="source-type"
         value={store.sourceType}
         onChange={(e) => (store.sourceType = e.currentTarget.value)}
       >
-        <option value="github_archive">GitHub Archive</option>
-        <option value="gitlab_archive">GitLab Archive</option>
-        <option value="direct_url">Direct URL</option>
+        <option value="github_archive">{t`GitHub Archive`}</option>
+        <option value="gitlab_archive">{t`GitLab Archive`}</option>
+        <option value="direct_url">{t`Direct URL`}</option>
       </select>
     </div>
     <div class="form-group">
-      <label>Source URL *</label>
+      <label htmlFor="source-url">{t`Source URL *`}</label>
       <input
+        id="source-url"
         type="url"
-        placeholder="https://github.com/owner/repo/archive/refs/heads/main.zip"
+        placeholder={t`https://github.com/owner/repo/archive/refs/heads/main.zip`}
         value={store.sourceUrl}
         onInput={(e) => (store.sourceUrl = e.currentTarget.value)}
       />
     </div>
     <div class="form-group">
-      <label>Commit SHA</label>
+      <label htmlFor="source-commit-sha">{t`Commit SHA`}</label>
       <input
+        id="source-commit-sha"
         type="text"
-        placeholder="abc123..."
+        placeholder={t`abc123...`}
         value={store.commitSha}
         onInput={(e) => (store.commitSha = e.currentTarget.value)}
       />
     </div>
     <div class="form-group">
-      <label>Extract Path (for modpacks)</label>
+      <label htmlFor="source-extract-path">{t`Extract Path (for modpacks)`}</label>
       <input
+        id="source-extract-path"
         type="text"
-        placeholder="repo-main/path/to/mod"
+        placeholder={t`repo-main/path/to/mod`}
         value={store.extractPath}
         onInput={(e) => (store.extractPath = e.currentTarget.value)}
       />
-      <small>Path inside the archive where the mod is located</small>
+      <small>{t`Path inside the archive where the mod is located`}</small>
     </div>
   </section>
 )

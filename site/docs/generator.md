@@ -2,6 +2,9 @@
 layout: base.tsx
 title: Manifest Generator
 description: Generate mod manifest YAML files for the BN Mod Registry
+id: docs-generator
+lang: en
+url: /docs/generator/
 ---
 
 <link rel="stylesheet" href="/manifest-generator.css" />

@@ -3,6 +3,8 @@
     "semiColons": false
   },
   "imports": {
+    "@lingui/core": "npm:@lingui/core@6.0.0-next.0",
+    "@lingui/core/macro": "npm:@lingui/core@6.0.0-next.0/macro",
     "@octokit/rest": "npm:@octokit/rest@^22.0.1",
     "@std/semver": "jsr:@std/semver@^1.0.7",
     "deepsignal": "npm:deepsignal@^1.6.0",

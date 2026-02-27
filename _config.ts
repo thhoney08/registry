@@ -1,7 +1,7 @@
 import lume from "lume/mod.ts"
 import date from "lume/plugins/date.ts"
 import pagefind from "lume/plugins/pagefind.ts"
-import jsx from "lume/plugins/jsx.ts"
+import { jsxLingui } from "./src/plugins/jsx_lingui.ts"
 import metas from "lume/plugins/metas.ts"
 import sitemap from "lume/plugins/sitemap.ts"
 import esbuild from "lume/plugins/esbuild.ts"
@@ -9,15 +9,29 @@ import relativeUrls from "lume/plugins/relative_urls.ts"
 import minifyHTML from "lume/plugins/minify_html.ts"
 import robots from "lume/plugins/robots.ts"
 import jsonLd from "lume/plugins/json_ld.ts"
+import multilanguage from "lume/plugins/multilanguage.ts"
+import { linguiMacroPlugin } from "./src/plugins/esbuild_lingui_macro.ts"
 
 const site = lume({ src: "./site", dest: "./_site" })
 
 // Bundle Preact app for manifest generator (must be before metas)
 site.add("app/main.tsx")
-site.use(esbuild({ denoConfig: "site/app/deno.json", options: { sourcemap: "both" } }))
+site.use(esbuild({
+  denoConfig: "site/app/deno.json",
+  options: {
+    sourcemap: "both",
+    minify: true,
+    define: { "process.env.NODE_ENV": '"production"' },
+    plugins: [linguiMacroPlugin()],
+  },
+}))
 
 // Core plugins
 site.use(relativeUrls())
+site.use(multilanguage({
+  languages: ["en", "ko", "ja"],
+  defaultLanguage: "en",
+}))
 site.use(date())
 
 site.use(pagefind({
@@ -65,7 +79,7 @@ site.process([".html"], (pages) => {
   }
 })
 
-site.use(jsx())
+site.use(jsxLingui())
 site.use(metas())
 site.use(sitemap())
 site.use(robots())

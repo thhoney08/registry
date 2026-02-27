@@ -1,6 +1,9 @@
 ---
 layout: base.tsx
 title: Submit a Mod
+id: docs-submit
+lang: en
+url: /docs/submit/
 ---
 
 # Submit Your Mod to the Registry

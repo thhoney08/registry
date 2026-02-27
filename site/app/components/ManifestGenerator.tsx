@@ -34,6 +34,7 @@ import { AutoupdateSection } from "./manifest-generator/AutoupdateSection.tsx"
 import { ManifestOutput } from "./manifest-generator/ManifestOutput.tsx"
 import { stringifyManifest } from "../../../src/utils/stringify.ts"
 import { computed } from "@preact/signals"
+import { t } from "@lingui/core/macro"
 
 export const manifestYaml = computed(() => stringifyManifest(storeToManifest.value))
 
@@ -46,7 +47,7 @@ const copyToClipboard = async () => {
       store.copied = false
     }, 2000)
   } catch {
-    store.error = "Failed to copy to clipboard"
+    store.error = t`Failed to copy to clipboard`
   }
 }
 
@@ -101,16 +102,16 @@ const handleFileUpload = (e: Event) => {
       const modinfos = parseModInfo(content)
 
       if (modinfos.length === 0) {
-        store.error = "No valid MOD_INFO found in file"
+        store.error = t`No valid MOD_INFO found in file`
         return
       }
 
       const modinfo = modinfos[0]
       applyModInfo(modinfo)
-      store.success = `Loaded modinfo for "${modinfo.name}"`
+      store.success = t`Loaded modinfo for "${modinfo.name}"`
       store.error = ""
     } catch (err) {
-      store.error = `Failed to parse modinfo.json: ${err}`
+      store.error = t`Failed to parse modinfo.json: ${String(err)}`
     }
   }
   reader.readAsText(file)
@@ -120,16 +121,16 @@ const handleFileUpload = (e: Event) => {
 const fetchFromGitHub = async () => {
   const parsed = parseGitHubUrl(store.githubUrl)
   if (!parsed) {
-    store.error = "Invalid GitHub URL. Expected format: https://github.com/owner/repo"
+    store.error = t`Invalid GitHub URL. Expected format: https://github.com/owner/repo`
     return
   }
 
   store.isLoading = true
-  store.loadingMessage = "Fetching repository info..."
+  store.loadingMessage = t`Fetching repository info...`
   store.error = ""
   store.foundMods = []
   store.selectedModIndex = -1
-  store.progress = { current: 0, total: 0, step: "Getting repository info..." }
+  store.progress = { current: 0, total: 0, step: t`Getting repository info...` }
 
   try {
     // Create unauthenticated Octokit for web with rate limit tracking
@@ -149,7 +150,7 @@ const fetchFromGitHub = async () => {
     )
 
     // Discover all mods in the repository
-    store.loadingMessage = "Scanning repository..."
+    store.loadingMessage = t`Scanning repository...`
     const mods = await discoverMods(
       octokit,
       parsed,
@@ -161,16 +162,16 @@ const fetchFromGitHub = async () => {
     )
 
     if (mods.length === 0) {
-      store.error = "No valid mods found in repository"
+      store.error = t`No valid mods found in repository`
       store.isLoading = false
       store.progress = { current: 0, total: 0, step: "" }
       return
     }
 
     store.foundMods = mods
-    store.success = `Found ${mods.length} mods. Select one to generate manifest.`
+    store.success = t`Found ${mods.length} mods. Select one to generate manifest.`
   } catch (err) {
-    store.error = `Failed to fetch from GitHub: ${err}`
+    store.error = t`Failed to fetch from GitHub: ${String(err)}`
   } finally {
     store.isLoading = false
     store.loadingMessage = ""
@@ -185,7 +186,7 @@ const selectMod = (index: number) => {
 
   const { modinfo, path } = store.foundMods[index]
   applyModInfo(modinfo, path)
-  store.success = `Loaded "${modinfo.name}"`
+  store.success = t`Loaded "${modinfo.name}"`
 }
 
 export const ManifestGenerator = () => (

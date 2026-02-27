@@ -1,3 +1,11 @@
+---
+layout: base.tsx
+title: API
+id: api-index
+lang: en
+url: /api/
+---
+
 # API
 
 - [list of mods](../generated/mods.json)
