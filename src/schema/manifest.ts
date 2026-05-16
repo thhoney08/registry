@@ -280,16 +280,6 @@ export const ModManifest = v.pipe(
     },
     "previous_releases must not include the current version and must not contain duplicates",
   ),
-  // Semantic check: parent must be in dependencies
-  v.check(
-    (manifest: ModManifestBase) => {
-      if (!manifest.parent) return true
-      const deps = manifest.dependencies ?? {}
-      const parentLower = manifest.parent.toLowerCase()
-      return Object.keys(deps).some((id) => id.toLowerCase() === parentLower)
-    },
-    "Parent mod must be listed in dependencies",
-  ),
   // Semantic check: mod cannot be its own parent
   v.check(
     (manifest: ModManifestBase) => {

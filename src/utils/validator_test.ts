@@ -244,23 +244,23 @@ Deno.test("detectParentMod - returns undefined when no match", () => {
 })
 
 // Tests for semantic validation via schema (now using checkManifest)
-Deno.test("checkManifest - parent must be in dependencies", () => {
+Deno.test("checkManifest - parent without dependency is valid", () => {
   const manifest = {
     schema_version: "1.0",
-    id: "arcana_patch",
-    display_name: "Patch",
-    short_description: "Patch",
+    id: "bl9_140monres",
+    display_name: "BL9 140% Monster Resilience",
+    short_description: "Variant",
     author: ["Test"],
     license: "MIT",
     version: "1.0.0",
     source: { type: "github_archive", url: "https://example.com/mod.zip" },
-    parent: "arcana",
+    parent: "bl9_100monres",
     dependencies: { bn: ">=0.9.1" },
+    conflicts: { bl9_100monres: "*" },
   }
 
   const result = checkManifest(manifest)
-  assertEquals(result.valid, false)
-  assertEquals(result.output.includes("dependencies"), true)
+  assertEquals(result.valid, true)
 })
 
 Deno.test("checkManifest - parent in dependencies is valid", () => {
