@@ -4,7 +4,7 @@
 
 import type { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
-import { resolveManifestIconCandidates } from "../../src/utils/icon.ts"
+import { resolveCategoryIconUrl } from "./categoryIcon.ts"
 
 type Locale = "en" | "ko" | "ja"
 
@@ -47,9 +47,11 @@ export const ModCard = (
   const text = ui[locale]
   const plainTitle = stripColorCodes(title)
   const plainDesc = stripColorCodes(manifest.short_description)
-  const iconCandidates = manifest.icon_url ? resolveManifestIconCandidates(manifest) : []
-  const iconUrl = iconCandidates.at(0) ?? PLACEHOLDER_ICON
-  const iconFallbackOnError = buildIconFallbackOnError(iconCandidates.slice(1))
+  const categoryIconUrl = resolveCategoryIconUrl(manifest)
+  const iconUrl = manifest.icon_url ?? categoryIconUrl
+  const iconFallbackOnError = manifest.icon_url
+    ? buildIconFallbackOnError([categoryIconUrl])
+    : buildIconFallbackOnError([])
   const categories = manifest.categories?.join(",") ?? ""
   const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
     ? manifest.version

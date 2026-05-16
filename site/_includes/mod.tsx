@@ -1,7 +1,7 @@
 import { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
-import { resolveManifestIconCandidates } from "../../src/utils/icon.ts"
-import { buildIconFallbackOnError, ModCard, PLACEHOLDER_ICON } from "./ModCard.tsx"
+import { buildIconFallbackOnError, ModCard } from "./ModCard.tsx"
+import { resolveCategoryIconUrl } from "./categoryIcon.ts"
 
 export const layout = "base.tsx"
 
@@ -121,9 +121,11 @@ export default (
 ) => {
   const locale = (lang as Locale) in ui ? lang as Locale : "en"
   const text = ui[locale]
-  const iconCandidates = resolveManifestIconCandidates(manifest)
-  const iconUrl = iconCandidates.at(0) ?? PLACEHOLDER_ICON
-  const iconFallbackOnError = buildIconFallbackOnError(iconCandidates.slice(1))
+  const categoryIconUrl = resolveCategoryIconUrl(manifest)
+  const iconUrl = manifest.icon_url ?? categoryIconUrl
+  const iconFallbackOnError = manifest.icon_url
+    ? buildIconFallbackOnError([categoryIconUrl])
+    : buildIconFallbackOnError([])
   const releases: UiRelease[] = [
     {
       label: `${manifest.version} (${text.current})`,
