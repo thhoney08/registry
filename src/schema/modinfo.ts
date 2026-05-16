@@ -9,6 +9,7 @@
  */
 
 import * as v from "valibot"
+import { type Dependencies, License } from "./manifest.ts"
 
 /**
  * Mod type determines loading behavior.
@@ -38,6 +39,9 @@ export const ModCategory = v.picklist(
     "item_exclude",
     "monster_exclude",
     "graphical",
+    "mutations",
+    "misc",
+    "core",
   ],
   "Mod category for in-game organization",
 )
@@ -48,14 +52,16 @@ export type ModCategory = v.InferOutput<typeof ModCategory>
  * The 'id' field is required for all mods in the registry.
  * Only type "MOD_INFO" is accepted (not "CORE" which is for core game data).
  */
-export const ModInfo = v.object({
-  type: v.literal("MOD_INFO", "Only MOD_INFO type is valid for mods"),
-  id: v.pipe(
-    v.string(
-      "Unique mod identifier, used for dependencies. Convention: lowercase with underscores",
-    ),
-    v.nonEmpty("Mod ID cannot be empty"),
+const ModIdField = v.pipe(
+  v.string(
+    "Unique mod identifier, used for dependencies. Convention: lowercase with underscores",
   ),
+  v.nonEmpty("Mod ID cannot be empty"),
+)
+
+const ModInfoFields = {
+  type: v.literal("MOD_INFO", "Only MOD_INFO type is valid for mods"),
+  id: ModIdField,
   name: v.pipe(v.string("Displayed name in mod selection"), v.nonEmpty("Mod name cannot be empty")),
   authors: v.optional(v.array(v.string(), "Author(s) of the mod")),
   license: v.optional(License),
@@ -67,7 +73,17 @@ export const ModInfo = v.object({
   version: v.optional(v.string("Mod version string. Optional but recommended.")),
   obsolete: v.optional(v.boolean("If true, mod provides a custom world generation")),
   maintainers: v.optional(v.array(v.string(), "Maintainers who have permission to update")),
-})
+} as const
+
+export const ModInfo = v.pipe(
+  v.looseObject({
+    ...ModInfoFields,
+    id: v.optional(ModIdField),
+    ident: v.optional(ModIdField),
+  }),
+  v.transform((input) => ({ ...input, id: input.id ?? input.ident })),
+  v.object(ModInfoFields),
+)
 export type ModInfo = v.InferOutput<typeof ModInfo>
 
 /**
@@ -100,8 +116,6 @@ export const parseModInfo = (content: string): ModInfo[] => {
     })
     .map((item) => item as ModInfo)
 }
-
-import { type Dependencies, License } from "./manifest.ts"
 
 /** Default version constraint for bn (Bright Nights base game) */
 const BN_DEFAULT_VERSION = ">=0.9.1"

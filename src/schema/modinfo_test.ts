@@ -76,6 +76,31 @@ Deno.test("parseModInfo - accepts valid optional fields", () => {
   assertEquals(result[0].category, "content")
 })
 
+Deno.test("parseModInfo - accepts legacy ident field", () => {
+  const json = JSON.stringify({
+    type: "MOD_INFO",
+    ident: "legacy_mod",
+    name: "Legacy Mod",
+  })
+
+  const result = parseModInfo(json)
+  assertEquals(result.length, 1)
+  assertEquals(result[0].id, "legacy_mod")
+})
+
+Deno.test("parseModInfo - accepts mutation category", () => {
+  const json = JSON.stringify({
+    type: "MOD_INFO",
+    id: "mutation_mod",
+    name: "Mutation Mod",
+    category: "mutations",
+  })
+
+  const result = parseModInfo(json)
+  assertEquals(result.length, 1)
+  assertEquals(result[0].category, "mutations")
+})
+
 // convertDependencies tests
 
 Deno.test("convertDependencies - undefined returns undefined", () => {

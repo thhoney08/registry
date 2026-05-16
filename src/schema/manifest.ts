@@ -67,6 +67,13 @@ export const SourceType = v.picklist(
 )
 export type SourceType = v.InferOutput<typeof SourceType>
 
+/** Registry package kind. */
+export const PackageType = v.picklist(
+  ["mod", "soundpack"],
+  "Type of package contained in the source archive",
+)
+export type PackageType = v.InferOutput<typeof PackageType>
+
 /**
  * Autoupdate configuration for automatic version tracking.
  * Used by CI to detect new releases and update manifests.
@@ -207,6 +214,7 @@ export type ModRelease = v.InferOutput<typeof ModRelease>
  */
 const manifestFields = {
   schema_version: v.literal("1.0", "Schema version for forward compatibility"),
+  package_type: v.optional(PackageType),
   id: ModId,
   display_name: v.string("Human-readable display name"),
   short_description: v.pipe(
@@ -309,6 +317,7 @@ export type ModManifest = v.InferOutput<typeof ModManifest>
  */
 export const ModManifestWithDefaults = v.object({
   schema_version: v.fallback(manifestFields.schema_version, "1.0"),
+  package_type: manifestFields.package_type,
   id: v.fallback(manifestFields.id, "my_mod"),
   display_name: v.fallback(manifestFields.display_name, "My Mod"),
   short_description: v.fallback(
@@ -347,6 +356,7 @@ export type ModManifestWithDefaults = v.InferOutput<typeof ModManifestWithDefaul
 export const storeToManifest = computed((): ModManifestWithDefaults => {
   const result = v.parse(ModManifestWithDefaults, {
     schema_version: "1.0",
+    package_type: undefined,
     id: store.id || undefined,
     display_name: store.displayName || undefined,
     short_description: store.shortDescription || undefined,
@@ -378,6 +388,7 @@ export const storeToManifest = computed((): ModManifestWithDefaults => {
 
   // Clean up empty optionals for cleaner YAML output
   const cleaned = { ...result } as Record<string, unknown>
+  if (!cleaned.package_type) delete cleaned.package_type
   if (!cleaned.description) delete cleaned.description
   if (!cleaned.homepage) delete cleaned.homepage
   if (!cleaned.dependencies) delete cleaned.dependencies

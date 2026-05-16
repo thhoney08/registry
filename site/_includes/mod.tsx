@@ -23,7 +23,7 @@ const ui = {
     installation: "Installation",
     installNoteLabel: "Note:",
     installNote: "Extract the",
-    installNoteSuffix: "folder from the archive.",
+    installNoteSuffix: "folder to",
     compatibility: "Compatibility",
     dependencies: "Dependencies:",
     conflicts: "Conflicts:",
@@ -45,7 +45,7 @@ const ui = {
     installation: "설치",
     installNoteLabel: "참고:",
     installNote: "압축 파일에서",
-    installNoteSuffix: "폴더를 추출하세요.",
+    installNoteSuffix: "폴더를 다음 위치에 추출하세요:",
     compatibility: "호환성",
     dependencies: "의존성:",
     conflicts: "충돌 모드:",
@@ -67,7 +67,7 @@ const ui = {
     installation: "導入方法",
     installNoteLabel: "注:",
     installNote: "アーカイブから",
-    installNoteSuffix: "フォルダを展開してください。",
+    installNoteSuffix: "フォルダを次の場所に展開してください:",
     compatibility: "互換性",
     dependencies: "依存関係:",
     conflicts: "競合:",
@@ -134,6 +134,7 @@ export default (
   }
 
   const hasRevisions = releases.length > 1
+  const installTarget = manifest.package_type === "soundpack" ? "data/sound" : "data/mods"
 
   const revisionScript = `
      (() => {
@@ -274,7 +275,8 @@ export default (
         {manifest.source.extract_path && (
           <p>
             <strong>{text.installNoteLabel}</strong> {text.installNote}{" "}
-            <code>{manifest.source.extract_path}</code> {text.installNoteSuffix}
+            <code>{manifest.source.extract_path}</code> {text.installNoteSuffix}{" "}
+            <code>{installTarget}</code>.
           </p>
         )}
 

@@ -101,7 +101,7 @@ export const discoverMods = async (
   })
 
   const modinfoFiles = treeData.tree.filter(
-    (item) => item.type === "blob" && item.path?.endsWith("modinfo.json"),
+    (item) => item.type === "blob" && /(^|\/)modinfo\.json(?:\.json)?$/.test(item.path ?? ""),
   )
 
   if (modinfoFiles.length === 0) return []
@@ -129,7 +129,10 @@ export const discoverMods = async (
         if (!modinfo.id) continue
         mods.push({
           modinfo,
-          path: file.path.replace(/\/modinfo\.json$/, "").replace(/^modinfo\.json$/, ""),
+          path: file.path.replace(/\/modinfo\.json(?:\.json)?$/, "").replace(
+            /^modinfo\.json(?:\.json)?$/,
+            "",
+          ),
         })
       }
     } catch {
