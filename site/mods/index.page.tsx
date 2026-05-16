@@ -122,7 +122,9 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const t = text[lang]
   const submitUrl = withLangPrefix(lang, "/docs/submit/")
 
-  const mods = search.pages(`mod lang=${lang}`) as ModPageData[]
+  const mods = (search.pages(`mod lang=${lang}`) as ModPageData[]).filter((mod) =>
+    !mod.manifest.yanked
+  )
   const groups = groupModsByParent(mods)
   const totalMods = mods.length
   const categories = collectCategories(mods)

@@ -32,6 +32,7 @@ const ui = {
     submods: "Submods",
     none: "None",
     current: "current",
+    yanked: "Yanked",
   },
   ko: {
     version: "버전",
@@ -54,6 +55,7 @@ const ui = {
     submods: "서브모드",
     none: "없음",
     current: "현재",
+    yanked: "비활성",
   },
   ja: {
     version: "バージョン",
@@ -76,6 +78,7 @@ const ui = {
     submods: "サブMod",
     none: "なし",
     current: "現在",
+    yanked: "非公開",
   },
 } as const
 
@@ -203,6 +206,12 @@ export default (
           )
           : <ModTitle title={manifest.display_name} />}
       </header>
+
+      {manifest.yanked && (
+        <p class="yanked-notice">
+          <strong>{text.yanked}</strong>: {manifest.yanked.reason}
+        </p>
+      )}
 
       <aside>
         <dl>

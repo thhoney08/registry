@@ -101,6 +101,23 @@ header nav .btn-theme svg {
   display: block;
 }
 
+.language-menu {
+  display: inline-flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.language-icon {
+  flex-shrink: 0;
+}
+
+.language-select {
+  height: 2.25rem;
+  min-height: 2.25rem;
+  padding: 0 2rem 0 0.75rem;
+  line-height: 1;
+}
+
 /* Hamburger menu button */
 body > nav .hamburger-wrapper,
 header nav .hamburger-wrapper {
@@ -515,6 +532,12 @@ main {
   border-radius: var(--border-radius);
   object-fit: cover;
   flex-shrink: 0;
+}
+
+.yanked-notice {
+  border: 1px solid var(--color-line);
+  padding: 1rem;
+  background: var(--color-highlight);
 }
 
 .mod-card-content {
