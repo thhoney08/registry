@@ -12,6 +12,7 @@ export {
   type ModManifest,
   type ModSource,
   type SourceType,
+  type YankedInfo,
 } from "./src/schema/manifest.ts"
 
 export {

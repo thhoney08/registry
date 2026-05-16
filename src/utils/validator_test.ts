@@ -131,6 +131,27 @@ Deno.test("checkManifest - valid manifest", () => {
   assertEquals(result.errorCount, 0)
 })
 
+Deno.test("checkManifest - yanked reason is valid", () => {
+  const manifest: ModManifest = {
+    schema_version: "1.0",
+    id: "test_mod",
+    display_name: "Test Mod",
+    short_description: "A test mod",
+    author: ["Test Author"],
+    license: "MIT",
+    version: "1.0.0",
+    yanked: { reason: "mainlined in Nightly 2026-05-17" },
+    source: {
+      type: "github_archive",
+      url: "https://github.com/test/mod/archive/v1.0.0.zip",
+    },
+  }
+
+  const result = checkManifest(manifest)
+  assertEquals(result.valid, true)
+  assertEquals(result.errorCount, 0)
+})
+
 Deno.test("checkManifest - missing required fields", () => {
   const manifest: Partial<ModManifest> = {
     schema_version: "1.0",

@@ -172,6 +172,14 @@ export const SemVer = v.custom<string>(
   "Invalid SemVer format. Use MAJOR.MINOR.PATCH (e.g., 1.0.0)",
 )
 
+export const YankedInfo = v.object({
+  reason: v.pipe(
+    v.string("Reason this mod was yanked from active use"),
+    v.minLength(1, "Yanked reason cannot be empty"),
+  ),
+})
+export type YankedInfo = v.InferOutput<typeof YankedInfo>
+
 export const Version = v.pipe(
   v.string(
     "Current version of the mod. Must follow Semantic Versioning 2.0.0 (MAJOR.MINOR.PATCH).",
@@ -216,6 +224,7 @@ const manifestFields = {
   previous_releases: v.optional(
     v.array(ModRelease, "Optional history of previous releases"),
   ),
+  yanked: v.optional(YankedInfo),
   dependencies: v.optional(Dependencies),
   conflicts: v.optional(Dependencies),
   source: ModSource,
@@ -311,6 +320,7 @@ export const ModManifestWithDefaults = v.object({
   license: v.fallback(manifestFields.license, "ALL-RIGHTS-RESERVED"),
   homepage: manifestFields.homepage,
   version: v.fallback(manifestFields.version, "0.0.0"),
+  yanked: manifestFields.yanked,
   dependencies: manifestFields.dependencies,
   conflicts: manifestFields.conflicts,
   source: v.object({
