@@ -62,11 +62,11 @@
     },
     "lume": {
       "description": "Run Lume command",
-      "command": "deno run -P=lume lume/cli.ts"
+      "command": "deno run --node-modules-dir=auto -P=lume lume/cli.ts"
     },
     "build": {
       "description": "Build the site for production",
-      "dependencies": ["generate"],
+      "dependencies": ["generate", "i18n:compile"],
       "command": "deno task lume"
     },
     "i18n:extract": {
@@ -79,7 +79,7 @@
     },
     "serve": {
       "description": "Run and serve the site for development",
-      "dependencies": ["generate"],
+      "dependencies": ["generate", "i18n:compile"],
       "command": "deno task lume -s"
     },
     "validate": {
