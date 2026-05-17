@@ -14,8 +14,9 @@ import { linguiMacroPlugin } from "./src/plugins/esbuild_lingui_macro.ts"
 
 const site = lume({ src: "./site", dest: "./_site" })
 
-// Bundle Preact app for manifest generator (must be before metas)
+// Bundle client scripts (must be before metas)
 site.add("app/main.tsx")
+site.add("mods/filter.ts")
 site.use(esbuild({
   denoConfig: "site/app/deno.json",
   options: {

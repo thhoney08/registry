@@ -83,50 +83,6 @@ const groupModsByParent = (mods: ModPageData[]): ModGroup[] => {
 const collectCategories = (mods: ModPageData[]): string[] =>
   [...new Set(mods.flatMap((mod) => mod.manifest.categories ?? []))].sort()
 
-/** Client-side filtering script for category and search */
-const filterScript = `
-  const filterMods = () => {
-    const searchInput = document.getElementById('mod-search');
-    const searchTerm = searchInput?.value?.toLowerCase() ?? '';
-    const checkedCategories = Array.from(document.querySelectorAll('.category-filter:checked'))
-      .map(cb => cb.value);
-    const onlyLua = Boolean(document.getElementById('lua-filter')?.checked);
-
-    const cards = document.querySelectorAll('.mod-card');
-    let visibleCount = 0;
-
-    cards.forEach(card => {
-      const title = card.dataset.title?.toLowerCase() ?? '';
-      const description = card.dataset.description?.toLowerCase() ?? '';
-      const categories = (card.dataset.categories ?? '').split(',').filter(Boolean);
-      const usesLua = card.dataset.usesLua === 'true';
-
-      const matchesSearch = !searchTerm ||
-        title.includes(searchTerm) ||
-        description.includes(searchTerm);
-
-      const matchesCategory = checkedCategories.length === 0 ||
-        checkedCategories.some(cat => categories.includes(cat));
-
-      const matchesLua = !onlyLua || usesLua;
-      const visible = matchesSearch && matchesCategory && matchesLua;
-      card.style.display = visible ? '' : 'none';
-      if (visible) visibleCount++;
-    });
-
-    const countEl = document.getElementById('visible-count');
-    if (countEl) countEl.textContent = visibleCount;
-  };
-
-  document.addEventListener('DOMContentLoaded', () => {
-    document.getElementById('mod-search')?.addEventListener('input', filterMods);
-    document.querySelectorAll('.category-filter').forEach(cb => {
-      cb.addEventListener('change', filterMods);
-    });
-    document.getElementById('lua-filter')?.addEventListener('change', filterMods);
-  });
-`
-
 export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const lang = (currentLang as Locale) in text ? currentLang as Locale : "en"
   const t = text[lang]
@@ -214,7 +170,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
         </div>
       </div>
 
-      <script dangerouslySetInnerHTML={{ __html: filterScript }} />
+      <script type="module" src="/mods/filter.js" />
     </>
   )
 }
