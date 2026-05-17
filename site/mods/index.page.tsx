@@ -18,6 +18,8 @@ const text = {
     searchPlaceholder: "Search mods...",
     searchLabel: "Search mods by name or description",
     categories: "Categories",
+    lua: "Lua",
+    usesLua: "Uses Lua",
     noMods: "No mods found.",
     submitFirst: "Submit the first one!",
   },
@@ -28,6 +30,8 @@ const text = {
     searchPlaceholder: "모드 검색...",
     searchLabel: "이름 또는 설명으로 모드 검색",
     categories: "카테고리",
+    lua: "Lua",
+    usesLua: "Lua 사용",
     noMods: "모드를 찾을 수 없습니다.",
     submitFirst: "첫 번째 모드를 등록해보세요!",
   },
@@ -38,6 +42,8 @@ const text = {
     searchPlaceholder: "Modを検索...",
     searchLabel: "名前または説明でModを検索",
     categories: "カテゴリ",
+    lua: "Lua",
+    usesLua: "Lua使用",
     noMods: "Modが見つかりません。",
     submitFirst: "最初のModを投稿しましょう!",
   },
@@ -84,6 +90,7 @@ const filterScript = `
     const searchTerm = searchInput?.value?.toLowerCase() ?? '';
     const checkedCategories = Array.from(document.querySelectorAll('.category-filter:checked'))
       .map(cb => cb.value);
+    const onlyLua = Boolean(document.getElementById('lua-filter')?.checked);
 
     const cards = document.querySelectorAll('.mod-card');
     let visibleCount = 0;
@@ -92,6 +99,7 @@ const filterScript = `
       const title = card.dataset.title?.toLowerCase() ?? '';
       const description = card.dataset.description?.toLowerCase() ?? '';
       const categories = (card.dataset.categories ?? '').split(',').filter(Boolean);
+      const usesLua = card.dataset.usesLua === 'true';
 
       const matchesSearch = !searchTerm ||
         title.includes(searchTerm) ||
@@ -100,7 +108,8 @@ const filterScript = `
       const matchesCategory = checkedCategories.length === 0 ||
         checkedCategories.some(cat => categories.includes(cat));
 
-      const visible = matchesSearch && matchesCategory;
+      const matchesLua = !onlyLua || usesLua;
+      const visible = matchesSearch && matchesCategory && matchesLua;
       card.style.display = visible ? '' : 'none';
       if (visible) visibleCount++;
     });
@@ -114,6 +123,7 @@ const filterScript = `
     document.querySelectorAll('.category-filter').forEach(cb => {
       cb.addEventListener('change', filterMods);
     });
+    document.getElementById('lua-filter')?.addEventListener('change', filterMods);
   });
 `
 
@@ -147,6 +157,14 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
               class="search-input"
               aria-label={t.searchLabel}
             />
+          </div>
+
+          <div class="category-filters">
+            <h3>{t.lua}</h3>
+            <label class="category-checkbox">
+              <input type="checkbox" id="lua-filter" />
+              {t.usesLua}
+            </label>
           </div>
 
           {categories.length > 0 && (
@@ -185,6 +203,10 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
                     lang={lang}
                     showCategories
                     submodCount={group.submods.length}
+                    usesLua={Boolean(
+                      group.main.manifest.uses_lua ||
+                        group.submods.some((submod) => submod.manifest.uses_lua),
+                    )}
                   />
                 ))}
               </div>

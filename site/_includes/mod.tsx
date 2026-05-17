@@ -1,6 +1,7 @@
 import { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { buildIconFallbackOnError, ModCard } from "./ModCard.tsx"
+import { resolveManifestModInfoUrl } from "../../src/utils/modinfo_url.ts"
 import { resolveCategoryIconUrl } from "./categoryIcon.ts"
 
 export const layout = "base.tsx"
@@ -18,6 +19,9 @@ const ui = {
     author: "Author",
     license: "License",
     categories: "Categories",
+    lua: "Lua",
+    yes: "Yes",
+    no: "No",
     download: "Download",
     description: "Description",
     installation: "Installation",
@@ -33,6 +37,9 @@ const ui = {
     none: "None",
     current: "current",
     yanked: "Yanked",
+    rawModinfo: "Raw modinfo.json",
+    loading: "Loading...",
+    loadFailed: "Failed to load modinfo.json.",
   },
   ko: {
     version: "버전",
@@ -41,6 +48,9 @@ const ui = {
     author: "작성자",
     license: "라이선스",
     categories: "카테고리",
+    lua: "Lua",
+    yes: "예",
+    no: "아니요",
     download: "다운로드",
     description: "설명",
     installation: "설치",
@@ -56,6 +66,9 @@ const ui = {
     none: "없음",
     current: "현재",
     yanked: "비활성",
+    rawModinfo: "원본 modinfo.json",
+    loading: "불러오는 중...",
+    loadFailed: "modinfo.json을 불러오지 못했습니다.",
   },
   ja: {
     version: "バージョン",
@@ -64,6 +77,9 @@ const ui = {
     author: "作者",
     license: "ライセンス",
     categories: "カテゴリ",
+    lua: "Lua",
+    yes: "はい",
+    no: "いいえ",
     download: "ダウンロード",
     description: "説明",
     installation: "導入方法",
@@ -79,6 +95,9 @@ const ui = {
     none: "なし",
     current: "現在",
     yanked: "非公開",
+    rawModinfo: "元のmodinfo.json",
+    loading: "読み込み中...",
+    loadFailed: "modinfo.jsonを読み込めませんでした。",
   },
 } as const
 
@@ -126,6 +145,7 @@ export default (
   const iconFallbackOnError = manifest.icon_url
     ? buildIconFallbackOnError([categoryIconUrl])
     : buildIconFallbackOnError([])
+  const modinfoUrl = resolveManifestModInfoUrl(manifest)
   const releases: UiRelease[] = [
     {
       label: `${manifest.version} (${text.current})`,
@@ -172,6 +192,28 @@ export default (
        apply()
      })()
    `
+
+  const modinfoScript = `
+    (() => {
+      const details = document.getElementById('raw-modinfo')
+      const pre = document.getElementById('raw-modinfo-content')
+      if (!details || !pre) return
+
+      details.addEventListener('toggle', async () => {
+        if (!details.open || pre.dataset.loaded === 'true') return
+        const url = pre.dataset.url
+        if (!url) return
+        try {
+          const response = await fetch(url)
+          if (!response.ok) throw new Error(String(response.status))
+          pre.textContent = await response.text()
+        } catch {
+          pre.textContent = ${JSON.stringify(text.loadFailed)}
+        }
+        pre.dataset.loaded = 'true'
+      })
+    })()
+  `
 
   return (
     <article class="mod-page">
@@ -246,6 +288,12 @@ export default (
           <dt>{text.license}</dt>
           <dd>{manifest.license}</dd>
 
+          <dt>{text.lua}</dt>
+          <dd>
+            {manifest.uses_lua ? text.yes : text.no}
+            {manifest.lua_api_version !== undefined && ` (${manifest.lua_api_version})`}
+          </dd>
+
           {manifest.categories && manifest.categories.length > 0 && (
             <>
               <dt>{text.categories}</dt>
@@ -312,6 +360,13 @@ export default (
           </>
         )}
 
+        {modinfoUrl && (
+          <details id="raw-modinfo" class="modinfo-raw">
+            <summary>{text.rawModinfo}</summary>
+            <pre id="raw-modinfo-content" data-url={modinfoUrl}>{text.loading}</pre>
+          </details>
+        )}
+
         {parentMod && (
           <>
             <h2>{text.parentMod}</h2>
@@ -345,6 +400,7 @@ export default (
         )}
       </section>
       {hasRevisions && <script dangerouslySetInnerHTML={{ __html: revisionScript }} />}
+      {modinfoUrl && <script dangerouslySetInnerHTML={{ __html: modinfoScript }} />}
     </article>
   )
 }

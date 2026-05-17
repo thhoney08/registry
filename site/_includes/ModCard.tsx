@@ -31,6 +31,8 @@ export interface ModCardProps {
   showCategories?: boolean
   /** Number of submods (patches, addons) for this mod group */
   submodCount?: number
+  /** Whether this visible card group includes Lua usage */
+  usesLua?: boolean
   /** Key prop for React rendering */
   key?: string
 }
@@ -39,7 +41,7 @@ export interface ModCardProps {
  * Reusable mod card component for displaying mod information in a grid.
  */
 export const ModCard = (
-  { url, title, manifest, showCategories = false, submodCount = 0, lang = "en" }:
+  { url, title, manifest, showCategories = false, submodCount = 0, usesLua, lang = "en" }:
     & ModCardProps
     & { lang?: string },
 ) => {
@@ -56,6 +58,7 @@ export const ModCard = (
   const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
     ? manifest.version
     : `v${manifest.version}`
+  const cardUsesLua = usesLua ?? Boolean(manifest.uses_lua)
 
   return (
     <article
@@ -63,6 +66,7 @@ export const ModCard = (
       data-title={plainTitle}
       data-description={plainDesc}
       data-categories={categories}
+      data-uses-lua={cardUsesLua ? "true" : "false"}
     >
       {submodCount > 0 && (
         <>

@@ -624,6 +624,19 @@ main {
   font: var(--font-title);
 }
 
+.modinfo-raw summary {
+  cursor: pointer;
+  font: var(--font-ui-bold);
+}
+
+.modinfo-raw pre {
+  overflow: auto;
+  max-height: 24rem;
+  padding: 1rem;
+  border: 1px solid var(--color-line);
+  background: var(--color-highlight);
+}
+
 /* Category Filter */
 .category-filters {
   display: flex;
