@@ -110,11 +110,13 @@ export const checkUrls = (
 export const extractManifestUrls = (manifest: {
   source?: { url?: string }
   icon_url?: string
+  modinfo_url?: string
   homepage?: string
 }): string[] =>
   [
     manifest.source?.url,
     manifest.icon_url,
+    manifest.modinfo_url,
   ].filter((url): url is string => url !== undefined)
 
 const sleep = (ms: number): Promise<void> => new Promise((resolve) => setTimeout(resolve, ms))

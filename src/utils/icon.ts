@@ -1,4 +1,9 @@
 import type { ModManifest } from "../schema/manifest.ts"
+import {
+  normalizeExtractPath,
+  normalizeRawContentPath,
+  parseGitHubArchiveUrl,
+} from "./github_archive.ts"
 
 type IconResolutionFields = Pick<ModManifest, "icon_url" | "source">
 
@@ -11,37 +16,6 @@ export const WELL_KNOWN_ICON_EXTENSIONS = [
   "jpeg",
   "gif",
 ] as const
-
-const normalizeExtractPath = (extractPath?: string): string => {
-  if (!extractPath || extractPath === ".") return ""
-  return extractPath.replace(/^\/+|\/+$/g, "")
-}
-
-const normalizeRawContentPath = (extractPath: string, repo: string): string => {
-  if (!extractPath) return ""
-
-  const [firstSegment, ...rest] = extractPath.split("/")
-  if (firstSegment.toLowerCase().startsWith(`${repo.toLowerCase()}-`) && rest.length > 0) {
-    return rest.join("/")
-  }
-
-  return extractPath
-}
-
-const parseGitHubArchiveUrl = (
-  archiveUrl: string,
-): { owner: string; repo: string; ref: string } | null => {
-  const match = archiveUrl.match(
-    /^https?:\/\/github\.com\/([^/]+)\/([^/]+)\/archive\/refs\/(heads|tags)\/(.+)\.zip$/i,
-  )
-  if (!match) return null
-
-  return {
-    owner: match[1],
-    repo: match[2],
-    ref: decodeURIComponent(match[4]),
-  }
-}
 
 export const resolveManifestIconUrl = (manifest: IconResolutionFields): string | undefined => {
   return resolveManifestIconCandidates(manifest).at(0)

@@ -30,6 +30,14 @@ Deno.test("extractManifestUrls - extracts icon URL", () => {
   assertEquals(urls.includes("https://example.com/icon.png"), true)
 })
 
+Deno.test("extractManifestUrls - extracts modinfo URL", () => {
+  const manifest = {
+    modinfo_url: "https://raw.githubusercontent.com/example/mod/main/modinfo.json",
+  }
+  const urls = extractManifestUrls(manifest)
+  assertEquals(urls, ["https://raw.githubusercontent.com/example/mod/main/modinfo.json"])
+})
+
 Deno.test("extractManifestUrls - handles missing fields", () => {
   const manifest = {}
   const urls = extractManifestUrls(manifest)

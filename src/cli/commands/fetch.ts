@@ -24,6 +24,7 @@ import {
   stripColorCodes,
   toManifestId,
 } from "../../utils/github.ts"
+import { buildGitHubRawUrl } from "../../utils/github_archive.ts"
 import {
   createOctokit,
   type DiscoveredMod,
@@ -123,6 +124,7 @@ const generateManifest = (
   const modId = mod.modinfo.id ?? "unknown"
   const manifestId = toManifestId(modId)
   const archiveUrl = buildArchiveUrl(owner, repo, branch)
+  const sourceRef = commitSha || branch
 
   // Determine extract path - the directory containing modinfo.json
   const modDir = mod.path
@@ -150,6 +152,11 @@ const generateManifest = (
       ...(commitSha ? { commit_sha: commitSha } : {}),
       ...(extractPath ? { extract_path: extractPath } : {}),
     },
+    modinfo_url: buildGitHubRawUrl({ owner, repo, ref: sourceRef }, mod.modinfoPath),
+    uses_lua: mod.modinfo.lua_api_version !== undefined,
+    ...(mod.modinfo.lua_api_version !== undefined
+      ? { lua_api_version: mod.modinfo.lua_api_version }
+      : {}),
     ...(mod.modinfo.category ? { categories: [mod.modinfo.category] } : {}),
     ...(deps ? { dependencies: deps } : {}),
     autoupdate: {

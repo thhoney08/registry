@@ -101,6 +101,19 @@ Deno.test("parseModInfo - accepts mutation category", () => {
   assertEquals(result[0].category, "mutations")
 })
 
+Deno.test("parseModInfo - accepts Lua API version", () => {
+  const json = JSON.stringify({
+    type: "MOD_INFO",
+    id: "lua_mod",
+    name: "Lua Mod",
+    lua_api_version: 2,
+  })
+
+  const result = parseModInfo(json)
+  assertEquals(result.length, 1)
+  assertEquals(result[0].lua_api_version, 2)
+})
+
 // convertDependencies tests
 
 Deno.test("convertDependencies - undefined returns undefined", () => {

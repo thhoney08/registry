@@ -16,6 +16,7 @@ export type { Octokit }
 export interface DiscoveredMod {
   modinfo: ModInfo
   path: string
+  modinfoPath: string
 }
 
 /** Repository metadata */
@@ -133,6 +134,7 @@ export const discoverMods = async (
             /^modinfo\.json(?:\.json)?$/,
             "",
           ),
+          modinfoPath: file.path,
         })
       }
     } catch {

@@ -246,6 +246,15 @@ const manifestFields = {
   icon_url: v.optional(
     v.pipe(v.string("URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, max 160x160)")),
   ),
+  modinfo_url: v.optional(v.pipe(
+    v.string("URL to the raw modinfo.json file"),
+    v.url("Invalid modinfo.json URL format"),
+  )),
+  uses_lua: v.optional(v.boolean("Whether this mod declares Lua API usage in modinfo.json")),
+  lua_api_version: v.optional(v.pipe(
+    v.number("Lua API version required by this mod"),
+    v.integer("Lua API version must be an integer"),
+  )),
   autoupdate: v.optional(AutoupdateConfig),
   parent: v.optional(ModId),
   last_updated: v.optional(v.pipe(
@@ -334,6 +343,9 @@ export const ModManifestWithDefaults = v.object({
   categories: manifestFields.categories,
   tags: manifestFields.tags,
   icon_url: manifestFields.icon_url,
+  modinfo_url: manifestFields.modinfo_url,
+  uses_lua: manifestFields.uses_lua,
+  lua_api_version: manifestFields.lua_api_version,
   autoupdate: manifestFields.autoupdate,
   parent: manifestFields.parent,
 })
@@ -386,6 +398,9 @@ export const storeToManifest = computed((): ModManifestWithDefaults => {
   if (!cleaned.categories) delete cleaned.categories
   if (!cleaned.tags) delete cleaned.tags
   if (!cleaned.icon_url) delete cleaned.icon_url
+  if (!cleaned.modinfo_url) delete cleaned.modinfo_url
+  if (cleaned.uses_lua === undefined) delete cleaned.uses_lua
+  if (cleaned.lua_api_version === undefined) delete cleaned.lua_api_version
   if (!cleaned.autoupdate) delete cleaned.autoupdate
 
   const source = cleaned.source as Record<string, unknown>

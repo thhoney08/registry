@@ -34,3 +34,15 @@ Deno.test("ModManifest - rejects unknown package type", () => {
     })
   )
 })
+
+Deno.test("ModManifest - accepts Lua metadata", () => {
+  const manifest = v.parse(ModManifest, {
+    ...baseManifest,
+    modinfo_url: "https://raw.githubusercontent.com/example/test/main/modinfo.json",
+    uses_lua: true,
+    lua_api_version: 2,
+  })
+
+  assertEquals(manifest.uses_lua, true)
+  assertEquals(manifest.lua_api_version, 2)
+})

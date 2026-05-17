@@ -71,6 +71,10 @@ const ModInfoFields = {
     v.array(v.string(), 'List of mod IDs this mod depends on. "bn" = base game'),
   ),
   version: v.optional(v.string("Mod version string. Optional but recommended.")),
+  lua_api_version: v.optional(v.pipe(
+    v.number("Lua API version required by this mod"),
+    v.integer("Lua API version must be an integer"),
+  )),
   obsolete: v.optional(v.boolean("If true, mod provides a custom world generation")),
   maintainers: v.optional(v.array(v.string(), "Maintainers who have permission to update")),
 } as const
