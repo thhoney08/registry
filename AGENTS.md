@@ -46,6 +46,7 @@ if you're github copilot AND NOT claude code:
 - **Never add statistics/summary sections (total counts, category breakdowns) to homepage** - keep homepage clean and simple
 - keep the LOC low, do not let duplicate code creep in
 - make site a11y friendly, e.g no hover menu
+- For user-facing mod timestamps, show upstream mod/source update dates, not manifest file metadata.
 
 ## Tech Stack
 
