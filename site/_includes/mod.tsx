@@ -192,7 +192,7 @@ export default (
          const url = option.getAttribute('data-url')
          const version = option.getAttribute('data-version')
          if (url) {
-           downloadLink.setAttribute('href', url)
+           downloadLink.dataset.url = url
            if (installLink) installLink.setAttribute('href', url)
          }
          if (version) {
@@ -341,9 +341,15 @@ export default (
           )}
         </dl>
 
-        <a href={manifest.source.url} id="download-link" class="download-button">
+        <button
+          type="button"
+          id="download-link"
+          class="download-button"
+          data-url={manifest.source.url}
+          onclick="const url=this.dataset.url; if (url) window.location.href = url"
+        >
           {text.download}
-        </a>
+        </button>
       </aside>
 
       <section class="mod-content">
