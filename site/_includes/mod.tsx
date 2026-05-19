@@ -210,21 +210,33 @@ export default (
   const modinfoScript = `
     (() => {
       const details = document.getElementById('raw-modinfo')
-      const pre = document.getElementById('raw-modinfo-content')
-      if (!details || !pre) return
+      const code = document.getElementById('raw-modinfo-content')
+      if (!details || !code) return
+
+      const escapeHtml = (value) => value
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+
+      const highlightJson = (raw) => escapeHtml(JSON.stringify(JSON.parse(raw), null, 2))
+        .replace(/(\"(?:\\\\.|[^\"\\\\])*\")(?=\\s*:)/g, '<span class="json-key">$1</span>')
+        .replace(/:\\s*(\"(?:\\\\.|[^\"\\\\])*\")/g, ': <span class="json-string">$1</span>')
+        .replace(/:\\s*(-?\\d+(?:\\.\\d+)?(?:[eE][+-]?\\d+)?)/g, ': <span class="json-number">$1</span>')
+        .replace(/:\\s*(true|false)/g, ': <span class="json-boolean">$1</span>')
+        .replace(/:\\s*(null)/g, ': <span class="json-null">$1</span>')
 
       details.addEventListener('toggle', async () => {
-        if (!details.open || pre.dataset.loaded === 'true') return
-        const url = pre.dataset.url
+        if (!details.open || code.dataset.loaded === 'true') return
+        const url = code.dataset.url
         if (!url) return
         try {
           const response = await fetch(url)
           if (!response.ok) throw new Error(String(response.status))
-          pre.textContent = await response.text()
+          code.innerHTML = highlightJson(await response.text())
         } catch {
-          pre.textContent = ${JSON.stringify(text.loadFailed)}
+          code.textContent = ${JSON.stringify(text.loadFailed)}
         }
-        pre.dataset.loaded = 'true'
+        code.dataset.loaded = 'true'
       })
     })()
   `
@@ -386,7 +398,7 @@ export default (
         {modinfoUrl && (
           <details id="raw-modinfo" class="modinfo-raw">
             <summary>{text.rawModinfo}</summary>
-            <pre id="raw-modinfo-content" data-url={modinfoUrl}>{text.loading}</pre>
+            <pre><code id="raw-modinfo-content" data-url={modinfoUrl}>{text.loading}</code></pre>
           </details>
         )}
 

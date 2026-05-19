@@ -651,6 +651,23 @@ main {
   background: var(--color-highlight);
 }
 
+.json-key {
+  color: var(--color-primary);
+}
+
+.json-string {
+  color: var(--color-success);
+}
+
+.json-number {
+  color: var(--color-secondary);
+}
+
+.json-boolean,
+.json-null {
+  color: var(--color-warning);
+}
+
 /* Category Filter */
 .category-filters {
   display: flex;
