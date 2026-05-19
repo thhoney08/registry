@@ -557,6 +557,15 @@ main {
   margin: 0 0 0.5rem 0;
 }
 
+.mod-card time,
+.mod-page aside time {
+  color: inherit;
+}
+
+.mod-last-updated {
+  white-space: nowrap;
+}
+
 .mod-card .mod-desc {
   font: var(--font-small);
   color: var(--color-text);

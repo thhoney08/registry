@@ -5,6 +5,7 @@
 import type { ModManifest } from "../../mod.ts"
 import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { resolveCategoryIconUrl } from "./categoryIcon.ts"
+import { LastUpdatedTime } from "./LastUpdatedTime.tsx"
 
 type Locale = "en" | "ko" | "ja"
 
@@ -58,6 +59,7 @@ export const ModCard = (
   const displayVersion = manifest.version.startsWith("v") || manifest.version.startsWith("V")
     ? manifest.version
     : `v${manifest.version}`
+  const authorText = manifest.author.join(", ")
   const cardUsesLua = usesLua ?? Boolean(manifest.uses_lua)
 
   return (
@@ -88,7 +90,17 @@ export const ModCard = (
         <div class="mod-card-content">
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
           <p class="mod-meta">
-            {displayVersion} · {manifest.author}
+            {displayVersion} · {authorText}
+            {manifest.last_updated && (
+              <>
+                {" "}·{" "}
+                <LastUpdatedTime
+                  timestamp={manifest.last_updated}
+                  locale={locale}
+                  className="mod-last-updated"
+                />
+              </>
+            )}
             {submodCount > 0 && (
               <span class="badge submod-badge">+{submodCount} {text.submods}</span>
             )}

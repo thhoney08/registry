@@ -3,6 +3,7 @@ import { colorCodesToHtml, stripColorCodes } from "../../src/utils/color.ts"
 import { buildIconFallbackOnError, ModCard } from "./ModCard.tsx"
 import { resolveManifestModInfoUrl } from "../../src/utils/modinfo_url.ts"
 import { resolveCategoryIconUrl } from "./categoryIcon.ts"
+import { LastUpdatedTime } from "./LastUpdatedTime.tsx"
 
 export const layout = "base.tsx"
 
@@ -18,6 +19,7 @@ const ui = {
     selectRevision: "Select revision",
     author: "Author",
     license: "License",
+    updated: "Updated",
     categories: "Categories",
     lua: "Lua",
     yes: "Yes",
@@ -47,6 +49,7 @@ const ui = {
     selectRevision: "리비전 선택",
     author: "작성자",
     license: "라이선스",
+    updated: "업데이트",
     categories: "카테고리",
     lua: "Lua",
     yes: "예",
@@ -76,6 +79,7 @@ const ui = {
     selectRevision: "リビジョンを選択",
     author: "作者",
     license: "ライセンス",
+    updated: "更新日",
     categories: "カテゴリ",
     lua: "Lua",
     yes: "はい",
@@ -287,6 +291,15 @@ export default (
 
           <dt>{text.license}</dt>
           <dd>{manifest.license}</dd>
+
+          {manifest.last_updated && (
+            <>
+              <dt>{text.updated}</dt>
+              <dd>
+                <LastUpdatedTime timestamp={manifest.last_updated} locale={locale} />
+              </dd>
+            </>
+          )}
 
           <dt>{text.lua}</dt>
           <dd>
