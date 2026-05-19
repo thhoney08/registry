@@ -36,8 +36,8 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const recentMods = [...mods]
     .sort((a, b) => {
       // Sort by last_updated descending (newest first)
-      const dateA = a.manifest.last_updated ?? ""
-      const dateB = b.manifest.last_updated ?? ""
+      const dateA = a.sourceUpdatedAt ?? ""
+      const dateB = b.sourceUpdatedAt ?? ""
       // Mods without last_updated go to the end
       if (!dateA && !dateB) return stripColorCodes(a.title).localeCompare(stripColorCodes(b.title))
       if (!dateA) return 1
@@ -65,6 +65,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
                   manifest={mod.manifest}
                   lang={lang}
                   showCategories
+                  updatedAt={mod.sourceUpdatedAt}
                 />
               ))}
             </div>

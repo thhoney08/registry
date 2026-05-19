@@ -163,6 +163,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
                       group.main.manifest.uses_lua ||
                         group.submods.some((submod) => submod.manifest.uses_lua),
                     )}
+                    updatedAt={group.main.sourceUpdatedAt}
                   />
                 ))}
               </div>

@@ -12,4 +12,5 @@ export interface ModPageData {
   url: string
   title: string
   manifest: ModManifest
+  sourceUpdatedAt?: string
 }

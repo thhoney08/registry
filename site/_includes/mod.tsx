@@ -115,6 +115,8 @@ interface PageData {
   parentMod?: ModManifest
   submods?: ModManifest[]
   allManifests?: ModManifest[]
+  sourceUpdatedAt?: string
+  sourceUpdatedAtById?: Record<string, string>
   children?: Lume.Data["children"]
 }
 
@@ -139,7 +141,15 @@ const stripVersionPrefix = (version: string): string =>
   version.startsWith("v") || version.startsWith("V") ? version.slice(1) : version
 
 export default (
-  { manifest, parentMod, submods = [], allManifests = [], lang = "en" }: PageData,
+  {
+    manifest,
+    parentMod,
+    submods = [],
+    allManifests = [],
+    sourceUpdatedAt,
+    sourceUpdatedAtById = {},
+    lang = "en",
+  }: PageData,
   _helpers: Lume.Helpers,
 ) => {
   const locale = (lang as Locale) in ui ? lang as Locale : "en"
@@ -292,11 +302,11 @@ export default (
           <dt>{text.license}</dt>
           <dd>{manifest.license}</dd>
 
-          {manifest.last_updated && (
+          {sourceUpdatedAt && (
             <>
               <dt>{text.updated}</dt>
               <dd>
-                <LastUpdatedTime timestamp={manifest.last_updated} locale={locale} />
+                <LastUpdatedTime timestamp={sourceUpdatedAt} locale={locale} />
               </dd>
             </>
           )}
@@ -390,6 +400,7 @@ export default (
                 title={parentMod.display_name}
                 manifest={parentMod}
                 lang={locale}
+                updatedAt={sourceUpdatedAtById[parentMod.id]}
               />
             </div>
           </>
@@ -406,6 +417,7 @@ export default (
                   title={submod.display_name}
                   manifest={submod}
                   lang={locale}
+                  updatedAt={sourceUpdatedAtById[submod.id]}
                 />
               ))}
             </div>

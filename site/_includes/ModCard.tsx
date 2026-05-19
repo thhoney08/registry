@@ -34,6 +34,8 @@ export interface ModCardProps {
   submodCount?: number
   /** Whether this visible card group includes Lua usage */
   usesLua?: boolean
+  /** Upstream mod source update timestamp */
+  updatedAt?: string
   /** Key prop for React rendering */
   key?: string
 }
@@ -42,7 +44,16 @@ export interface ModCardProps {
  * Reusable mod card component for displaying mod information in a grid.
  */
 export const ModCard = (
-  { url, title, manifest, showCategories = false, submodCount = 0, usesLua, lang = "en" }:
+  {
+    url,
+    title,
+    manifest,
+    showCategories = false,
+    submodCount = 0,
+    usesLua,
+    updatedAt,
+    lang = "en",
+  }:
     & ModCardProps
     & { lang?: string },
 ) => {
@@ -91,11 +102,11 @@ export const ModCard = (
           <h3 dangerouslySetInnerHTML={{ __html: colorCodesToHtml(title) }} />
           <p class="mod-meta">
             {displayVersion} · {authorText}
-            {manifest.last_updated && (
+            {updatedAt && (
               <>
                 {" "}·{" "}
                 <LastUpdatedTime
-                  timestamp={manifest.last_updated}
+                  timestamp={updatedAt}
                   locale={locale}
                   className="mod-last-updated"
                 />

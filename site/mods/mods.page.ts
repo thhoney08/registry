@@ -9,6 +9,7 @@ import { dirname, fromFileUrl, join } from "@std/path"
 import * as v from "valibot"
 import { type ModManifest, ModManifest as ModManifestSchema } from "../../src/schema/manifest.ts"
 import { resolveManifestIconUrl } from "../../src/utils/icon.ts"
+import { resolveSourceUpdatedAt, type SourceUpdatedCache } from "../../src/utils/source_updated.ts"
 import { MetaData } from "lume/plugins/metas.ts"
 
 export const layout = "mod.tsx"
@@ -17,6 +18,13 @@ export const lang = ["en", "ko", "ja"]
 /**
  * Load all manifests from the registry-index/manifests directory.
  */
+type ModPageSourceData = {
+  manifests: ModManifest[]
+  sourceUpdatedAtById: Record<string, string>
+}
+
+let modPageSourceData: Promise<ModPageSourceData> | undefined
+
 const loadManifests = async (): Promise<ModManifest[]> => {
   const manifests: ModManifest[] = []
   // Get the project root (2 levels up from site/mods/)
@@ -45,6 +53,22 @@ const loadManifests = async (): Promise<ModManifest[]> => {
   return manifests
 }
 
+const loadModPageSourceData = async (): Promise<ModPageSourceData> => {
+  const manifests = await loadManifests()
+  const cache: SourceUpdatedCache = new Map()
+  const entries = await Promise.all(
+    manifests.map(async (manifest) => [manifest.id, await resolveSourceUpdatedAt(manifest, cache)]),
+  )
+
+  return {
+    manifests,
+    sourceUpdatedAtById: Object.fromEntries(entries.filter((entry) => entry[1])) as Record<
+      string,
+      string
+    >,
+  }
+}
+
 /** Find parent mod if this mod has one */
 const findParentMod = (
   manifest: ModManifest,
@@ -65,7 +89,8 @@ const findSubmods = (
 }
 
 export default async function* ({ lang }: Lume.Data) {
-  const manifests = await loadManifests()
+  modPageSourceData ??= loadModPageSourceData()
+  const { manifests, sourceUpdatedAtById } = await modPageSourceData
 
   yield* manifests.map((manifest) => {
     const iconUrl = resolveManifestIconUrl(manifest)
@@ -100,6 +125,8 @@ export default async function* ({ lang }: Lume.Data) {
       },
       tags: ["mod"],
       manifest,
+      sourceUpdatedAt: sourceUpdatedAtById[manifest.id],
+      sourceUpdatedAtById,
       parentMod: findParentMod(manifest, manifests),
       submods: findSubmods(manifest, manifests),
       allManifests: manifests, // Pass all manifests for dependency resolution
