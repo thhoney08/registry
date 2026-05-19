@@ -75,7 +75,9 @@ export const ModCard = (
 
   return (
     <article
-      class={`mod-card ${submodCount > 0 ? "mod-card-stacked" : ""}`}
+      class={`mod-card ${submodCount > 0 ? "mod-card-stacked" : ""} ${
+        manifest.yanked ? "mod-card-yanked" : ""
+      }`}
       data-title={plainTitle}
       data-description={plainDesc}
       data-categories={categories}

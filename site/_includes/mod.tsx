@@ -230,7 +230,7 @@ export default (
   `
 
   return (
-    <article class="mod-page">
+    <article class={`mod-page ${manifest.yanked ? "mod-page-yanked" : ""}`}>
       <header>
         <img
           src={iconUrl}
