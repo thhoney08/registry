@@ -82,6 +82,7 @@ export const ModCard = (
       data-description={plainDesc}
       data-categories={categories}
       data-uses-lua={cardUsesLua ? "true" : "false"}
+      data-updated-at={updatedAt ?? ""}
     >
       {submodCount > 0 && (
         <>

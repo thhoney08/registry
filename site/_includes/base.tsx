@@ -219,87 +219,82 @@ export default (
                   </li>
                 </ul>
               </li>
-              <div
-                style={{
-                  "margin-left": "auto",
-                  display: "flex",
-                  gap: "0.5rem",
-                  alignItems: "center",
-                }}
-              >
-                <li class="nav-search" id="search"></li>
-                <li class="btn-add-wrapper">
-                  <a href={addModUrl} class="btn-add">{text.nav.addMod}</a>
-                </li>
-                {languageOptions.length > 0 && (
-                  <li>
-                    <label aria-label={text.aria.languageMenu} class="language-menu">
+              <li class="nav-actions">
+                <ul class="nav-actions-list">
+                  <li class="nav-search" id="search"></li>
+                  <li class="btn-add-wrapper">
+                    <a href={addModUrl} class="btn-add">{text.nav.addMod}</a>
+                  </li>
+                  {languageOptions.length > 0 && (
+                    <li>
+                      <label aria-label={text.aria.languageMenu} class="language-menu">
+                        <svg
+                          xmlns="http://www.w3.org/2000/svg"
+                          viewBox="0 0 16 16"
+                          width="20"
+                          height="20"
+                          fill="currentColor"
+                          class="language-icon"
+                          aria-hidden="true"
+                        >
+                          <title>{text.aria.languageMenu}</title>
+                          <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z" />
+                        </svg>
+                        <select
+                          class="language-select"
+                          onchange="const target = this.options[this.selectedIndex]?.dataset.url; if (target) window.location.href = target"
+                          value={locale}
+                          aria-label={text.aria.languageMenu}
+                        >
+                          {languageOptions.map((option) => (
+                            <option value={option.locale} key={option.locale} data-url={option.url}>
+                              {languageNames[option.locale]}
+                            </option>
+                          ))}
+                        </select>
+                      </label>
+                    </li>
+                  )}
+                  <li class="theme-toggle">
+                    <button
+                      type="button"
+                      aria-label={text.aria.toggleTheme}
+                      class="btn-theme"
+                      onclick="changeTheme()"
+                    >
                       <svg
                         xmlns="http://www.w3.org/2000/svg"
                         viewBox="0 0 16 16"
                         width="20"
                         height="20"
                         fill="currentColor"
-                        class="language-icon"
-                        aria-hidden="true"
                       >
-                        <title>{text.aria.languageMenu}</title>
-                        <path d="M8 0a8 8 0 1 1 0 16A8 8 0 0 1 8 0ZM5.78 8.75a9.64 9.64 0 0 0 1.363 4.177c.255.426.542.832.857 1.215.245-.296.551-.705.857-1.215A9.64 9.64 0 0 0 10.22 8.75Zm4.44-1.5a9.64 9.64 0 0 0-1.363-4.177c-.307-.51-.612-.919-.857-1.215a9.927 9.927 0 0 0-.857 1.215A9.64 9.64 0 0 0 5.78 7.25Zm-5.944 1.5H1.543a6.507 6.507 0 0 0 4.666 5.5c-.123-.181-.24-.365-.352-.552-.715-1.192-1.437-2.874-1.581-4.948Zm-2.733-1.5h2.733c.144-2.074.866-3.756 1.58-4.948.12-.197.237-.381.353-.552a6.507 6.507 0 0 0-4.666 5.5Zm10.181 1.5c-.144 2.074-.866 3.756-1.58 4.948-.12.197-.237.381-.353.552a6.507 6.507 0 0 0 4.666-5.5Zm2.733-1.5a6.507 6.507 0 0 0-4.666-5.5c.123.181.24.365.353.552.714 1.192 1.436 2.874 1.58 4.948Z" />
+                        <title>Theme</title>
+                        <path d="M14.53 10.53a7 7 0 0 1-9.058-9.058A7.003 7.003 0 0 0 8 15a7.002 7.002 0 0 0 6.53-4.47Z" />
                       </svg>
-                      <select
-                        class="language-select"
-                        onchange="const target = this.options[this.selectedIndex]?.dataset.url; if (target) window.location.href = target"
-                        value={locale}
-                        aria-label={text.aria.languageMenu}
-                      >
-                        {languageOptions.map((option) => (
-                          <option value={option.locale} key={option.locale} data-url={option.url}>
-                            {languageNames[option.locale]}
-                          </option>
-                        ))}
-                      </select>
-                    </label>
+                    </button>
                   </li>
-                )}
-                <li class="theme-toggle">
-                  <button
-                    type="button"
-                    aria-label={text.aria.toggleTheme}
-                    class="btn-theme"
-                    onclick="changeTheme()"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      width="20"
-                      height="20"
-                      fill="currentColor"
+                  <li class="hamburger-wrapper">
+                    <button
+                      type="button"
+                      aria-label={text.aria.toggleMenu}
+                      class="hamburger"
+                      onclick="toggleMenu()"
                     >
-                      <title>Theme</title>
-                      <path d="M14.53 10.53a7 7 0 0 1-9.058-9.058A7.003 7.003 0 0 0 8 15a7.002 7.002 0 0 0 6.53-4.47Z" />
-                    </svg>
-                  </button>
-                </li>
-                <li class="hamburger-wrapper">
-                  <button
-                    type="button"
-                    aria-label={text.aria.toggleMenu}
-                    class="hamburger"
-                    onclick="toggleMenu()"
-                  >
-                    <svg
-                      xmlns="http://www.w3.org/2000/svg"
-                      viewBox="0 0 16 16"
-                      width="24"
-                      height="24"
-                      fill="currentColor"
-                    >
-                      <title>Menu</title>
-                      <path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z" />
-                    </svg>
-                  </button>
-                </li>
-              </div>
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        viewBox="0 0 16 16"
+                        width="24"
+                        height="24"
+                        fill="currentColor"
+                      >
+                        <title>Menu</title>
+                        <path d="M1 2.75A.75.75 0 0 1 1.75 2h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 2.75Zm0 5A.75.75 0 0 1 1.75 7h12.5a.75.75 0 0 1 0 1.5H1.75A.75.75 0 0 1 1 7.75ZM1.75 12h12.5a.75.75 0 0 1 0 1.5H1.75a.75.75 0 0 1 0-1.5Z" />
+                      </svg>
+                    </button>
+                  </li>
+                </ul>
+              </li>
             </ul>
           </nav>
 

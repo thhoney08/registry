@@ -17,6 +17,12 @@ const text = {
     modsSuffix: "mods in the registry.",
     searchPlaceholder: "Search mods...",
     searchLabel: "Search mods by name or description",
+    sort: "Sort",
+    sortLabel: "Sort mods",
+    sortTitleAsc: "Title (A-Z)",
+    sortTitleDesc: "Title (Z-A)",
+    sortUpdatedDesc: "Last updated (newest)",
+    sortUpdatedAsc: "Last updated (oldest)",
     categories: "Categories",
     lua: "Lua",
     usesLua: "Uses Lua",
@@ -29,6 +35,12 @@ const text = {
     modsSuffix: "개 모드를 둘러보세요.",
     searchPlaceholder: "모드 검색...",
     searchLabel: "이름 또는 설명으로 모드 검색",
+    sort: "정렬",
+    sortLabel: "모드 정렬",
+    sortTitleAsc: "제목 (A-Z)",
+    sortTitleDesc: "제목 (Z-A)",
+    sortUpdatedDesc: "마지막 업데이트 (최신순)",
+    sortUpdatedAsc: "마지막 업데이트 (오래된순)",
     categories: "카테고리",
     lua: "Lua",
     usesLua: "Lua 사용",
@@ -41,6 +53,12 @@ const text = {
     modsSuffix: "件のModを表示します。",
     searchPlaceholder: "Modを検索...",
     searchLabel: "名前または説明でModを検索",
+    sort: "並べ替え",
+    sortLabel: "Modを並べ替え",
+    sortTitleAsc: "タイトル (A-Z)",
+    sortTitleDesc: "タイトル (Z-A)",
+    sortUpdatedDesc: "最終更新 (新しい順)",
+    sortUpdatedAsc: "最終更新 (古い順)",
     categories: "カテゴリ",
     lua: "Lua",
     usesLua: "Lua使用",
@@ -83,6 +101,12 @@ const groupModsByParent = (mods: ModPageData[]): ModGroup[] => {
 const collectCategories = (mods: ModPageData[]): string[] =>
   [...new Set(mods.flatMap((mod) => mod.manifest.categories ?? []))].sort()
 
+const getGroupUpdatedAt = ({ main, submods }: ModGroup): string | undefined =>
+  [main, ...submods]
+    .map((mod) => mod.sourceUpdatedAt)
+    .filter((timestamp): timestamp is string => Boolean(timestamp))
+    .toSorted((a, b) => Date.parse(b) - Date.parse(a))[0]
+
 export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const lang = (currentLang as Locale) in text ? currentLang as Locale : "en"
   const t = text[lang]
@@ -105,14 +129,24 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
       <div class="mods-layout">
         {/* Filters Sidebar */}
         <aside class="filters-aside">
-          <div class="search-box">
+          <div class="filter-control search-box">
+            <label for="mod-search">{t.searchLabel}</label>
             <input
               type="text"
               id="mod-search"
               placeholder={t.searchPlaceholder}
               class="search-input"
-              aria-label={t.searchLabel}
             />
+          </div>
+
+          <div class="filter-control">
+            <label for="mod-sort">{t.sort}</label>
+            <select id="mod-sort" class="sort-select" aria-label={t.sortLabel}>
+              <option value="title-asc">{t.sortTitleAsc}</option>
+              <option value="title-desc">{t.sortTitleDesc}</option>
+              <option value="updated-desc">{t.sortUpdatedDesc}</option>
+              <option value="updated-asc">{t.sortUpdatedAsc}</option>
+            </select>
           </div>
 
           <div class="category-filters">
@@ -163,7 +197,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
                       group.main.manifest.uses_lua ||
                         group.submods.some((submod) => submod.manifest.uses_lua),
                     )}
-                    updatedAt={group.main.sourceUpdatedAt}
+                    updatedAt={getGroupUpdatedAt(group)}
                   />
                 ))}
               </div>
