@@ -10,6 +10,7 @@ import minifyHTML from "lume/plugins/minify_html.ts"
 import robots from "lume/plugins/robots.ts"
 import jsonLd from "lume/plugins/json_ld.ts"
 import multilanguage from "lume/plugins/multilanguage.ts"
+import * as posix from "@std/path/posix"
 import { linguiMacroPlugin } from "./src/plugins/esbuild_lingui_macro.ts"
 
 const site = lume({ src: "./site", dest: "./_site" })
@@ -22,6 +23,9 @@ site.use(esbuild({
   options: {
     sourcemap: "both",
     minify: true,
+    entryNames: "[dir]/[name]-[hash]",
+    chunkNames: "chunks/[name]-[hash]",
+    assetNames: "assets/[name]-[hash]",
     define: { "process.env.NODE_ENV": '"production"' },
     plugins: [linguiMacroPlugin()],
   },
@@ -85,6 +89,51 @@ site.use(metas())
 site.use(sitemap())
 site.use(robots())
 site.use(jsonLd())
+
+const bundledScriptSources = new Map([
+  ["/app/main.js", ["app/main.tsx", "/app/main.tsx"]],
+  ["/mods/filter.js", ["mods/filter.ts", "/mods/filter.ts"]],
+])
+
+const toRootPath = (path: string): string => path.startsWith("/") ? path : `/${path}`
+const withoutSearch = (path: string): string => path.split(/[?#]/, 1)[0]
+
+const resolvePagePath = (pagePath: string, path: string): string => {
+  const cleanPath = withoutSearch(path)
+  if (cleanPath.startsWith("/")) return cleanPath
+  const pageDir = posix.dirname(toRootPath(pagePath))
+  return toRootPath(posix.normalize(posix.join(pageDir, cleanPath)))
+}
+
+const relativeToPage = (pagePath: string, targetPath: string): string => {
+  const pageDir = posix.dirname(toRootPath(pagePath))
+  return posix.relative(pageDir, toRootPath(targetPath)) || posix.basename(targetPath)
+}
+
+site.process([".html"], (pages, allPages) => {
+  const bundledScriptUrls = new Map(
+    [...bundledScriptSources].map(([originalUrl, sourcePaths]) => [
+      originalUrl,
+      toRootPath(
+        allPages.find((page) => sourcePaths.includes(page.sourcePath))?.data.url as string ??
+          originalUrl,
+      ),
+    ]),
+  )
+
+  for (const page of pages) {
+    const { document } = page
+    if (!document) continue
+
+    for (const script of document.querySelectorAll("script[src]")) {
+      const source = script.getAttribute("src")
+      if (!source) continue
+      const bundledUrl = bundledScriptUrls.get(resolvePagePath(page.outputPath, source))
+      if (bundledUrl) script.setAttribute("src", relativeToPage(page.outputPath, bundledUrl))
+    }
+  }
+})
+
 site.use(minifyHTML())
 
 site.copy("generated")

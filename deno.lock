@@ -77,6 +77,7 @@
     "npm:pagefind@1.4.0": "1.4.0",
     "npm:preact@^10.28.0": "10.28.0",
     "npm:remove-markdown@0.6.2": "0.6.2",
+    "npm:schema-dts@1.1.5": "1.1.5",
     "npm:source-map@*": "0.7.6"
   },
   "jsr": {
@@ -1811,6 +1812,9 @@
     "safe-buffer@5.2.1": {
       "integrity": "sha512-rp3So07KcdmmKbGvgaNxQSJr7bGVSVk5S9Eq1F+ppbRo70+YeaDxkw5Dd8NPN+GD6bjnYm2VuPuCXmpuYvmCXQ=="
     },
+    "schema-dts@1.1.5": {
+      "integrity": "sha512-RJr9EaCmsLzBX2NDiO5Z3ux2BVosNZN5jo0gWgsyKvxKIUL5R3swNvoorulAeL9kLB0iTSX7V6aokhla2m7xbg=="
+    },
     "seek-bzip@2.0.0": {
       "integrity": "sha512-SMguiTnYrhpLdk3PwfzHeotrcwi8bNV4iemL9tx9poR/yeaMYwB9VzR1w7b57DuWpuqR8n6oZboi0hj3AxZxQg==",
       "dependencies": [
@@ -2213,6 +2217,7 @@
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/pagefind.ts": "59906c366815e02b4b42afc077261bd80d977aa633e504d10b5adb516009b1f5",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/path.ts": "4f0c817d8570664560aa77e6e38184c95dc66b18fac9c2a83c6b719ef28f85ee",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/remove-markdown.ts": "e304dcdd2c1042a1de5b2df53c9c8c39f4462307f95d13e4b2fa1ded26851013",
+    "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/schema-dts.ts": "cbf7506dba867d835e40fb2523d5f646ade1ff241166872734076ed5eff6a23f",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/semver.ts": "2002761250eb5e2ed7989c5a0e3ad637bb1bbb90adcfac9feae1c3aaa0c1eaf2",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/ssx.ts": "1ce764ec3da6f748dbd53d4d0f28a084d984dda2857aa37172481f2e34167f25",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/deps/toml.ts": "151769d4382d8a4245e6d2e0ed5341a18216cdfc2b98c43fccaf5af957b47534",
@@ -2294,6 +2299,7 @@
     "https://deno.land/x/denoflate@1.2.1/mod.ts": "f5628e44b80b3d80ed525afa2ba0f12408e3849db817d47a883b801f9ce69dd6",
     "https://deno.land/x/denoflate@1.2.1/pkg/denoflate.js": "b9f9ad9457d3f12f28b1fb35c555f57443427f74decb403113d67364e4f2caf4",
     "https://deno.land/x/denoflate@1.2.1/pkg/denoflate_bg.wasm.js": "d581956245407a2115a3d7e8d85a9641c032940a8e810acbd59ca86afd34d44d",
+    "https://deno.land/x/xml@7.0.2/_types.ts": "203f97a91686f1aa9423ef07abe646da7caa07a2cf13b27897ffc4f43fdeae8f",
     "https://deno.land/x/xml@7.0.2/mod.ts": "ca2bb5a9a90d236a2b6242c8643717e0c53f645092d2407792dad728e1367f9a",
     "https://deno.land/x/xml@7.0.2/parse.ts": "8ae0d8339f589c29ab203dd7887e06325e2064efedfe9c61e2cd6d907443b664",
     "https://deno.land/x/xml@7.0.2/stringify.ts": "f604d3d88b8bdaff11dbc9d57a6e98fd9b353e3bfbafcaa3f421e6b470ea0e02",
