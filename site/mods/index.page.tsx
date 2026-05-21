@@ -212,7 +212,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
         </div>
       </div>
 
-      <script type="module" src="/mods/filter.js" />
+      <script type="module" src="/mods/filter.js?v=20260521a" />
     </>
   )
 }
