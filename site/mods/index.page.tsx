@@ -1,4 +1,4 @@
-import { partition, sortBy } from "@std/collections"
+import { partition } from "@std/collections"
 import { stripColorCodes } from "../../src/utils/color.ts"
 import { ModCard } from "../_includes/ModCard.tsx"
 import type { ModPageData } from "../_includes/types.ts"
@@ -70,6 +70,11 @@ const text = {
 const withLangPrefix = (lang: Locale, path: string): string =>
   lang === "en" ? path : `/${lang}${path === "/" ? "" : path}`
 
+const getTimestamp = (timestamp?: string): number => {
+  const time = Date.parse(timestamp ?? "")
+  return Number.isNaN(time) ? 0 : time
+}
+
 /** Group mods by parent, with the parent mod and its submods */
 interface ModGroup {
   main: ModPageData
@@ -93,8 +98,10 @@ const groupModsByParent = (mods: ModPageData[]): ModGroup[] => {
     submods: submodsByParent.get(mod.manifest.id.toLowerCase()) ?? [],
   }))
 
-  // Sort groups by main mod title
-  return sortBy(groups, (g) => stripColorCodes(g.main.title))
+  return groups.toSorted((a, b) =>
+    getTimestamp(getGroupUpdatedAt(b)) - getTimestamp(getGroupUpdatedAt(a)) ||
+    stripColorCodes(a.main.title).localeCompare(stripColorCodes(b.main.title))
+  )
 }
 
 /** Collect all unique categories from mods */
@@ -142,10 +149,10 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
           <div class="filter-control">
             <label for="mod-sort">{t.sort}</label>
             <select id="mod-sort" class="sort-select" aria-label={t.sortLabel}>
-              <option value="title-asc">{t.sortTitleAsc}</option>
-              <option value="title-desc">{t.sortTitleDesc}</option>
               <option value="updated-desc">{t.sortUpdatedDesc}</option>
               <option value="updated-asc">{t.sortUpdatedAsc}</option>
+              <option value="title-asc">{t.sortTitleAsc}</option>
+              <option value="title-desc">{t.sortTitleDesc}</option>
             </select>
           </div>
 

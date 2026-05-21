@@ -36,6 +36,7 @@ if you're github copilot AND NOT claude code:
 - Use `@lumeland/ds` design system for styling (CSS variables: `--color-*`, `--font-*`, etc.)
 - Use single shared schema definitions with `v.fallback()` for defaults - no duplicating field definitions
 - Use playwright MCP for style-related tasks
+- For deployed UI behavior, verify with browser automation on the canonical deployed URL, not static HTML inspection.
 - Do not add animation unless absolutely necessary
 - DO NOT run `deno task serve`, wait for user to run web server on `:3000`
 - only rebuild when regenerating manifests (lume has hot reload)

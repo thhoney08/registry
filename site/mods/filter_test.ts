@@ -5,9 +5,9 @@ import { compareModCards, SortSchema } from "./filter.ts"
 const card = (title: string, updatedAt = ""): HTMLElement =>
   ({ dataset: { title, updatedAt } }) as unknown as HTMLElement
 
-Deno.test("SortSchema falls back to title sort for invalid query values", () => {
-  assertEquals(v.parse(SortSchema, "updated-desc"), "updated-desc")
-  assertEquals(v.parse(SortSchema, "nope"), "title-asc")
+Deno.test("SortSchema falls back to newest update sort for invalid query values", () => {
+  assertEquals(v.parse(SortSchema, "title-asc"), "title-asc")
+  assertEquals(v.parse(SortSchema, "nope"), "updated-desc")
 })
 
 Deno.test("compareModCards sorts by newest update with title fallback", () => {

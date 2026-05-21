@@ -3,14 +3,14 @@ import * as v from "valibot"
 
 export const SortSchema = v.fallback(
   v.picklist(["title-asc", "title-desc", "updated-desc", "updated-asc"]),
-  "title-asc",
+  "updated-desc",
 )
 export type SortKey = v.InferOutput<typeof SortSchema>
 
 const searchTerm = signal("")
 const selectedCategories = signal<string[]>([])
 const onlyLua = signal(false)
-const selectedSort = signal<SortKey>("title-asc")
+const selectedSort = signal<SortKey>("updated-desc")
 
 const state = computed(() => ({
   searchTerm: searchTerm.value.trim().toLowerCase(),
@@ -43,7 +43,7 @@ const writeQuery = (
   if (searchTerm) params.set("search", searchTerm)
   for (const category of selectedCategories) params.append("category", category)
   if (onlyLua) params.set("lua", "true")
-  if (selectedSort !== "title-asc") params.set("sort", selectedSort)
+  if (selectedSort !== "updated-desc") params.set("sort", selectedSort)
 
   const query = params.toString()
   const next = `${location.pathname}${query ? `?${query}` : ""}${location.hash}`
