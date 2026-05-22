@@ -3,11 +3,26 @@
  * Categories and tags form section.
  */
 
-import { MOD_CATEGORIES } from "./types.ts"
-import { store } from "./store.ts"
+import { signal } from "@preact/signals"
 import { t } from "@lingui/core/macro"
+import type { JSX } from "preact"
+import { store } from "./store.ts"
+import { appendCommittedTag } from "./tags.ts"
+import { MOD_CATEGORIES } from "./types.ts"
 
-/** Toggle a category in the store */
+const tagDraft = signal("")
+const addingTag = signal(false)
+
+const resetTagInput = () => {
+  tagDraft.value = ""
+  addingTag.value = false
+}
+
+const commitTag = () => {
+  store.tags = appendCommittedTag(store.tags, tagDraft.value)
+  resetTagInput()
+}
+
 const toggleCategory = (cat: string) => {
   if (store.categories.includes(cat)) {
     store.categories = store.categories.filter((c) => c !== cat)
@@ -38,47 +53,59 @@ export const CategoriesSection = () => (
       <p>{t`Tags`}</p>
       <div class="badge-group">
         {store.tags.map((tag, index) => (
-          tag
-            ? (
-              <span key={index} class="badge badge-tag">
-                {tag}
-                <button
-                  type="button"
-                  class="badge-remove"
-                  onClick={() => store.tags.splice(index, 1)}
-                >
-                  ×
-                </button>
-              </span>
-            )
-            : (
-              <div key={index} class="tag-input-wrapper">
-                <input
-                  type="text"
-                  class="tag-input"
-                  placeholder={t`Enter tag`}
-                  value={tag}
-                  onInput={(e) => store.tags[index] = e.currentTarget.value}
-                  onKeyDown={(e) => {
-                    if (e.key === "Enter" && e.currentTarget.value) {
-                      e.preventDefault()
-                    }
-                  }}
-                />
-                <button
-                  type="button"
-                  class="badge-remove"
-                  onClick={() => store.tags.splice(index, 1)}
-                >
-                  ×
-                </button>
-              </div>
-            )
+          <span key={index} class="badge badge-tag">
+            {tag}
+            <button
+              type="button"
+              class="badge-remove"
+              onClick={() =>
+                store.tags.splice(index, 1)}
+            >
+              ×
+            </button>
+          </span>
         ))}
+        {addingTag.value && (
+          <div class="tag-input-wrapper">
+            <input
+              type="text"
+              class="tag-input"
+              placeholder={t`Enter tag`}
+              value={tagDraft.value}
+              autoFocus
+              onBlur={commitTag}
+              onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+                tagDraft.value = e.currentTarget.value
+              }}
+              onKeyDown={(e: JSX.TargetedKeyboardEvent<HTMLInputElement>) => {
+                if (e.key === "Enter") {
+                  e.preventDefault()
+                  commitTag()
+                }
+                if (e.key === "Escape") resetTagInput()
+              }}
+            />
+            <button
+              type="button"
+              class="badge-remove"
+              onMouseDown={(e: JSX.TargetedMouseEvent<HTMLButtonElement>) =>
+                e.preventDefault()}
+              onClick={resetTagInput}
+            >
+              ×
+            </button>
+          </div>
+        )}
         <button
           type="button"
           class="badge badge-add"
-          onClick={() => store.tags.push("")}
+          onMouseDown={(e: JSX.TargetedMouseEvent<HTMLButtonElement>) => {
+            if (addingTag.value) e.preventDefault()
+          }}
+          onClick={() => {
+            if (addingTag.value) commitTag()
+            else addingTag.value = true
+          }}
         >
           {t`+ Add Tag`}
         </button>
