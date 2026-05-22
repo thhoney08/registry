@@ -4,12 +4,7 @@
  */
 
 import * as v from "valibot"
-import {
-  AutoupdateType,
-  ModIdPattern,
-  semVerCheck,
-  SourceType,
-} from "../../../../src/schema/manifest.ts"
+import { AutoupdateType, ModId, semVerCheck, SourceType } from "../../../../src/schema/manifest.ts"
 
 /**
  * Form schema for the manifest generator.
@@ -17,15 +12,8 @@ import {
  * but with a flat structure suitable for form inputs.
  */
 export const ManifestFormSchema = v.object({
-  // Identity - URL-representable mod ID
-  id: v.pipe(
-    v.string(),
-    v.nonEmpty("ID is required"),
-    v.regex(
-      ModIdPattern,
-      "ID must be URL-representable: lowercase alphanumeric with underscores/dashes",
-    ),
-  ),
+  // Identity - game modinfo ID
+  id: ModId,
   displayName: v.pipe(
     v.string(),
     v.nonEmpty("Display name is required"),

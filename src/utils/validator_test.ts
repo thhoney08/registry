@@ -67,7 +67,7 @@ Deno.test("SemVerRange - rejects invalid ranges", () => {
   assertEquals(v.safeParse(SemVerRange, "abc").success, false)
 })
 
-// Tests for ModId schema (URL-representable IDs)
+// Tests for ModId schema
 Deno.test("ModId - valid lowercase with underscores", () => {
   assertEquals(v.safeParse(ModId, "arcana_patch").success, true)
   assertEquals(v.safeParse(ModId, "test_mod").success, true)
@@ -83,30 +83,25 @@ Deno.test("ModId - valid starting with number", () => {
   assertEquals(v.safeParse(ModId, "123mod").success, true)
 })
 
-Deno.test("ModId - rejects uppercase", () => {
-  assertEquals(v.safeParse(ModId, "Arcana").success, false)
-  assertEquals(v.safeParse(ModId, "TestMod").success, false)
+Deno.test("ModId - accepts game IDs with uppercase and spaces", () => {
+  assertEquals(v.safeParse(ModId, "Arcana").success, true)
+  assertEquals(v.safeParse(ModId, "Test Mod").success, true)
 })
 
-Deno.test("ModId - rejects spaces", () => {
-  assertEquals(v.safeParse(ModId, "test mod").success, false)
-  assertEquals(v.safeParse(ModId, "test mod patch").success, false)
-})
-
-Deno.test("ModId - rejects special characters", () => {
-  assertEquals(v.safeParse(ModId, "mod@test").success, false)
+Deno.test("ModId - rejects URL delimiter and control characters", () => {
   assertEquals(v.safeParse(ModId, "mod#1").success, false)
+  assertEquals(v.safeParse(ModId, "mod?1").success, false)
   assertEquals(v.safeParse(ModId, "mod/sub").success, false)
+  assertEquals(v.safeParse(ModId, "mod\nsub").success, false)
 })
 
 Deno.test("ModId - rejects empty string", () => {
   assertEquals(v.safeParse(ModId, "").success, false)
 })
 
-Deno.test("ModIdPattern - matches URL-representable strings", () => {
+Deno.test("ModIdPattern - matches game mod IDs", () => {
   assertEquals(ModIdPattern.test("arcana"), true)
-  assertEquals(ModIdPattern.test("arcana_patch"), true)
-  assertEquals(ModIdPattern.test("arcana-patch"), true)
+  assertEquals(ModIdPattern.test("Arcana Patch"), true)
   assertEquals(ModIdPattern.test("3x_healing"), true)
   assertEquals(ModIdPattern.test("mod123"), true)
 })

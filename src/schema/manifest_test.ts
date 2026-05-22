@@ -1,6 +1,6 @@
 import { assertEquals, assertThrows } from "@std/assert"
 import * as v from "valibot"
-import { ModManifest } from "./manifest.ts"
+import { completedDependencies, ModManifest, ModManifestWithDefaults } from "./manifest.ts"
 
 const baseManifest = {
   schema_version: "1.0",
@@ -15,6 +15,32 @@ const baseManifest = {
     url: "https://github.com/example/test/archive/refs/heads/main.zip",
   },
 }
+
+Deno.test("ModManifest - accepts game mod IDs with uppercase and spaces", () => {
+  const manifest = v.parse(ModManifest, {
+    ...baseManifest,
+    id: "XE038 Patch",
+    dependencies: { "Sudo Requiem": ">=1.0.0" },
+  })
+
+  assertEquals(manifest.id, "XE038 Patch")
+  assertEquals(manifest.dependencies?.["Sudo Requiem"], ">=1.0.0")
+})
+
+Deno.test("ModManifestWithDefaults - skips incomplete or invalid dependency rows", () => {
+  const dependencies = completedDependencies([
+    ["bn", ">=0.9.1"],
+    ["", ""],
+    ["XE038", ""],
+    ["broken", ">"],
+  ])
+  const manifest = v.parse(ModManifestWithDefaults, {
+    ...baseManifest,
+    dependencies: Object.fromEntries(dependencies),
+  })
+
+  assertEquals(manifest.dependencies, { bn: ">=0.9.1" })
+})
 
 Deno.test("ModManifest - accepts soundpack package type", () => {
   const manifest = v.parse(ModManifest, {

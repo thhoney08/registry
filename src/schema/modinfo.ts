@@ -53,9 +53,7 @@ export type ModCategory = v.InferOutput<typeof ModCategory>
  * Only type "MOD_INFO" is accepted (not "CORE" which is for core game data).
  */
 const ModIdField = v.pipe(
-  v.string(
-    "Unique mod identifier, used for dependencies. Convention: lowercase with underscores",
-  ),
+  v.string("Unique mod identifier, used for dependencies"),
   v.nonEmpty("Mod ID cannot be empty"),
 )
 

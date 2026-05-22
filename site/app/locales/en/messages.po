@@ -270,8 +270,8 @@ msgid "Loading..."
 msgstr "Loading..."
 
 #: site/app/components/manifest-generator/IdentitySection.tsx
-msgid "Lowercase alphanumeric with underscores"
-msgstr "Lowercase alphanumeric with underscores"
+msgid "Match the ID in modinfo.json"
+msgstr "Match the ID in modinfo.json"
 
 #: site/app/components/manifest-generator/AutoupdateSection.tsx
 msgid "main"

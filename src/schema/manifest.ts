@@ -40,6 +40,32 @@ export const SemVerRange = v.pipe(
 export type SemVerRange = v.InferOutput<typeof SemVerRange>
 
 /**
+ * Pattern for game mod IDs used in modinfo.json.
+ * - Must not be empty or all whitespace
+ * - May contain uppercase letters and spaces because the game accepts them
+ * - Must not contain path, query, fragment, or control characters used by generated URLs
+ * Used for `id`, `parent`, and dependency keys.
+ */
+export const ModIdPattern = /^(?=.*\S)[^/\\?#]+$/
+
+/**
+ * ModId schema - reusable for id, parent, and dependency keys.
+ */
+export const ModId = v.pipe(
+  v.string("Mod ID must be a string"),
+  v.minLength(1, "Mod ID cannot be empty"),
+  v.regex(
+    ModIdPattern,
+    "Mod ID cannot be empty or contain /, \\, ?, or #",
+  ),
+  v.check(
+    (value) => !/\p{Cc}/u.test(value),
+    "Mod ID cannot contain control characters",
+  ),
+)
+export type ModId = v.InferOutput<typeof ModId>
+
+/**
  * Dependencies in npm package.json style: { "mod_id": "version_constraint", ... }
  * Version constraints follow node-semver format:
  * - ">=0.9.1" - version 0.9.1 or higher
@@ -50,7 +76,7 @@ export type SemVerRange = v.InferOutput<typeof SemVerRange>
  * Special: "bn" is the base game (Bright Nights)
  */
 export const Dependencies = v.record(
-  v.string("Mod ID"),
+  ModId,
   SemVerRange,
   'Dependencies object: { "mod_id": "version_constraint" }. "bn" is the base game.',
 )
@@ -117,29 +143,6 @@ export const ModSource = v.object({
   ),
 })
 export type ModSource = v.InferOutput<typeof ModSource>
-
-/**
- * Pattern for URL-representable mod IDs.
- * - Must be lowercase alphanumeric with underscores and dashes
- * - Must start with a letter or number
- * - Must not be empty
- * Used for both `id` and `parent` fields.
- */
-export const ModIdPattern = /^[a-z0-9][a-z0-9_-]*$/
-
-/**
- * ModId schema - reusable for id, parent, and dependency keys.
- * URL-representable: lowercase alphanumeric with underscores/dashes.
- */
-export const ModId = v.pipe(
-  v.string("Mod ID must be a string"),
-  v.minLength(1, "Mod ID cannot be empty"),
-  v.regex(
-    ModIdPattern,
-    "Mod ID must be URL-representable: lowercase alphanumeric with underscores/dashes, starting with letter or number",
-  ),
-)
-export type ModId = v.InferOutput<typeof ModId>
 
 /** Common SPDX licenses */
 export const CommonLicenses = [
@@ -351,11 +354,21 @@ export const ModManifestWithDefaults = v.object({
 })
 export type ModManifestWithDefaults = v.InferOutput<typeof ModManifestWithDefaults>
 
+const DependencyEntry = v.tuple([ModId, SemVerRange])
+
+export const completedDependencies = (dependencies: [string, string][]): [string, string][] =>
+  dependencies
+    .map(([id, version]) => [id.trim(), version.trim()] as [string, string])
+    .filter((dependency) => v.safeParse(DependencyEntry, dependency).success)
+
 /**
  * Converts store state to a manifest object with defaults applied.
  * Filters out empty/undefined optional fields for clean YAML output.
  */
 export const storeToManifest = computed((): ModManifestWithDefaults => {
+  const dependencies = completedDependencies(
+    store.dependencies.map(([id, version]) => [id, version]),
+  )
   const result = v.parse(ModManifestWithDefaults, {
     schema_version: "1.0",
     package_type: undefined,
@@ -367,9 +380,7 @@ export const storeToManifest = computed((): ModManifestWithDefaults => {
     license: store.license || undefined,
     homepage: store.homepage || undefined,
     version: store.version || undefined,
-    dependencies: store.dependencies.length > 0
-      ? Object.fromEntries(store.dependencies)
-      : undefined,
+    dependencies: dependencies.length > 0 ? Object.fromEntries(dependencies) : undefined,
     source: {
       type: store.sourceType || undefined,
       url: store.sourceUrl || undefined,

@@ -3,8 +3,9 @@
  * Autoupdate form section for automatic version updates.
  */
 
-import { store } from "./store.ts"
 import { t } from "@lingui/core/macro"
+import type { JSX } from "preact"
+import { store } from "./store.ts"
 
 export const AutoupdateSection = () => (
   <section class="form-section">
@@ -14,8 +15,10 @@ export const AutoupdateSection = () => (
         <button
           type="button"
           role="switch"
-          aria-checked={store.enableAutoupdate}
-          onClick={() => (store.enableAutoupdate = !store.enableAutoupdate)}
+          aria-checked={store.enableAutoupdate ? "true" : "false"}
+          onClick={() => {
+            store.enableAutoupdate = !store.enableAutoupdate
+          }}
         />
         <span class="toggle-label">
           {t`Enable automatic updates from source repository`}
@@ -66,19 +69,25 @@ export const AutoupdateSection = () => (
               type="text"
               placeholder={t`main`}
               value={store.autoupdateBranch}
-              onInput={(e) => (store.autoupdateBranch = e.currentTarget.value)}
+              onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+                store.autoupdateBranch = e.currentTarget.value
+              }}
             />
           </div>
         )}
         {store.autoupdateType === "tag" && (
           <div class="form-group">
-            <label htmlFor="autoupdate-tag-regex">{t`Tag Regex (optional)`}</label>
+            <label htmlFor="autoupdate-tag-regex">
+              {t`Tag Regex (optional)`}
+            </label>
             <input
               id="autoupdate-tag-regex"
               type="text"
               placeholder={t`^v[0-9]+\.[0-9]+\.[0-9]+$`}
               value={store.autoupdateRegex}
-              onInput={(e) => (store.autoupdateRegex = e.currentTarget.value)}
+              onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+                store.autoupdateRegex = e.currentTarget.value
+              }}
             />
             <small>
               {t`PCRE2 regex to filter tags. Only matching tags are considered for updates.`}

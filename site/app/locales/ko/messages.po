@@ -270,8 +270,8 @@ msgid "Loading..."
 msgstr "불러오는 중..."
 
 #: site/app/components/manifest-generator/IdentitySection.tsx
-msgid "Lowercase alphanumeric with underscores"
-msgstr "소문자 영문자/숫자와 밑줄 사용"
+msgid "Match the ID in modinfo.json"
+msgstr "modinfo.json의 ID와 맞추세요"
 
 #: site/app/components/manifest-generator/AutoupdateSection.tsx
 msgid "main"

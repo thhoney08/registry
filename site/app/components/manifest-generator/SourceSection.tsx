@@ -3,8 +3,9 @@
  * Source form section for download URL and related settings.
  */
 
-import { store } from "./store.ts"
 import { t } from "@lingui/core/macro"
+import type { JSX } from "preact"
+import { store } from "./store.ts"
 
 export const SourceSection = () => (
   <section class="form-section">
@@ -14,7 +15,9 @@ export const SourceSection = () => (
       <select
         id="source-type"
         value={store.sourceType}
-        onChange={(e) => (store.sourceType = e.currentTarget.value)}
+        onChange={(e: JSX.TargetedEvent<HTMLSelectElement>) => {
+          store.sourceType = e.currentTarget.value
+        }}
       >
         <option value="github_archive">{t`GitHub Archive`}</option>
         <option value="gitlab_archive">{t`GitLab Archive`}</option>
@@ -28,7 +31,9 @@ export const SourceSection = () => (
         type="url"
         placeholder={t`https://github.com/owner/repo/archive/refs/heads/main.zip`}
         value={store.sourceUrl}
-        onInput={(e) => (store.sourceUrl = e.currentTarget.value)}
+        onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          store.sourceUrl = e.currentTarget.value
+        }}
       />
     </div>
     <div class="form-group">
@@ -38,17 +43,23 @@ export const SourceSection = () => (
         type="text"
         placeholder={t`abc123...`}
         value={store.commitSha}
-        onInput={(e) => (store.commitSha = e.currentTarget.value)}
+        onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          store.commitSha = e.currentTarget.value
+        }}
       />
     </div>
     <div class="form-group">
-      <label htmlFor="source-extract-path">{t`Extract Path (for modpacks)`}</label>
+      <label htmlFor="source-extract-path">
+        {t`Extract Path (for modpacks)`}
+      </label>
       <input
         id="source-extract-path"
         type="text"
         placeholder={t`repo-main/path/to/mod`}
         value={store.extractPath}
-        onInput={(e) => (store.extractPath = e.currentTarget.value)}
+        onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          store.extractPath = e.currentTarget.value
+        }}
       />
       <small>{t`Path inside the archive where the mod is located`}</small>
     </div>

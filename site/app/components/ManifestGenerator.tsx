@@ -12,12 +12,7 @@
  * Uses Octokit for GitHub API calls.
  */
 
-import {
-  buildArchiveUrl,
-  parseGitHubUrl,
-  stripColorCodes,
-  toManifestId,
-} from "../../../src/utils/github.ts"
+import { buildArchiveUrl, parseGitHubUrl, stripColorCodes } from "../../../src/utils/github.ts"
 import { createOctokit, discoverMods, fetchRepoMetadata } from "../../../src/utils/github_fetch.ts"
 import { convertDependencies, parseModInfo } from "../../../src/schema/modinfo.ts"
 import { storeToManifest } from "../../../src/schema/manifest.ts"
@@ -63,7 +58,7 @@ const applyModInfo = (
   },
   path?: string,
 ) => {
-  if (modinfo.id) store.id = toManifestId(modinfo.id)
+  if (modinfo.id) store.id = modinfo.id
   store.displayName = stripColorCodes(modinfo.name || "")
   if (modinfo.description) {
     store.shortDescription = stripColorCodes(modinfo.description).slice(0, 200)

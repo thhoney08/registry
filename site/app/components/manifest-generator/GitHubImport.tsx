@@ -2,9 +2,10 @@
  * GitHub import section for fetching mods from a GitHub repository.
  */
 
+import { t } from "@lingui/core/macro"
+import type { JSX } from "preact"
 import { stripColorCodes } from "../../../../src/utils/github.ts"
 import { store } from "./store.ts"
-import { t } from "@lingui/core/macro"
 
 interface GitHubImportProps {
   onFetch: () => void
@@ -25,7 +26,9 @@ export const GitHubImport = ({
           type="text"
           placeholder={t`https://github.com/owner/repo`}
           value={store.githubUrl}
-          onInput={(e) => (store.githubUrl = e.currentTarget.value)}
+          onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+            store.githubUrl = e.currentTarget.value
+          }}
         />
         <button
           type="button"

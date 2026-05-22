@@ -270,8 +270,8 @@ msgid "Loading..."
 msgstr "読み込み中..."
 
 #: site/app/components/manifest-generator/IdentitySection.tsx
-msgid "Lowercase alphanumeric with underscores"
-msgstr "小文字英数字とアンダースコアを使用"
+msgid "Match the ID in modinfo.json"
+msgstr "modinfo.jsonのIDに合わせてください"
 
 #: site/app/components/manifest-generator/AutoupdateSection.tsx
 msgid "main"

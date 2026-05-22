@@ -3,9 +3,14 @@
  * Attribution form section for author, license, homepage, and icon.
  */
 
-import { CommonLicenses } from "./types.ts"
-import { store } from "./store.ts"
 import { t } from "@lingui/core/macro"
+import type { JSX } from "preact"
+import { store } from "./store.ts"
+import { CommonLicenses } from "./types.ts"
+
+const setAuthor = (index: number, value: string) => {
+  store.author = store.author.map((author, currentIndex) => currentIndex === index ? value : author)
+}
 
 export const AttributionSection = () => (
   <section class="form-section">
@@ -20,12 +25,16 @@ export const AttributionSection = () => (
               type="text"
               placeholder={t`Author ${index + 1}`}
               value={author}
-              onInput={(e) => store.author[index] = e.currentTarget.value}
+              onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+                setAuthor(index, e.currentTarget.value)
+              }}
             />
             <button
               type="button"
               class="btn-remove"
-              onClick={() => store.author.splice(index, 1)}
+              onClick={() => {
+                store.author = store.author.filter((_, currentIndex) => currentIndex !== index)
+              }}
             >
               ×
             </button>
@@ -35,7 +44,9 @@ export const AttributionSection = () => (
       <button
         type="button"
         class="btn-add"
-        onClick={() => store.author.push("")}
+        onClick={() => {
+          store.author = [...store.author, ""]
+        }}
       >
         {t`+ Add Author`}
       </button>
@@ -45,7 +56,9 @@ export const AttributionSection = () => (
       <select
         id="license"
         value={store.license}
-        onChange={(e) => (store.license = e.currentTarget.value)}
+        onChange={(e: JSX.TargetedEvent<HTMLSelectElement>) => {
+          store.license = e.currentTarget.value
+        }}
       >
         {CommonLicenses.map((lic) => (
           <option key={lic} value={lic}>
@@ -61,7 +74,9 @@ export const AttributionSection = () => (
         type="url"
         placeholder="https://github.com/owner/repo"
         value={store.homepage}
-        onInput={(e) => (store.homepage = e.currentTarget.value)}
+        onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          store.homepage = e.currentTarget.value
+        }}
       />
     </div>
     <div class="form-group">
@@ -71,9 +86,13 @@ export const AttributionSection = () => (
         type="url"
         placeholder="https://example.com/icon.svg"
         value={store.iconUrl}
-        onInput={(e) => (store.iconUrl = e.currentTarget.value)}
+        onInput={(e: JSX.TargetedEvent<HTMLInputElement>) => {
+          store.iconUrl = e.currentTarget.value
+        }}
       />
-      <small>{t`URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)`}</small>
+      <small>
+        {t`URL to icon image (PNG/SVG/WebP/AVIF/JPG/GIF, recommended 160x160)`}
+      </small>
     </div>
   </section>
 )

@@ -58,8 +58,9 @@ export const CategoriesSection = () => (
             <button
               type="button"
               class="badge-remove"
-              onClick={() =>
-                store.tags.splice(index, 1)}
+              onClick={() => {
+                store.tags = store.tags.filter((_, currentIndex) => currentIndex !== index)
+              }}
             >
               ×
             </button>
@@ -88,8 +89,7 @@ export const CategoriesSection = () => (
             <button
               type="button"
               class="badge-remove"
-              onMouseDown={(e: JSX.TargetedMouseEvent<HTMLButtonElement>) =>
-                e.preventDefault()}
+              onMouseDown={(e: JSX.TargetedMouseEvent<HTMLButtonElement>) => e.preventDefault()}
               onClick={resetTagInput}
             >
               ×
