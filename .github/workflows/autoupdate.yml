@@ -29,8 +29,8 @@ jobs:
           git -C registry-index fetch origin main
           git -C registry-index checkout -B main origin/main
 
-      - name: Run tag-only autoupdate
-        run: deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts registry-index/manifests --tag-only
+      - name: Run autoupdate
+        run: deno run -RW --allow-net --allow-env --allow-run=gh src/scripts/autoupdate.ts registry-index/manifests
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
 
