@@ -1,9 +1,9 @@
 import { assertEquals } from "@std/assert"
 import * as v from "valibot"
-import { compareModCards, SortSchema } from "./filter.ts"
+import { compareModCards, filterCards, SortSchema } from "./filter.ts"
 
-const card = (title: string, updatedAt = ""): HTMLElement =>
-  ({ dataset: { title, updatedAt } }) as unknown as HTMLElement
+const card = (title: string, updatedAt = "", modCount?: string): HTMLElement =>
+  ({ dataset: { title, updatedAt, modCount }, style: {} }) as unknown as HTMLElement
 
 Deno.test("SortSchema falls back to newest update sort for invalid query values", () => {
   assertEquals(v.parse(SortSchema, "title-asc"), "title-asc")
@@ -35,4 +35,15 @@ Deno.test("compareModCards sorts titles both directions", () => {
     cards.toSorted((a, b) => compareModCards(a, b, "title-desc")).map((item) => item.dataset.title),
     ["Beta", "Alpha"],
   )
+})
+
+Deno.test("filterCards counts submods for visible mod groups", () => {
+  const countEl = { textContent: "" } as HTMLElement
+  filterCards(
+    [card("Parent", "", "3"), card("Standalone")],
+    countEl,
+    { searchTerm: "", selectedCategories: [], onlyLua: false, selectedSort: "updated-desc" },
+  )
+
+  assertEquals(countEl.textContent, "4")
 })

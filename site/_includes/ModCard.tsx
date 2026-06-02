@@ -83,6 +83,7 @@ export const ModCard = (
       data-categories={categories}
       data-uses-lua={cardUsesLua ? "true" : "false"}
       data-updated-at={updatedAt ?? ""}
+      data-mod-count={String(1 + submodCount)}
     >
       {submodCount > 0 && (
         <>

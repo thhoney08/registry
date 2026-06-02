@@ -7,6 +7,16 @@ export const SortSchema = v.fallback(
 )
 export type SortKey = v.InferOutput<typeof SortSchema>
 
+const ModCountSchema = v.fallback(
+  v.pipe(
+    v.string(),
+    v.transform((value) => Number(value)),
+    v.integer(),
+    v.minValue(1),
+  ),
+  1,
+)
+
 const searchTerm = signal("")
 const selectedCategories = signal<string[]>([])
 const onlyLua = signal(false)
@@ -97,7 +107,9 @@ const sortCards = (cards: HTMLElement[], selectedSort: SortKey) => {
   grid.append(...cards.toSorted((a, b) => compareModCards(a, b, selectedSort)))
 }
 
-const filterCards = (
+const getModCount = (card: HTMLElement): number => v.parse(ModCountSchema, card.dataset.modCount)
+
+export const filterCards = (
   cards: HTMLElement[],
   countEl: HTMLElement | null,
   { searchTerm, selectedCategories, onlyLua }: typeof state.value,
@@ -115,7 +127,7 @@ const filterCards = (
       selectedCategories.some((category) => categories.includes(category))
     const visible = matchesSearch && matchesCategory && (!onlyLua || usesLua)
     card.style.display = visible ? "" : "none"
-    if (visible) visibleCount++
+    if (visible) visibleCount += getModCount(card)
   }
 
   if (countEl) countEl.textContent = String(visibleCount)

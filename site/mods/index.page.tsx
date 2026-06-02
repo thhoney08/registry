@@ -76,7 +76,7 @@ const getTimestamp = (timestamp?: string): number => {
 }
 
 /** Group mods by parent, with the parent mod and its submods */
-interface ModGroup {
+export interface ModGroup {
   main: ModPageData
   submods: ModPageData[]
 }
@@ -85,9 +85,12 @@ interface ModGroup {
  * Group mods by their `parent` field.
  * Parent mods appear as the main card, submods are grouped under them.
  */
-const groupModsByParent = (mods: ModPageData[]): ModGroup[] => {
-  // Partition mods into parent mods and submods
-  const [submods, parentMods] = partition(mods, (mod) => Boolean(mod.manifest.parent))
+export const groupModsByParent = (mods: ModPageData[]): ModGroup[] => {
+  const modIds = new Set(mods.map((mod) => mod.manifest.id.toLowerCase()))
+  const [submods, parentMods] = partition(
+    mods,
+    (mod) => Boolean(mod.manifest.parent && modIds.has(mod.manifest.parent.toLowerCase())),
+  )
 
   // Group submods by their parent ID
   const submodsByParent = Map.groupBy(submods, (mod) => mod.manifest.parent!.toLowerCase())
