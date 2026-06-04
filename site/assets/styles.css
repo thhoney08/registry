@@ -432,10 +432,9 @@ header nav .nav-search {
     margin-top: 0;
   }
 
-  /* Keep logo visible and grow to push hamburger right */
   body > nav .logo,
   header nav .logo {
-    flex: 1;
+    display: none;
   }
 
   /* Theme toggle next to hamburger */
