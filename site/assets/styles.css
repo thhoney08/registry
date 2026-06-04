@@ -402,8 +402,8 @@ header nav .nav-search {
     padding: 0.5rem 0;
   }
 
-  body > nav .btn-add-wrapper,
-  header nav .btn-add-wrapper {
+  body > nav .nav-actions-list > .btn-add-wrapper,
+  header nav .nav-actions-list > .btn-add-wrapper {
     display: none;
   }
 
