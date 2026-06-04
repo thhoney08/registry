@@ -404,14 +404,7 @@ header nav .nav-search {
 
   body > nav .btn-add-wrapper,
   header nav .btn-add-wrapper {
-    order: 10;
-  }
-
-  body > nav .btn-add,
-  header nav .btn-add {
-    min-height: 2.25rem;
-    padding: 0.4rem 0.8rem;
-    font-size: 0.875rem;
+    display: none;
   }
 
   body > nav .nav-search,
@@ -445,11 +438,6 @@ header nav .nav-search {
 }
 
 @media (max-width: 420px) {
-  body > nav .btn-add-wrapper,
-  header nav .btn-add-wrapper {
-    display: none;
-  }
-
   body > nav .nav-search,
   header nav .nav-search {
     min-width: 7rem;
