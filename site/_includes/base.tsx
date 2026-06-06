@@ -183,7 +183,7 @@ export default (
           {/* Theme script - must run before body to prevent flash */}
           <script dangerouslySetInnerHTML={{ __html: themeScript }} />
           {/* Our styles (imports @lumeland/ds) */}
-          <link rel="stylesheet" href="/assets/styles.css?v=20260604c" />
+          <link rel="stylesheet" href="/assets/styles.css" hash="" />
           <link
             id="highlight-theme-light"
             rel="stylesheet"

@@ -7,7 +7,7 @@ lang: en
 url: /docs/generator/
 ---
 
-<link rel="stylesheet" href="/manifest-generator.css" />
+<link rel="stylesheet" href="/manifest-generator.css" hash />
 
 <h1>Manifest Generator</h1>
 

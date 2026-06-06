@@ -7,7 +7,7 @@ lang: ko
 url: /docs/generator/
 ---
 
-<link rel="stylesheet" href="/manifest-generator.css" />
+<link rel="stylesheet" href="/manifest-generator.css" hash />
 
 <h1>명세서 생성기</h1>
 

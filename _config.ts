@@ -10,6 +10,7 @@ import minifyHTML from "lume/plugins/minify_html.ts"
 import robots from "lume/plugins/robots.ts"
 import jsonLd from "lume/plugins/json_ld.ts"
 import multilanguage from "lume/plugins/multilanguage.ts"
+import cacheBusting from "https://cdn.jsdelivr.net/gh/lumeland/experimental-plugins@2a2441fa5300d1ffafe6ba60876919da00a48d48/cache_busting/mod.ts"
 import * as posix from "@std/path/posix"
 import { linguiMacroPlugin } from "./src/plugins/esbuild_lingui_macro.ts"
 
@@ -32,6 +33,7 @@ site.use(esbuild({
 }))
 
 // Core plugins
+site.use(cacheBusting())
 site.use(relativeUrls())
 site.use(multilanguage({
   languages: ["en", "ko", "ja"],
@@ -137,9 +139,9 @@ site.process([".html"], (pages, allPages) => {
 site.use(minifyHTML())
 
 site.copy("generated")
-site.copy("assets")
-site.copy("styles.css")
-site.copy("manifest-generator.css")
+site.copy([".svg", ".txt"])
+site.add("assets/styles.css")
+site.add("manifest-generator.css")
 
 // Global data
 site.data("layout", "base.tsx")

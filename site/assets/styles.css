@@ -619,6 +619,23 @@ main {
   justify-content: space-between;
 }
 
+.mod-homepage-icon {
+  flex-shrink: 0;
+}
+
+.mod-homepage-github-bg {
+  display: none;
+  fill: #fff;
+}
+
+html[data-theme="dark"] .mod-homepage-github-icon {
+  color: #24292f;
+}
+
+html[data-theme="dark"] .mod-homepage-github-bg {
+  display: block;
+}
+
 .mod-page aside dl {
   display: grid;
   grid-template-columns: auto 1fr;

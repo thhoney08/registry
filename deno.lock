@@ -2138,6 +2138,7 @@
     "https://cdn.jsdelivr.net/gh/c4spar/deno-cliffy@0.25.7/table/utils.ts": "187bb7dcbcfb16199a5d906113f584740901dfca1007400cba0df7dcd341bc29",
     "https://cdn.jsdelivr.net/gh/esbuild/deno-esbuild@0.27.0/mod.js": "497e8cf52815e7c9bd5a8ac5cec60dc3bdbea86301bae44bb89b7ca83532e3d0",
     "https://cdn.jsdelivr.net/gh/lumeland/bar@0.1.13/types.ts": "38f3714e1432c174009495333972f85fb306eb6313112ac8830fda9f1f47e87f",
+    "https://cdn.jsdelivr.net/gh/lumeland/experimental-plugins@2a2441fa5300d1ffafe6ba60876919da00a48d48/cache_busting/mod.ts": "250540efe903cd9117f6aa6a5258b8b9660df1ab55fe6611062af5659de4cf75",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/cli.ts": "b29c474656e3cca371befdb08440123b7d07049b5b8f920a40aa90a1ac93572b",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/cli/build.ts": "fe8c45d8af369d719fb7378df09387abec21acffa37d04f1129d80d5b20ec1e8",
     "https://cdn.jsdelivr.net/gh/lumeland/lume@3.1.2/cli/build_worker.ts": "3869d5fe4fdb6446b964fec87ce13df1a00213ce4736c4adefcbbab10ec484f1",

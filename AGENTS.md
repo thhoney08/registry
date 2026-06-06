@@ -42,6 +42,7 @@ if you're github copilot AND NOT claude code:
 - only rebuild when regenerating manifests (lume has hot reload)
 - do not add pointless comments like `// =================================`, banned
 - Use Octicons SVG icons for UI elements (hamburger menu uses three-bars icon)
+- Use build-time content fingerprints for cache-busted assets; do not manually bump stylesheet query strings.
 - Mobile nav uses reduced gap (0.5rem) for compact icon spacing
 - Disable sticky positioning on mobile for info/aside sections
 - **Never add statistics/summary sections (total counts, category breakdowns) to homepage** - keep homepage clean and simple
