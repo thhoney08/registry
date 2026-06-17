@@ -9,6 +9,12 @@
 
 - Add registry manifest skill: `.agents/skills/add-registry/SKILL.md`
 
+## Registry publishing
+
+- For registry entries expected on `https://mods.cataclysmbn.org`, do not describe the mod as visible on the live site until the manifest commit is pushed to `cataclysmbn/registry-index`, the registry site deploy succeeds, and the canonical live URL is checked.
+- If work stops at a local manifest/submodule commit, say exactly that it is local-only and not live.
+- When changing `registry-index`, keep generated file noise separate; commit only the intended manifest/source files unless the task explicitly requires generated outputs.
+
 - **Tick the checkbox** in AGENTS.md when you finish a task, and commit (follow conventional commit).
   - **if all subtasks are ticked, erase task checkbox section and update this file accordingly from knowledge gained from session, then amend it**
 - Don't `sed`, just edit the file normally.
