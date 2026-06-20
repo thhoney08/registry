@@ -459,6 +459,58 @@ Deno.test("updateManifestFile - skips manifest without autoupdate", async () => 
   }
 })
 
+Deno.test("updateManifestFile - skips commit manifest when upstream commit is unchanged", async () => {
+  const tempDir = await createTempDir()
+  const originalFetch = globalThis.fetch
+  const commitSha = "aaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaaa"
+
+  try {
+    const manifest: ModManifest = {
+      schema_version: "1.0",
+      id: "commit_mod",
+      display_name: "Commit Mod",
+      short_description: "A commit-updated mod",
+      author: ["Test"],
+      license: "MIT",
+      version: "2026.6.20-aaaaaaa",
+      homepage: "https://github.com/test/commit-repo",
+      source: {
+        type: "github_archive",
+        url: "https://github.com/test/commit-repo/archive/refs/heads/main.zip",
+        commit_sha: commitSha,
+      },
+      autoupdate: {
+        type: "commit",
+        branch: "main",
+      },
+    }
+
+    globalThis.fetch = (input) => {
+      const url = String(input)
+      if (url === "https://api.github.com/repos/test/commit-repo/commits/main") {
+        return Promise.resolve(
+          new Response(
+            JSON.stringify({ sha: commitSha, url, commit: { message: "same commit" } }),
+            { status: 200, headers: { "content-type": "application/json" } },
+          ),
+        )
+      }
+      return Promise.resolve(new Response("", { status: 200 }))
+    }
+
+    const path = await writeManifest(tempDir, "commit.yaml", manifest)
+    const originalContent = await Deno.readTextFile(path)
+    const result = await updateManifestFile(path)
+
+    assertEquals(result.updated, false)
+    assertEquals(result.error, undefined)
+    assertEquals(await Deno.readTextFile(path), originalContent)
+  } finally {
+    globalThis.fetch = originalFetch
+    await Deno.remove(tempDir, { recursive: true })
+  }
+})
+
 Deno.test("updateAllManifests - processes directory", async () => {
   const tempDir = await createTempDir()
 

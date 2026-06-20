@@ -8,6 +8,7 @@ import { Command } from "@cliffy/command"
 import { stringify } from "@std/yaml/unstable-stringify"
 import * as YAML from "@std/yaml"
 import { walk } from "@std/fs"
+import { equal } from "@std/assert/equal"
 import { canParse, compare as compareSemVer, tryParse } from "@std/semver"
 import { join } from "@std/path"
 import { type ModManifest, ModManifest as ModManifestSchema } from "../schema/manifest.ts"
@@ -60,6 +61,15 @@ const normalizeToSemVer = (raw: string): string | null => {
     .join(".")
 
   return `${normalizedMain}${suffix}`
+}
+
+const manifestsEqualIgnoringLastUpdated = (
+  a: ModManifest,
+  b: ModManifest,
+): boolean => {
+  const { last_updated: _aLastUpdated, ...aWithoutTimestamp } = a
+  const { last_updated: _bLastUpdated, ...bWithoutTimestamp } = b
+  return equal(aWithoutTimestamp, bWithoutTimestamp)
 }
 
 /**
@@ -440,6 +450,14 @@ export const updateManifestFile = async (
       return { updated: false }
     }
 
+    if (
+      manifest.autoupdate.type === "commit" && latest.commitSha &&
+      manifest.source.commit_sha === latest.commitSha
+    ) {
+      console.log(`  Already up to date: ${latest.commitSha}`)
+      return { updated: false }
+    }
+
     console.log(`  New version: ${manifest.version} -> ${latest.version}`)
 
     const updated = applyVersionUpdate(manifest, latest.version, latest.substitutionVersion)
@@ -459,6 +477,11 @@ export const updateManifestFile = async (
           { name: latest.substitutionVersion, sha: latest.commitSha ?? "" },
         )
       }
+    }
+
+    if (manifestsEqualIgnoringLastUpdated(manifest, updated)) {
+      console.log("  No manifest content changes")
+      return { updated: false }
     }
 
     // Verify URLs are valid before saving
@@ -586,7 +609,11 @@ if (import.meta.main) {
                 const content = await Deno.readTextFile(entry.path)
                 const manifest = v.parse(ModManifestSchema, YAML.parse(content))
                 const updatedManifest = await updateManifestHistoryFromTags(manifest)
-                if (!updatedManifest) continue
+                if (
+                  !updatedManifest || manifestsEqualIgnoringLastUpdated(manifest, updatedManifest)
+                ) {
+                  continue
+                }
 
                 await Deno.writeTextFile(
                   entry.path,
@@ -613,7 +640,7 @@ if (import.meta.main) {
             const content = await Deno.readTextFile(target)
             const manifest = v.parse(ModManifestSchema, YAML.parse(content))
             const updatedManifest = await updateManifestHistoryFromTags(manifest)
-            if (!updatedManifest) {
+            if (!updatedManifest || manifestsEqualIgnoringLastUpdated(manifest, updatedManifest)) {
               console.log("No tag history update available")
               return
             }
