@@ -1,6 +1,7 @@
 import { partition } from "@std/collections"
 import { stripColorCodes } from "../../src/utils/color.ts"
 import { ModCard } from "../_includes/ModCard.tsx"
+import { getListedMods } from "../_includes/listedMods.ts"
 import type { ModPageData } from "../_includes/types.ts"
 
 export const layout = "base.tsx"
@@ -122,9 +123,7 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const t = text[lang]
   const submitUrl = withLangPrefix(lang, "/docs/submit/")
 
-  const mods = (search.pages(`mod lang=${lang}`) as ModPageData[]).filter((mod) =>
-    !mod.manifest.yanked
-  )
+  const mods = getListedMods(search.pages(`mod lang=${lang}`) as ModPageData[])
   const groups = groupModsByParent(mods)
   const totalMods = mods.length
   const categories = collectCategories(mods)

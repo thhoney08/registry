@@ -1,7 +1,7 @@
-import { stripColorCodes } from "../src/utils/color.ts"
 import { i18n } from "@lingui/core"
 import { t } from "@lingui/core/macro"
 import { ModCard } from "./_includes/ModCard.tsx"
+import { getListedModSummary } from "./_includes/listedMods.ts"
 import type { ModPageData } from "./_includes/types.ts"
 import { messages as enMessages } from "./app/locales/en/messages.ts"
 import { messages as jaMessages } from "./app/locales/ja/messages.ts"
@@ -31,20 +31,9 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
   const submitUrl = withLangPrefix(lang, "/docs/submit/")
   const generatorUrl = withLangPrefix(lang, "/docs/generator/")
 
-  // Get all mods and show the 6 most recently updated
-  const mods = search.pages(`mod lang=${lang}`) as ModPageData[]
-  const recentMods = [...mods]
-    .sort((a, b) => {
-      // Sort by last_updated descending (newest first)
-      const dateA = a.sourceUpdatedAt ?? ""
-      const dateB = b.sourceUpdatedAt ?? ""
-      // Mods without last_updated go to the end
-      if (!dateA && !dateB) return stripColorCodes(a.title).localeCompare(stripColorCodes(b.title))
-      if (!dateA) return 1
-      if (!dateB) return -1
-      return dateB.localeCompare(dateA)
-    })
-    .slice(0, 6)
+  const { mods, recentMods } = getListedModSummary(
+    search.pages(`mod lang=${lang}`) as ModPageData[],
+  )
 
   return (
     <>
