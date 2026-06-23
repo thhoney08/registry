@@ -87,8 +87,8 @@ export default ({ search, lang: currentLang = "en" }: Lume.Data) => {
               {i18n._(t`to create your manifest file`)}
             </li>
             <li>
-              {i18n._(t`Fork the registry repository`)}:{" "}
-              <a href="https://github.com/cataclysmbn/registry">{i18n._(t`registry`)}</a>
+              {i18n._(t`Fork the registry-index repository`)}:{" "}
+              <a href="https://github.com/cataclysmbn/registry-index">registry-index</a>
             </li>
             <li>
               {i18n._(t`Add your manifest file to`)}{" "}

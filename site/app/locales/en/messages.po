@@ -177,8 +177,8 @@ msgid "For Mod Authors"
 msgstr "For Mod Authors"
 
 #: site/index.page.tsx
-msgid "Fork the registry repository"
-msgstr "Fork the registry repository"
+msgid "Fork the registry-index repository"
+msgstr "Fork the registry-index repository"
 
 #. placeholder {0}: mods.length
 #: site/app/components/ManifestGenerator.tsx
@@ -269,10 +269,6 @@ msgstr "Loaded modinfo for \"{0}\""
 msgid "Loading..."
 msgstr "Loading..."
 
-#: site/app/components/manifest-generator/IdentitySection.tsx
-msgid "Match the ID in modinfo.json"
-msgstr "Match the ID in modinfo.json"
-
 #: site/app/components/manifest-generator/AutoupdateSection.tsx
 msgid "main"
 msgstr "main"
@@ -280,6 +276,10 @@ msgstr "main"
 #: site/index.page.tsx
 msgid "Manifest Generator"
 msgstr "Manifest Generator"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Match the ID in modinfo.json"
+msgstr "Match the ID in modinfo.json"
 
 #: site/app/components/manifest-generator/VersionSection.tsx
 msgid "mod_id"
@@ -324,10 +324,6 @@ msgstr "Quick Start"
 #: site/index.page.tsx
 msgid "Recently Updated Mods"
 msgstr "Recently Updated Mods"
-
-#: site/index.page.tsx
-msgid "registry"
-msgstr "registry"
 
 #: site/index.page.tsx
 msgid "Registry on GitHub"

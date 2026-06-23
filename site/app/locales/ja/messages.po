@@ -177,8 +177,8 @@ msgid "For Mod Authors"
 msgstr "Mod 作成者向け"
 
 #: site/index.page.tsx
-msgid "Fork the registry repository"
-msgstr "レジストリリポジトリをフォークする"
+msgid "Fork the registry-index repository"
+msgstr "registry-indexリポジトリをforkする"
 
 #. placeholder {0}: mods.length
 #: site/app/components/ManifestGenerator.tsx
@@ -269,10 +269,6 @@ msgstr "\"{0}\" のmodinfoを読み込みました"
 msgid "Loading..."
 msgstr "読み込み中..."
 
-#: site/app/components/manifest-generator/IdentitySection.tsx
-msgid "Match the ID in modinfo.json"
-msgstr "modinfo.jsonのIDに合わせてください"
-
 #: site/app/components/manifest-generator/AutoupdateSection.tsx
 msgid "main"
 msgstr "main"
@@ -280,6 +276,10 @@ msgstr "main"
 #: site/index.page.tsx
 msgid "Manifest Generator"
 msgstr "マニフェストジェネレーター"
+
+#: site/app/components/manifest-generator/IdentitySection.tsx
+msgid "Match the ID in modinfo.json"
+msgstr "modinfo.jsonのIDに合わせてください"
 
 #: site/app/components/manifest-generator/VersionSection.tsx
 msgid "mod_id"
@@ -324,10 +324,6 @@ msgstr "クイックスタート"
 #: site/index.page.tsx
 msgid "Recently Updated Mods"
 msgstr "最近更新されたMod"
-
-#: site/index.page.tsx
-msgid "registry"
-msgstr "レジストリ"
 
 #: site/index.page.tsx
 msgid "Registry on GitHub"
